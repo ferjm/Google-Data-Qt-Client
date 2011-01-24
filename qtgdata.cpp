@@ -21,7 +21,7 @@
 #include "qtgdata.h"
 #include "defs.h"
 
-Qtgdata Qtgdata::qtgdata;
+static Qtgdata qtgdata;
 
 // temporary solution
 void Tokenize( const std::string& str, QVector<QString>& tokens, const std::string& delimiters = " " )
