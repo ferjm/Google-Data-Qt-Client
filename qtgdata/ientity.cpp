@@ -24,13 +24,13 @@
 /*
     PropertyBasic implementation
 */
-bool PropertyBasic::init(const unsigned int iname)
+bool PropertyBasic::init(const int iname)
 {
-    QVector<QString>* properties = Qtgdata::getInstance()->getProperties();
-    if(iname < properties->size())
-    {
+    QStringList properties = Qtgdata::getInstance()->getProperties();
+    if(iname < properties.size())
+    {        
         iName = iname;
-        sName = properties->at(iname);
+        sName = properties.at(iname);
         return true;
     }
     iName = -1;
@@ -40,10 +40,10 @@ bool PropertyBasic::init(const unsigned int iname)
 
 bool PropertyBasic::init(const QString sname)
 {
-    QVector<QString>* properties = Qtgdata::getInstance()->getProperties();
-    for(unsigned int i = 0; i < properties->size(); i++)
+    QStringList properties = Qtgdata::getInstance()->getProperties();
+    for(int i = 0; i < properties.size(); i++)
     {
-        if(sname == properties->at(i))
+        if(sname == properties.at(i))
         {
             iName = i;
             sName = sname;
@@ -138,13 +138,13 @@ void IEntity::clear()
     basicValues.clear();
 }
 
-bool IEntity::initNamespace(const unsigned int iNamespace)
+bool IEntity::initNamespace(const int iNamespace)
 {
-    QVector<QString> *namespaces = Qtgdata::getInstance()->getNamespaces();
-    if(iNamespace < namespaces->size())
+    QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
+    if(iNamespace < namespaces.size())
     {
         this->iNamespace = iNamespace;
-        sNamespace = namespaces->at(iNamespace);
+        sNamespace = namespaces.at(iNamespace);
         return true;
     }
     this->iNamespace = -1;
@@ -154,9 +154,9 @@ bool IEntity::initNamespace(const unsigned int iNamespace)
 
 bool IEntity::initNamespace(const QString sNamespace)
 {
-    QVector<QString> *namespaces = Qtgdata::getInstance()->getNamespaces();
-    for(unsigned int i = 0; i < namespaces->size(); i++)
-    {   if(iNamespace < namespaces->size())
+    QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
+    for(int i = 0; i < namespaces.size(); i++)
+    {   if(iNamespace < namespaces.size())
         {
             iNamespace = i;
             this->sNamespace = sNamespace;
@@ -222,7 +222,7 @@ void IEntity::addValues(QList<QString> values)
         basicValues.push_back((*it));
 }
 
-QString IEntity::getValue(const unsigned int index) const
+QString IEntity::getValue(const int index) const
 {
     if(index >= basicValues.size())
         return NULL;
@@ -231,7 +231,7 @@ QString IEntity::getValue(const unsigned int index) const
 
 bool IEntity::checkNamespaceId(const int inamespace) const
 {
-    return((inamespace >= 0) && (inamespace < Qtgdata::getInstance()->getNamespaces()->size()));
+    return((inamespace >= 0) && (inamespace < Qtgdata::getInstance()->getNamespaces().size()));
 }
 
 void IEntity::addAttribute(const Attribute attribute)
@@ -253,22 +253,26 @@ void IEntity::addAttribute(const QString &attributeName, const QString &attribut
 
 bool IEntity::checkAttributeId(const int iAttributeName) const
 {
-    return((iAttributeName >= 0) && (iAttributeName < Qtgdata::getInstance()->getAttributes()->size()));
+    return((iAttributeName >= 0) && (iAttributeName < Qtgdata::getInstance()->getAttributes().size()));
 }
 
 bool IEntity::checkAndGetAttributeId(const QString &attributeName, int &iname) const
 {
-    QVector<QString> *attributes = Qtgdata::getInstance()->getAttributes();
-    for(unsigned int i = 0; i < attributes->size(); i++)
-        if(attributeName == attributes->at(i))
+    QStringList attributes = Qtgdata::getInstance()->getAttributes();
+    for(int i = 0; i < attributes.size(); i++)
+        if(attributeName == attributes.at(i))
+        {
+            iname = i;
             return true;
+        }
+   return false;
 }
 
 bool IEntity::checkAttributeId(const QString &attributeName) const
 {
-    QVector<QString> *attributes = Qtgdata::getInstance()->getAttributes();
-    for(unsigned int i = 0; i < attributes->size(); i++)
-        if(attributeName == attributes->at(i))
+    QStringList attributes = Qtgdata::getInstance()->getAttributes();
+    for(int i = 0; i < attributes.size(); i++)
+        if(attributeName == attributes.at(i))
             return true;
     return false;
 }
@@ -299,7 +303,7 @@ Attributes* IEntity::getAttributes()
     return &attributes;
 }
 
-bool IEntity::deleteAttribute(const unsigned int index)
+bool IEntity::deleteAttribute(const int index)
 {
     if(index >= attributes.size())
         return false;
@@ -330,7 +334,7 @@ bool IEntity::setValues(const unsigned int iname, const QVector<QString> basicVa
     return false;
 }
 
-bool IEntity::deleteValue(const unsigned int index)
+bool IEntity::deleteValue(const int index)
 {
     if(index != basicValues.size())
         return false;

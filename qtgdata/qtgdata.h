@@ -21,60 +21,26 @@
 #ifndef QTGDATA_H
 #define QTGDATA_H
 
-//#include <QVector>
-//#include <QString>
-//
-//
-//#include "qtgdata_global.h"
-//
-//// Singleton class
-//// pending client factory implementation
-//class QTGDATASHARED_EXPORT Qtgdata {
-//    static QVector<QString> properties;
-//    static QVector<QString> attributes;
-//    static QVector<QString> namespaces;
-//
-//    static Qtgdata qtgdata;
-//    Qtgdata();
-//public:
-//     ~Qtgdata();
-//     static Qtgdata* getInstance();
-//     static QVector<QString>* getProperties();
-//     static QVector<QString>* getAttributes();
-//     static QVector<QString>* getNamespaces();
-//};
-
-// <lor>
 #include <QStringList>
+
 #include "defs.h"
+#include "qtgdata_global.h"
+
 class QTGDATASHARED_EXPORT Qtgdata {
     QStringList properties;
     QStringList attributes;
     QStringList namespaces;
-    Qtgdata()
-    {
-    }
-    ~Qtgdata();
+
+    static Qtgdata qtgdata;
+
+    Qtgdata();
+
 public:
-    QStringList& getProperties()
-    {
-      if (properties.isEmpty())
-          properties = Id::sAux.split(QString(", "));
-      return properties;
-    }
-    QStringList& getAttributes()
-    {
-        if (attributes.isEmpty())
-            attributes = AttributeId::sAux.split(QString(", "));
-        return attributes;
-    }
-    QStringList& getNamespaces()
-    {
-        if (namespaces.isEmpty())
-            namespaces = NamespaceId::sAux.split(QString(", "));
-        return namespaces;
-    }
+    ~Qtgdata();
+    static Qtgdata* getInstance();
+    QStringList& getProperties();
+    QStringList& getAttributes();
+    QStringList& getNamespaces();
 };
-// </lor>
 
 #endif // QTGDATA_H

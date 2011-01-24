@@ -54,7 +54,7 @@ protected:
     QVector<QString> basicValues;
     Attributes attributes;
 
-    bool init(const unsigned int iname);
+    bool init(const int iname);
     bool init(const QString sname);
 
     PropertyBasic() :
@@ -74,7 +74,7 @@ private:
     IEntity* getPrivateProperty(const int iname, const bool recursive = false) const;
     IEntity* getPrivateProperty(const QString sname, const bool recursive = false) const;
     void clear();
-    bool initNamespace(const unsigned int iNamespace);
+    bool initNamespace(const int iNamespace);
     bool initNamespace(const QString sNamespace);
 
 protected:
@@ -103,7 +103,7 @@ public:
         begin = basicValues.begin();
         end = basicValues.end();
     }
-    virtual QString getValue(const unsigned int index = 0) const;
+    virtual QString getValue(const int index = 0) const;
     bool checkNamespaceId(const int iNamespace) const;
 
     virtual void addAttribute(const Attribute attribute);
@@ -115,13 +115,13 @@ public:
     virtual const Attribute* getAttribute(const unsigned int index);
     virtual const Attribute* getAttribute(const int iname);
     virtual Attributes* getAttributes();
-    virtual bool deleteAttribute(const unsigned int index);
+    virtual bool deleteAttribute(const int index);
 
     virtual bool setValues(const QString sname, const QVector<QString> basicValues, bool recursive = false);
     virtual bool setValues(const unsigned int iname, const QVector<QString> basicValues, bool recursive = false);
     virtual unsigned int getValueSize(void) const { return basicValues.size(); }
 
-    virtual bool deleteValue(const unsigned int index);
+    virtual bool deleteValue(const int index);
 
     virtual bool addEntity(IEntity *iEntity);
     virtual bool deleteEntity(const QString sname, bool erase = true);
@@ -134,10 +134,10 @@ public:
     virtual IEntity getDeepEntity(const int iname) const;
 
     virtual bool isValid() const;
-    const PropertyType getType() const;
+    PropertyType getType() const;
     const QString getName() const { return sName; }
-    const int getId() const { return iName; }
-    const int getNamespace() const { return iNamespace; }
+    int getId() const { return iName; }
+    int getNamespace() const { return iNamespace; }
 
 #ifdef QTGDATA_DEBUG
     const QString toString(const unsigned int tab = 0) const;

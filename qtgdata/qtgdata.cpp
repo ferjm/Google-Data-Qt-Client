@@ -21,33 +21,10 @@
 #include "qtgdata.h"
 #include "defs.h"
 
-static Qtgdata qtgdata;
-
-// temporary solution
-void Tokenize( const std::string& str, QVector<QString>& tokens, const std::string& delimiters = " " )
-{
-  // Skip delimiters at beginning.
-  std::string::size_type lastPos = str.find_first_not_of( delimiters, 0 );
-  // Find first "non-delimiter".
-  std::string::size_type pos = str.find_first_of( delimiters, lastPos );
-
-  while(std::string::npos != pos || std::string::npos != lastPos)
-  {
-      QString tmp(str.substr( lastPos, pos - lastPos ).c_str());
-      // Found a token, add it to the vector.
-      tokens.push_back(tmp);
-      // Skip delimiters.  Note the "not_of"
-      lastPos = str.find_first_not_of( delimiters, pos );
-      // Find next "non-delimiter"
-      pos = str.find_first_of( delimiters, lastPos );
-  }
-}
+Qtgdata Qtgdata::qtgdata;
 
 Qtgdata::Qtgdata()
 {
-    Tokenize(Id::sAux, properties, ", ");
-    Tokenize(AttributeId::sAux, attributes, ", ");
-    Tokenize(NamespaceId::sAux, namespaces, ", ");
 }
 
 Qtgdata::~Qtgdata()
@@ -60,17 +37,23 @@ Qtgdata* Qtgdata::getInstance()
     return &qtgdata;
 }
 
-QVector<QString>* Qtgdata::getAttributes()
+QStringList& Qtgdata::getAttributes()
 {
-    return &attributes;
+    if (attributes.isEmpty())
+        attributes = AttributeId::sAux.split(QString(", "));
+    return attributes;
 }
 
-QVector<QString>* Qtgdata::getProperties()
+QStringList& Qtgdata::getProperties()
 {
-    return &properties;
+    if (properties.isEmpty())
+        properties = Id::sAux.split(QString(", "));
+    return properties;
 }
 
-QVector<QString>* Qtgdata::getNamespaces()
+QStringList& Qtgdata::getNamespaces()
 {
-    return &namespaces;
+    if (namespaces.isEmpty())
+        namespaces = NamespaceId::sAux.split(QString(", "));
+    return namespaces;
 }
