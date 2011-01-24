@@ -24,6 +24,10 @@
 #define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
   const std::string sAux(#__VA_ARGS__);
 
+//#define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
+//  const Qstring sAux(#__VA_ARGS__);
+
+
 namespace Id
 {
     Ids
