@@ -14,7 +14,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -L/usr/local/lib/qtgdata -lqtgdata
+LIBS += -L/usr/local/lib -lqtgdata
+INCLUDEPATH += /usr/local/include
 
 SOURCES += qtgdatatest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

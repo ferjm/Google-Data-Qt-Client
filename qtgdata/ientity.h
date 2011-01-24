@@ -27,7 +27,6 @@
 
 #include "qtgdata_global.h"
 
-
 class Attribute
 {
 public:
@@ -108,7 +107,7 @@ public:
 
     virtual void addAttribute(const Attribute attribute);
     virtual void addAttribute(const QString &attributeName, const QString &attributeValue);
-    virtual void addAttribute(const QString sNamespace, const QString &attributeName, const QString &attributeValue);
+    virtual void addAttribute(const int iNamespace, const QString &attributeName, const QString &attributeValue);
     virtual bool checkAttributeId(const QString &attributeName) const;
     virtual bool checkAndGetAttributeId(const QString &attributeName, int &iname) const;
     virtual bool checkAttributeId(const int iAttributeName) const;
@@ -130,8 +129,7 @@ public:
         begin = iEntityList.begin();
         end = iEntityList.end();
     }
-    virtual IEntity *getEntity(const unsigned int iname, const bool recursive = false) const;
-    virtual IEntity getDeepEntity(const int iname) const;
+    virtual IEntity *getEntity(const unsigned int iname, const bool recursive = false) const;    
 
     virtual bool isValid() const;
     PropertyType getType() const;

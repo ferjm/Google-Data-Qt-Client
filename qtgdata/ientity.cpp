@@ -251,6 +251,20 @@ void IEntity::addAttribute(const QString &attributeName, const QString &attribut
     }
 }
 
+void IEntity::addAttribute(const int iNamespace, const QString &attributeName, const QString &attributeValue)
+{
+    Attribute attr;
+    if(checkNamespaceId(iNamespace) == true)
+        if(checkAndGetAttributeId(attributeName, attr.iName) == true)
+        {
+            QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
+            attr.nSpace = namespaces.at(iNamespace);
+            attr.sName = attributeName;
+            attr.sValue = attributeValue;
+            attributes.push_back(attr);
+        }
+}
+
 bool IEntity::checkAttributeId(const int iAttributeName) const
 {
     return((iAttributeName >= 0) && (iAttributeName < Qtgdata::getInstance()->getAttributes().size()));
@@ -353,3 +367,77 @@ bool IEntity::addEntity(IEntity *iEntity)
     }
     return false;
 }
+
+bool IEntity::deleteEntity(const QString sname, bool erase)
+{
+    for(itEntities it = iEntityList.begin(); it != iEntityList.end(); it++)
+    {
+        IEntity *sit = dynamic_cast<IEntity*>(*it);
+        if((sit != NULL) && (sit->sName == sname))
+        {
+            if(erase)
+                delete sit;
+            iEntityList.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+IEntity* IEntity::getEntity(const unsigned int iname, const bool recursive) const
+{
+    return getPrivateProperty(iname,recursive);
+}
+
+bool IEntity::isValid() const
+{
+    QStringList properties = Qtgdata::getInstance()->getProperties();
+    return((iName >= 0 && iName < properties.size()) && (sName == properties.at(iName)));
+}
+
+PropertyBasic::PropertyType IEntity::getType() const
+{
+    if(iEntityList.size() > 0)
+        return PropertyBasic::ComplexProperty;
+    if(basicValues.size() > 0)
+        return PropertyBasic::SimpleProperty;
+    return PropertyBasic::BlankProperty;
+}
+
+#ifdef QTGDATA_DEBUG
+const QString IEntity::toString(const unsigned int tab) const
+{
+    QString t;
+    char aux[10];
+    QString res;
+    for(unsigned int i = 0; i < tab; i++)
+        t += "  ";
+    if(!sNamespace.isEmpty())
+        res = t + sNamespace + ":" + sName + "\n";
+    else
+        res = t + sName + "\n";
+    snprintf(aux, sizeof(aux), "%d", basicValues.size());
+    res += t + aux + "Valores\n";
+    QStringList properties = Qtgdata::getInstance()->getProperties();
+    if((iName < 0) || (iName >= properties.size()))
+        res += "Error: not valid IEntity \n";
+    else
+    {
+        if(sName != properties.at(iName))
+            res += "Error: sName(" + sName + ") and iName(" + properties.at(iName) + ") don't match\n";
+    }
+    for(itConstStrings it = basicValues.begin(); it != basicValues.end(); it++)
+        res += t + (*it) + "\n";
+    snprintf(aux, sizeof(aux), "%d", iEntityList.size());
+    res += t + aux + "Items\n";
+    for(itConstEntitys it = iEntityList.begin(); it != iEntityList.end(); it++)
+    {
+        IEntity *sit = dynamic_cast<IEntity *>(*it);
+        if(sit!=NULL)
+            res += sit->toString(tab+1);
+        else
+            res += t + "Invalid IEntity pointer\n";
+    }
+    return res;
+}
+#endif
