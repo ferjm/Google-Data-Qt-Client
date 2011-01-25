@@ -152,22 +152,6 @@ bool IEntity::initNamespace(const int iNamespace)
     return false;
 }
 
-/*bool IEntity::initNamespace(const QString sNamespace)
-{
-    QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
-    for(int i = 0; i < namespaces.size(); i++)
-    {   if(iNamespace < namespaces.size())
-        {
-            iNamespace = i;
-            this->sNamespace = sNamespace;
-            return true;
-        }
-    }
-    iNamespace = -1;
-    this->sNamespace = "";
-    return false;
-}*/
-
 IEntity::IEntity(const int inamespace, const int iname)
 {
     if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
@@ -251,10 +235,28 @@ void IEntity::addAttribute(const QString &attributeName, const QString &attribut
     }
 }
 
+void IEntity::addAttribute(const int iNamespace, const int attributeId, const QString attributeValue)
+{
+    Attribute attr;
+    if(checkNamespaceId(iNamespace))
+    {
+        if(checkAttributeId(attributeId))
+        {
+            QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
+            attr.nSpace = namespaces.at(iNamespace);
+            attr.iName = attributeId;
+            QStringList attributesid = Qtgdata::getInstance()->getAttributes();
+            attr.sName = attributesid.at(attributeId);
+            attr.sValue = attributeValue;
+            attributes.push_back(attr);
+        }
+    }
+}
+
 void IEntity::addAttribute(const int iNamespace, const QString &attributeName, const QString &attributeValue)
 {
     Attribute attr;
-    if(checkNamespaceId(iNamespace) == true)
+    if(checkNamespaceId(iNamespace))
         if(checkAndGetAttributeId(attributeName, attr.iName) == true)
         {
             QStringList namespaces = Qtgdata::getInstance()->getNamespaces();

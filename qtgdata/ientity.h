@@ -75,7 +75,6 @@ private:
     IEntity* getPrivateProperty(const QString sname, const bool recursive = false) const;
     void clear();
     bool initNamespace(const int iNamespace);
-    //bool initNamespace(const QString sNamespace);
 
 protected:
     QList<IEntity*> iEntityList;
@@ -107,6 +106,7 @@ public:
     bool checkNamespaceId(const int iNamespace) const;
 
     virtual void addAttribute(const Attribute attribute);
+    virtual void addAttribute(const int iNamespace, const int attributeId, const QString attributeValue);
     virtual void addAttribute(const QString &attributeName, const QString &attributeValue);
     virtual void addAttribute(const int iNamespace, const QString &attributeName, const QString &attributeValue);
     virtual bool checkAttributeId(const QString &attributeName) const;

@@ -20,6 +20,7 @@ private Q_SLOTS:
     void addValue();
     void addValues();
     void addAttribute();
+    void addEntity();
 };
 
 QtgdataTest::QtgdataTest()
@@ -126,10 +127,17 @@ void QtgdataTest::addValues()
 void QtgdataTest::addAttribute()
 {
     IEntity *entity = new IEntity(NamespaceId::mockId, Id::mockId);
-    entity->addAttribute(NamespaceId::mockId, QString("mockId"), QString("value"));
+    entity->addAttribute(NamespaceId::mockId, AttributeId::mockId, QString("value"));
     const Attribute *attribute = entity->getAttribute(AttributeId::mockId);
     QVERIFY(attribute->iName == AttributeId::mockId);
     delete entity;
+}
+
+void QtgdataTest::addEntity()
+{
+    IEntity *entity = new IEntity(NamespaceId::mockId, Id::mockId);
+    entity->addEntity(new IEntity(NamespaceId::mockId, Id::mockId2));
+    QVERIFY(entity->getEntity(Id::mockId2)->getId() == Id::mockId2);
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);
