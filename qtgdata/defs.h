@@ -28,7 +28,11 @@ namespace Id
 {
     Ids
     (
-        NULLID
+        NULLID,
+        mockId,
+        mockId2,
+        mockId3,
+        mockId4
     )
 }
 
@@ -37,6 +41,7 @@ namespace AttributeId
     Ids
     (
         NULLID,
+        mockId
     )
 }
 
@@ -44,6 +49,7 @@ namespace NamespaceId {
     Ids
     (
         NULLID,
+        mockId
     )
 }
 

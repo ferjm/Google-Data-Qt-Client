@@ -152,7 +152,7 @@ bool IEntity::initNamespace(const int iNamespace)
     return false;
 }
 
-bool IEntity::initNamespace(const QString sNamespace)
+/*bool IEntity::initNamespace(const QString sNamespace)
 {
     QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
     for(int i = 0; i < namespaces.size(); i++)
@@ -166,15 +166,15 @@ bool IEntity::initNamespace(const QString sNamespace)
     iNamespace = -1;
     this->sNamespace = "";
     return false;
-}
+}*/
 
-IEntity::IEntity(const unsigned int inamespace, const unsigned int iname)
+IEntity::IEntity(const int inamespace, const int iname)
 {
     if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
         iNamespace = inamespace;
 }
 
-IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const IEntity *iEntity)
+IEntity::IEntity(const int inamespace, const int iname, const IEntity *iEntity)
 {
     if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
     {
@@ -183,7 +183,7 @@ IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const 
     }
 }
 
-IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const QList<IEntity *> iEList)
+IEntity::IEntity(const int inamespace, const int iname, const QList<IEntity *> iEList)
 {
     if(init(iname) && initNamespace(inamespace) && checkNamespaceId(inamespace))
     {
@@ -192,7 +192,7 @@ IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const 
     }
 }
 
-IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const QString basicValue)
+IEntity::IEntity(const int inamespace, const int iname, const QString basicValue)
 {
     if(init(iname) && checkNamespaceId(inamespace && initNamespace(inamespace)))
     {
@@ -201,9 +201,9 @@ IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const 
     }
 }
 
-IEntity::IEntity(const unsigned int inamespace, const unsigned int iname, const QVector<QString> basicValues)
+IEntity::IEntity(const int inamespace, const int iname, const QVector<QString> basicValues)
 {
-    if(init(iname) && checkNamespaceId(iNamespace) && initNamespace(inamespace))
+    if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
     {
         iNamespace = inamespace;
         this->basicValues = basicValues;
@@ -215,9 +215,9 @@ IEntity::~IEntity()
     clear();
 }
 
-void IEntity::addValues(QList<QString> values)
-{
-    QList<QString>::iterator it;
+void IEntity::addValues(QStringList values)
+{    
+    QStringList::Iterator it;
     for(it = values.begin(); it != values.end(); it++)
         basicValues.push_back((*it));
 }

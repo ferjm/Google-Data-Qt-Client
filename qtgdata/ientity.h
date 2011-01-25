@@ -25,6 +25,7 @@
 #include <QVector>
 #include <QList>
 
+#include "defs.h"
 #include "qtgdata_global.h"
 
 class Attribute
@@ -74,7 +75,7 @@ private:
     IEntity* getPrivateProperty(const QString sname, const bool recursive = false) const;
     void clear();
     bool initNamespace(const int iNamespace);
-    bool initNamespace(const QString sNamespace);
+    //bool initNamespace(const QString sNamespace);
 
 protected:
     QList<IEntity*> iEntityList;
@@ -87,16 +88,16 @@ public:
     typedef QList<IEntity*>::iterator itEntities;
     typedef QVector<QString>::const_iterator itConstStrings;
 
-    IEntity(const unsigned int inamespace, const unsigned int iname);
-    IEntity(const unsigned int inamespace, const unsigned int iname, const QList<IEntity*> iEList);
-    IEntity(const unsigned int inamespace, const unsigned int iname, const IEntity* iEntity);
-    IEntity(const unsigned int inamespace, const unsigned int iname, const QVector<QString> basicValues);
-    IEntity(const unsigned int inamespace, const unsigned int iname, const QString basicValue);
+    IEntity(const int inamespace, const int iname);
+    IEntity(const int inamespace, const int iname, const QList<IEntity*> iEList);
+    IEntity(const int inamespace, const int iname, const IEntity* iEntity);
+    IEntity(const int inamespace, const int iname, const QVector<QString> basicValues);
+    IEntity(const int inamespace, const int iname, const QString basicValue);
 
     virtual ~IEntity();
 
     virtual void addValue(QString value) { basicValues.push_back(value); }
-    virtual void addValues(QList<QString> values);
+    virtual void addValues(QStringList values);
     virtual void getValues(itConstStrings &begin, itConstStrings &end) const
     {
         begin = basicValues.begin();
