@@ -21,6 +21,7 @@ private Q_SLOTS:
     void addValues();
     void addAttribute();
     void addEntity();
+    void deleteEntity();
 };
 
 QtgdataTest::QtgdataTest()
@@ -138,6 +139,17 @@ void QtgdataTest::addEntity()
     IEntity *entity = new IEntity(NamespaceId::mockId, Id::mockId);
     entity->addEntity(new IEntity(NamespaceId::mockId, Id::mockId2));
     QVERIFY(entity->getEntity(Id::mockId2)->getId() == Id::mockId2);
+}
+
+void QtgdataTest::deleteEntity()
+{
+    IEntity *entity = new IEntity(NamespaceId::mockId, Id::mockId);
+    entity->addEntity(new IEntity(NamespaceId::mockId, Id::mockId2));
+    QVERIFY(entity->getEntitySize() == 1);
+    entity->deleteEntity(Id::mockId);
+    QVERIFY(entity->getEntitySize() == 1);
+    entity->deleteEntity(Id::mockId2);
+    QVERIFY(entity->getEntitySize() == 0);
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);

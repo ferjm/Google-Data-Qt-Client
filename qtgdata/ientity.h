@@ -124,13 +124,14 @@ public:
     virtual bool deleteValue(const int index);
 
     virtual bool addEntity(IEntity *iEntity);
-    virtual bool deleteEntity(const QString sname, bool erase = true);
+    virtual bool deleteEntity(const int iname, bool erase = true);
     virtual void getEntityList(itConstEntities &begin, itConstEntities &end) const
     {
         begin = iEntityList.begin();
         end = iEntityList.end();
     }
     virtual IEntity *getEntity(const unsigned int iname, const bool recursive = false) const;    
+    virtual unsigned int getEntitySize(void) const { return iEntityList.size(); };
 
     virtual bool isValid() const;
     PropertyType getType() const;

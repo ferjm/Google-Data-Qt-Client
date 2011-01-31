@@ -370,12 +370,12 @@ bool IEntity::addEntity(IEntity *iEntity)
     return false;
 }
 
-bool IEntity::deleteEntity(const QString sname, bool erase)
+bool IEntity::deleteEntity(const int iname, bool erase)
 {
     for(itEntities it = iEntityList.begin(); it != iEntityList.end(); it++)
     {
         IEntity *sit = dynamic_cast<IEntity*>(*it);
-        if((sit != NULL) && (sit->sName == sname))
+        if((sit != NULL) && (sit->iName == iname))
         {
             if(erase)
                 delete sit;
