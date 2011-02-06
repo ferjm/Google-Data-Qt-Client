@@ -21,7 +21,40 @@
 #ifndef XMLSERIALIZER_H
 #define XMLSERIALIZER_H
 
+#include <exception>
+
 #include "iserializer.h"
+
+class XMLSerializerException : public std::exception
+{
+public:
+    /**
+     * Constructor "XMLSerializerException": Creates a new XMLSerializerException.
+     * Default constructor.
+     *
+     * @param [in] what The reason or info/error clause informing about the error.
+     *
+     */
+    XMLSerializerException(const QString& what);
+    /**
+     * Destructor "~XMLSerializerException": Virtual destructor
+     *
+     */
+    virtual ~XMLSerializerException() throw () {
+    }
+    /**
+     * Operation "What": It retrieves the reason or info/error clause informing
+     * about the error.
+     *
+     * @return const char*. The reason or info/error clause informing about the error.
+     *
+     */
+    virtual const char* what() const throw ();
+
+protected:
+    QString _what; /**< The reason or info/error clause informing about the error. */
+};
+
 
 class XMLSerializer : public ISerializer
 {
@@ -33,19 +66,16 @@ public:
         QString shortname;
         QString vA;
     };
-
     struct XMLSchema {
         NameSpace nameSpace;
         QString xmlSchema;
     };
-
     /* List of NameSpaces */
     typedef QList<NameSpace> LNameSpaces;
 
 private:
     LNameSpaces m_lNameSpaces;
     XMLSchema m_XMLSchema;
-
     /** NameSpaceToStr
      *
      *  @sNameSpace: The resulting namespace string
@@ -53,17 +83,16 @@ private:
      *  Procedure to create xml schemas namespaces.
      *
      */
-    void NameSpaceToStr( QString &sNameSpace,NameSpace nameSpace );
+    void NameSpaceToStr(QString &sNameSpace,NameSpace nameSpace);
 
 public:
-
     /** XMLSerializer
      *
      * @lNameSpaces: list of namespaces
      *
      * XMLSerializer constructor
      */
-    XMLSerializer( LNameSpaces *lNameSpaces,XMLSchema schema );
+    XMLSerializer(LNameSpaces *lNameSpaces, XMLSchema schema);
 
     /**
      * Serialize:
@@ -74,8 +103,7 @@ public:
      * Returns the QString containing the serialized entity
      *
      */
-    QString Serialize( const IEntity *obj );
-
+    QString Serialize(const IEntity *obj);
 };
 
 #endif // XMLSERIALIZER_H

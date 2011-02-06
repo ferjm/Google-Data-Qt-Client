@@ -131,7 +131,7 @@ public:
         end = iEntityList.end();
     }
     virtual IEntity *getEntity(const unsigned int iname, const bool recursive = false) const;    
-    virtual unsigned int getEntitySize(void) const { return iEntityList.size(); };
+    virtual unsigned int getEntitySize(void) const { return iEntityList.size(); }
 
     virtual bool isValid() const;
     PropertyType getType() const;

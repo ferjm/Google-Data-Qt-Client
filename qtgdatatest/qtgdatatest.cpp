@@ -2,6 +2,7 @@
 #include <QtTest/QtTest>
 
 #include "qtgdata/ientity.h"
+#include "qtgdata/xmlserializer.h"
 
 class QtgdataTest : public QObject
 {
@@ -22,6 +23,9 @@ private Q_SLOTS:
     void addAttribute();
     void addEntity();
     void deleteEntity();
+
+    //XMLSerializer tests
+    void serializeNULLEntity();
 };
 
 QtgdataTest::QtgdataTest()
@@ -150,6 +154,25 @@ void QtgdataTest::deleteEntity()
     QVERIFY(entity->getEntitySize() == 1);
     entity->deleteEntity(Id::mockId2);
     QVERIFY(entity->getEntitySize() == 0);
+}
+
+/* XMLSerializer tests*/
+void QtgdataTest::serializeNULLEntity()
+{
+    XMLSerializer::NameSpace ns;
+    XMLSerializer::XMLSchema sch;
+    XMLSerializer::LNameSpaces namespaces;
+    namespaces.append(ns);
+    XMLSerializer serializer(&namespaces,sch);
+    try
+    {
+        QString output = serializer.Serialize(NULL);
+        QVERIFY(false);
+    }
+    catch(XMLSerializerException)
+    {
+        QVERIFY(true);
+    }
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);

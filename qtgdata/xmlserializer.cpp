@@ -20,12 +20,37 @@
 
 #include "xmlserializer.h"
 
+#include <QtXml/QXmlStreamWriter>
+
+XMLSerializerException::XMLSerializerException(const QString &what) : _what(what)
+{
+}
+
+const char* XMLSerializerException::what() const throw()
+{
+    QString retval = "XMLSerializerException: " + _what;
+    return retval.toAscii();
+}
+
 XMLSerializer::XMLSerializer( LNameSpaces *lNameSpaces,XMLSchema schema )
 {
-
+    m_lNameSpaces = *lNameSpaces;
+    m_XMLSchema.nameSpace = schema.nameSpace;
+    m_XMLSchema.xmlSchema = schema.xmlSchema;
 }
 
 QString XMLSerializer::Serialize( const IEntity *obj )
 {
-
+    if((obj == NULL) || (!obj->isValid())) throw XMLSerializerException("Invalid entity\n");
+    QString output;
+    QXmlStreamWriter stream(&output);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+/*  stream.writeStartElement("bookmark");
+    stream.writeAttribute("href", "http://qt.nokia.com/");
+    stream.writeTextElement("title", "Qt Home");
+    stream.writeEndElement(); // bookmark
+*/
+    stream.writeEndDocument();
+    return output;
 }
