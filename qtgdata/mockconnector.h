@@ -18,40 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef MOCKCONNECTOR_H
+#define MOCKCONNECTOR_H
 
-#define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
-  const QString sAux(#__VA_ARGS__);
+#include "restconnector.h"
 
-namespace Id
+class MockConnector : public RestConnector
 {
-    Ids
-    (
-        NULLID,
-        mockId,
-        mockId2,
-        mockId3,
-        mockId4
-    )
-}
+public:
+    MockConnector(IConnector::CONNECTION_MODE connMode) : RestConnector(connMode) {};
+};
 
-namespace AttributeId
-{
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-namespace NamespaceId {
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-
-#endif // DEFS_H
+#endif // MOCKCONNECTOR_H

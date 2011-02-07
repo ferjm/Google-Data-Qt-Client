@@ -18,40 +18,4 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DEFS_H
-#define DEFS_H
-
-#define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
-  const QString sAux(#__VA_ARGS__);
-
-namespace Id
-{
-    Ids
-    (
-        NULLID,
-        mockId,
-        mockId2,
-        mockId3,
-        mockId4
-    )
-}
-
-namespace AttributeId
-{
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-namespace NamespaceId {
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-
-#endif // DEFS_H
+#include "mockconnector.h"

@@ -14,7 +14,10 @@ DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
 SOURCES += qtgdata.cpp \
     ientity.cpp \
     qtgdataclient.cpp \
-    xmlserializer.cpp
+    xmlserializer.cpp \
+    restconnector.cpp \
+    httpconnector.cpp \
+    mockconnector.cpp
 
 HEADERS += qtgdata.h\
         qtgdata_global.h \
@@ -24,7 +27,10 @@ HEADERS += qtgdata.h\
     iserializer.h \
     iconnector.h \
     qtgdataclient.h \
-    xmlserializer.h
+    xmlserializer.h \
+    restconnector.h \
+    httpconnector.h \
+    mockconnector.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

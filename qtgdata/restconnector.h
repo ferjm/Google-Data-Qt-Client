@@ -18,40 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef RESTCONNECTOR_H
+#define RESTCONNECTOR_H
 
-#define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
-  const QString sAux(#__VA_ARGS__);
+#include "iconnector.h"
 
-namespace Id
+class RestConnector : public IConnector
 {
-    Ids
-    (
-        NULLID,
-        mockId,
-        mockId2,
-        mockId3,
-        mockId4
-    )
-}
+public:
+    RestConnector(IConnector::CONNECTION_MODE connMode) : IConnector(connMode) {};
+    /* CRUD Functions (Create, Retrieve, Update, Delete Entity) */
+    virtual IEntity *CreateEntity(const IEntity *in);
+    virtual IEntity *RetrieveEntity(const IEntity *in);
+    virtual IEntity *UpdateEntity(const IEntity *in);
+    virtual IEntity *DeleteEntity(const IEntity *in);
+};
 
-namespace AttributeId
-{
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-namespace NamespaceId {
-    Ids
-    (
-        NULLID,
-        mockId
-    )
-}
-
-
-#endif // DEFS_H
+#endif // RESTCONNECTOR_H

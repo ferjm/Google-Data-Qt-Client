@@ -1,3 +1,23 @@
+/***************************************************************************
+ *   Copyright (C) 2010 Fernando Jiménez Moreno <ferjmoreno@gmail.com>     *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
@@ -221,7 +241,7 @@ void QtgdataTest::serializeComplexEntities()
                            "</n1:mockId>\n";
         QVERIFY2(expected.compare(output) == 0, "FAILED: first case");
 
-        IEntity *entity2 = new IEntity(NamespaceId::mockId, Id::testing);
+        IEntity *entity2 = new IEntity(NamespaceId::mockId, Id::mockId4);
         entity2->addAttribute(NamespaceId::mockId,AttributeId::mockId,"attributeValue");
         entity2->addAttribute(NamespaceId::mockId,AttributeId::mockId,"attributeValue2");
         entity2->addEntity(new IEntity(NamespaceId::mockId,Id::mockId,"test3"));
@@ -231,11 +251,11 @@ void QtgdataTest::serializeComplexEntities()
                    "<n1:mockId xmlns:n1=\"mockId\" xmlns:n2=\"http://testnamespace\">"
                         "<n1:mockId2>test</n1:mockId2>"
                         "<n1:mockId3>test2</n1:mockId3>"
-                        "<n1:testing n1:mockId=\"attributeValue\" n1:mockId=\"attributeValue2\">"
+                        "<n1:mockId4 n1:mockId=\"attributeValue\" n1:mockId=\"attributeValue2\">"
                             "<n1:mockId>test3</n1:mockId>"
-                        "</n1:testing>"
+                        "</n1:mockId4>"
                    "</n1:mockId>\n";
-        QVERIFY2(expected.compare(output) == 0, "FAILED: second case");
+        QVERIFY2(expected.compare(output) == 0, "FAILED: second case");        
         delete entity;
     }
     catch(XMLSerializerException)
