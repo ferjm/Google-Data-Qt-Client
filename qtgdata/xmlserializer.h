@@ -22,6 +22,8 @@
 #define XMLSERIALIZER_H
 
 #include <exception>
+#include <QStringList>
+#include <QtXml/QXmlStreamWriter>
 
 #include "iserializer.h"
 
@@ -58,32 +60,17 @@ protected:
 
 class XMLSerializer : public ISerializer
 {
-public:
-    struct NameSpace
-    {
-        QString technology;
-        QString basename;
-        QString shortname;
-        QString vA;
-    };
+public:    
     struct XMLSchema {
-        NameSpace nameSpace;
+        QString nameSpace;
         QString xmlSchema;
     };
-    /* List of NameSpaces */
-    typedef QList<NameSpace> LNameSpaces;
 
 private:
-    LNameSpaces m_lNameSpaces;
+    QStringList m_lNameSpaces;
     XMLSchema m_XMLSchema;
-    /** NameSpaceToStr
-     *
-     *  @sNameSpace: The resulting namespace string
-     *  @nameSpace: The namespace struct to convert
-     *  Procedure to create xml schemas namespaces.
-     *
-     */
-    void NameSpaceToStr(QString &sNameSpace,NameSpace nameSpace);
+
+    void serialize(const IEntity *obj, QXmlStreamWriter *stream);
 
 public:
     /** XMLSerializer
@@ -92,10 +79,10 @@ public:
      *
      * XMLSerializer constructor
      */
-    XMLSerializer(LNameSpaces *lNameSpaces, XMLSchema schema);
+    XMLSerializer(QStringList *lNameSpaces, XMLSchema schema);
 
     /**
-     * Serialize:
+     * serialize:
      * @obj: IEntity object to serialize
      *
      * Recursive procedure to serialize a IEntity object
@@ -103,7 +90,7 @@ public:
      * Returns the QString containing the serialized entity
      *
      */
-    QString Serialize(const IEntity *obj);
+    QString serialize(const IEntity *obj);
 };
 
 #endif // XMLSERIALIZER_H

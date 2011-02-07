@@ -137,7 +137,8 @@ public:
     PropertyType getType() const;
     const QString getName() const { return sName; }
     int getId() const { return iName; }
-    int getNamespace() const { return iNamespace; }
+    int getNamespaceId() const { return iNamespace; }
+    QString getNamespace() const { return sNamespace; }
 
 #ifdef QTGDATA_DEBUG
     const QString toString(const unsigned int tab = 0) const;

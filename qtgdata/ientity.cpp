@@ -21,6 +21,10 @@
 #include "ientity.h"
 #include "qtgdata.h"
 
+#ifdef QTGDATA_DEBUG
+#include <cstdio>
+#endif
+
 /*
     PropertyBasic implementation
 */
@@ -432,7 +436,7 @@ const QString IEntity::toString(const unsigned int tab) const
         res += t + (*it) + "\n";
     snprintf(aux, sizeof(aux), "%d", iEntityList.size());
     res += t + aux + "Items\n";
-    for(itConstEntitys it = iEntityList.begin(); it != iEntityList.end(); it++)
+    for(itConstEntities it = iEntityList.begin(); it != iEntityList.end(); it++)
     {
         IEntity *sit = dynamic_cast<IEntity *>(*it);
         if(sit!=NULL)

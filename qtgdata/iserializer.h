@@ -30,7 +30,7 @@
 class ISerializer
 {
 public:
-    virtual QString Serialize(const IEntity *obj) = 0;
+    virtual QString serialize(const IEntity *obj) = 0;
 };
 
 #endif // ISERIALIZER_H

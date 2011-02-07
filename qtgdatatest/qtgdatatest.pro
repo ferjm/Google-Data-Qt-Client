@@ -18,4 +18,4 @@ LIBS += -L/usr/local/lib -lqtgdata
 INCLUDEPATH += /usr/local/include
 
 SOURCES += qtgdatatest.cpp
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
+DEFINES += SRCDIR=\\\"$$PWD/\\\" QTGDATA_DEBUG

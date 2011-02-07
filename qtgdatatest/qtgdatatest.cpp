@@ -1,6 +1,8 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
+#include <iostream>
+
 #include "qtgdata/ientity.h"
 #include "qtgdata/xmlserializer.h"
 
@@ -26,6 +28,8 @@ private Q_SLOTS:
 
     //XMLSerializer tests
     void serializeNULLEntity();
+    void serializeSingleEntity();
+    void serializeComplexEntities();
 };
 
 QtgdataTest::QtgdataTest()
@@ -159,19 +163,85 @@ void QtgdataTest::deleteEntity()
 /* XMLSerializer tests*/
 void QtgdataTest::serializeNULLEntity()
 {
-    XMLSerializer::NameSpace ns;
     XMLSerializer::XMLSchema sch;
-    XMLSerializer::LNameSpaces namespaces;
-    namespaces.append(ns);
+    QStringList namespaces;
+    namespaces.append("");
     XMLSerializer serializer(&namespaces,sch);
     try
     {
-        QString output = serializer.Serialize(NULL);
+        QString output = serializer.serialize(NULL);
         QVERIFY(false);
     }
     catch(XMLSerializerException)
     {
         QVERIFY(true);
+    }
+}
+
+void QtgdataTest::serializeSingleEntity()
+{
+    XMLSerializer::XMLSchema sch;
+    sch.nameSpace = "http://schema.namespace";
+    sch.xmlSchema = "schema";
+    QStringList namespaces;
+    namespaces.append("http://testnamespace");
+    XMLSerializer serializer(&namespaces,sch);
+    IEntity *entity = new IEntity(NamespaceId::mockId,Id::mockId,"test");
+    try
+    {
+        QString output = serializer.serialize(entity);
+        QVERIFY(true);
+        delete entity;
+    }
+    catch(XMLSerializerException)
+    {
+        QVERIFY(false);
+        delete entity;
+    }
+}
+
+void QtgdataTest::serializeComplexEntities()
+{
+    XMLSerializer::XMLSchema sch;
+    sch.nameSpace = "http://schema.namespace";
+    sch.xmlSchema = "schema";
+    QStringList namespaces;
+    namespaces.append("http://testnamespace");
+    XMLSerializer serializer(&namespaces,sch);
+    IEntity *entity = new IEntity(NamespaceId::mockId,Id::mockId);
+    entity->addEntity(new IEntity(NamespaceId::mockId,Id::mockId2,"test"));
+    entity->addEntity(new IEntity(NamespaceId::mockId,Id::mockId3,"test2"));
+    try
+    {
+        QString output = serializer.serialize(entity);
+        QString expected = "<?xml version=\"1.0\"?>"
+                          "<n1:mockId xmlns:n1=\"mockId\" xmlns:n2=\"http://testnamespace\">"
+                              "<n1:mockId2>test</n1:mockId2>"
+                              "<n1:mockId3>test2</n1:mockId3>"
+                           "</n1:mockId>\n";
+        QVERIFY2(expected.compare(output) == 0, "FAILED: first case");
+
+        IEntity *entity2 = new IEntity(NamespaceId::mockId, Id::testing);
+        entity2->addAttribute(NamespaceId::mockId,AttributeId::mockId,"attributeValue");
+        entity2->addAttribute(NamespaceId::mockId,AttributeId::mockId,"attributeValue2");
+        entity2->addEntity(new IEntity(NamespaceId::mockId,Id::mockId,"test3"));
+        entity->addEntity(entity2);
+        output = serializer.serialize(entity);
+        expected = "<?xml version=\"1.0\"?>"
+                   "<n1:mockId xmlns:n1=\"mockId\" xmlns:n2=\"http://testnamespace\">"
+                        "<n1:mockId2>test</n1:mockId2>"
+                        "<n1:mockId3>test2</n1:mockId3>"
+                        "<n1:testing n1:mockId=\"attributeValue\" n1:mockId=\"attributeValue2\">"
+                            "<n1:mockId>test3</n1:mockId>"
+                        "</n1:testing>"
+                   "</n1:mockId>\n";
+        QVERIFY2(expected.compare(output) == 0, "FAILED: second case");
+        delete entity;
+    }
+    catch(XMLSerializerException)
+    {
+        QVERIFY(false);
+        delete entity;
     }
 }
 

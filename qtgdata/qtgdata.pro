@@ -9,7 +9,7 @@ QT       -= gui
 TARGET = qtgdata
 TEMPLATE = lib
 
-DEFINES += QTGDATA_LIBRARY
+DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
 
 SOURCES += qtgdata.cpp \
     ientity.cpp \
