@@ -27,6 +27,9 @@ class HttpConnector : public RestConnector
 {
 public:
     HttpConnector(IConnector::CONNECTION_MODE connMode) : RestConnector(connMode) {};
+
+private:
+    IEntity* LaunchMockFunction(const QString *serializedMockEntity);
 };
 
 #endif // HTTPCONNECTOR_H

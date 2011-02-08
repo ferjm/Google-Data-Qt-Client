@@ -18,24 +18,71 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifdef QTGDATA_DEBUG
+#include <QDebug>
+#endif
+
+#include <sstream>
+
 #include "restconnector.h"
+#include "ientity.h"
 
-IEntity *RestConnector::CreateEntity(const IEntity *in)
+IEntity* RestConnector::CreateEntity(const IEntity *in)
 {
-    return NULL;
+#ifdef QTGDATA_DEBUG
+    qDebug() << "\nCreateEntity In: \n" << in->toString() << "\n";
+#endif
+    switch(in->getId())
+    {
+    case Id::mockId:
+        break;
+    default:
+        break;
+    }
+    return ReturnError(QTGDATA_ERROR_INVALID_PARAMETER);
 }
 
-IEntity *RestConnector::RetrieveEntity(const IEntity *in)
+IEntity* RestConnector::RetrieveEntity(const IEntity *in)
 {
-    return NULL;
+    return ReturnError(QTGDATA_ERROR_INVALID_PARAMETER);
 }
 
-IEntity *RestConnector::UpdateEntity(const IEntity *in)
+IEntity* RestConnector::UpdateEntity(const IEntity *in)
 {
-    return NULL;
+    return ReturnError(QTGDATA_ERROR_INVALID_PARAMETER);
 }
 
-IEntity *RestConnector::DeleteEntity(const IEntity *in)
+IEntity* RestConnector::DeleteEntity(const IEntity *in)
 {
-    return NULL;
+    return ReturnError(QTGDATA_ERROR_INVALID_PARAMETER);
+}
+
+
+/* Protected Functions */
+IEntity* RestConnector::ReturnError(unsigned int reason)
+{
+    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID);
+    char aux[10];
+    snprintf(aux, sizeof(aux), "%d", reason);
+    res->addValue(aux);
+#ifdef QTGDATA_DEBUG
+    qDebug() << "\nReturnError:\n" << res->toString() << "\n";
+#endif
+    return res;
+}
+
+IEntity* RestConnector::ReturnError(unsigned int uiReason, QString sReason)
+{
+    std::ostringstream oss;
+    oss << uiReason;
+    QString sCode(oss.str().c_str());
+    sCode += " - " + sReason;
+    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID, sCode);
+    return res;
+}
+
+/* Private functions */
+IEntity* RestConnector::MockFunction(const IEntity *mockEntity)
+{
+
 }

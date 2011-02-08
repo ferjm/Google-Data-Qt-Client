@@ -19,3 +19,8 @@
  ***************************************************************************/
 
 #include "httpconnector.h"
+
+IEntity* HttpConnector::LaunchMockFunction(const QString *serializedMockEntity)
+{
+
+}

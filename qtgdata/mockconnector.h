@@ -27,6 +27,9 @@ class MockConnector : public RestConnector
 {
 public:
     MockConnector(IConnector::CONNECTION_MODE connMode) : RestConnector(connMode) {};
+
+private:
+    IEntity* LaunchMockFunction(const QString *serializedMockEntity);
 };
 
 #endif // MOCKCONNECTOR_H

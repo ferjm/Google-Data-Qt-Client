@@ -28,10 +28,21 @@ class RestConnector : public IConnector
 public:
     RestConnector(IConnector::CONNECTION_MODE connMode) : IConnector(connMode) {};
     /* CRUD Functions (Create, Retrieve, Update, Delete Entity) */
-    virtual IEntity *CreateEntity(const IEntity *in);
-    virtual IEntity *RetrieveEntity(const IEntity *in);
-    virtual IEntity *UpdateEntity(const IEntity *in);
-    virtual IEntity *DeleteEntity(const IEntity *in);
+    virtual IEntity* CreateEntity(const IEntity *in);
+    virtual IEntity* RetrieveEntity(const IEntity *in);
+    virtual IEntity* UpdateEntity(const IEntity *in);
+    virtual IEntity* DeleteEntity(const IEntity *in);
+
+protected:
+    IEntity* ReturnError(unsigned int Reason);
+    IEntity* ReturnError(unsigned int uiReason, QString sReason);
+
+private:
+    IEntity* MockFunction(const IEntity *mockEntity);
+
+    /* virtual private launch functions must be implemented on HttpConnector and MockConnector */
+    virtual IEntity* LaunchMockFunction(const QString *serializedMockEntity) = 0;
+
 };
 
 #endif // RESTCONNECTOR_H

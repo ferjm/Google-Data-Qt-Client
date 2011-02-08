@@ -95,8 +95,7 @@ QString XMLSerializer::serialize(const IEntity *obj)
 {
     if((obj == NULL) || (!obj->isValid())) throw XMLSerializerException("Invalid entity\n");
     QString output;
-    QXmlStreamWriter stream(&output);
-    //stream.setAutoFormatting(false);
+    QXmlStreamWriter stream(&output);    
     stream.writeStartDocument();
     stream.writeStartElement(obj->getNamespace(),obj->getName());
     QStringList::iterator it;

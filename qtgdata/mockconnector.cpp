@@ -19,3 +19,8 @@
  ***************************************************************************/
 
 #include "mockconnector.h"
+
+IEntity* MockConnector::LaunchMockFunction(const QString *serializedMockEntity)
+{
+    return NULL;
+}
