@@ -26,7 +26,7 @@
 #include "ientity.h"
 
 class HttpConnector
-{
+{    
 public:
     enum HttpMethod { GET, POST, PUT };
     typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
@@ -35,6 +35,11 @@ public:
     void httpRequest(HttpMethod httpMethod,
                      QUrl url,
                      HttpHeaders httpHeaders);
+
+private:
+    IEntity* ReturnError(unsigned int Reason);
+    IEntity* ReturnError(unsigned int uiReason, QString sReason);
+
 };
 
 #endif // HTTPCONNECTOR_H

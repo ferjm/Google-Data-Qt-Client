@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <sstream>
+
 #include "httpconnector.h"
 
 void HttpConnector::httpRequest(HttpMethod httpMethod,
@@ -25,4 +27,26 @@ void HttpConnector::httpRequest(HttpMethod httpMethod,
                                 HttpHeaders httpHeaders)
 {
 
+}
+
+IEntity* HttpConnector::ReturnError(unsigned int reason)
+{
+    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID);
+    char aux[10];
+    snprintf(aux, sizeof(aux), "%d", reason);
+    res->addValue(aux);
+#ifdef QTGDATA_DEBUG
+    qDebug() << "\nReturnError:\n" << res->toString() << "\n";
+#endif
+    return res;
+}
+
+IEntity* HttpConnector::ReturnError(unsigned int uiReason, QString sReason)
+{
+    std::ostringstream oss;
+    oss << uiReason;
+    QString sCode(oss.str().c_str());
+    sCode += " - " + sReason;
+    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID, sCode);
+    return res;
 }
