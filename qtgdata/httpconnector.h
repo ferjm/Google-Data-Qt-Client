@@ -21,25 +21,55 @@
 #ifndef HTTPCONNECTOR_H
 #define HTTPCONNECTOR_H
 
+#include <exception>
+
 #include <QtNetwork>
 
 #include "ientity.h"
 
-class HttpConnector
-{    
+class HttpConnectorException : public std::exception
+{
 public:
-    enum HttpMethod { GET, POST, PUT };
+    /**
+     * Constructor "HttpConnectorException": Creates a new HttpConnectorException.
+     * Default constructor.
+     *
+     * @param [in] what The reason or info/error clause informing about the error.
+     *
+     */
+    HttpConnectorException(const QString& what);
+    /**
+     * Destructor "~HttpConnectorException": Virtual destructor
+     *
+     */
+    virtual ~HttpConnectorException() throw () {
+    }
+    /**
+     * Operation "What": It retrieves the reason or info/error clause informing
+     * about the error.
+     *
+     * @return const char*. The reason or info/error clause informing about the error.
+     *
+     */
+    virtual const char* what() const throw ();
+
+protected:
+    QString _what; /**< The reason or info/error clause informing about the error. */
+};
+
+class HttpConnector                
+{    
+    Q_OBJECT
+
+public:
+    enum HttpMethod { GET, POST, PUT, HEAD };
     typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
 
     HttpConnector() {}
     void httpRequest(HttpMethod httpMethod,
-                     QUrl url,
-                     HttpHeaders httpHeaders);
-
-private:
-    IEntity* ReturnError(unsigned int Reason);
-    IEntity* ReturnError(unsigned int uiReason, QString sReason);
-
+                     const QUrl url,
+                     const HttpHeaders httpHeaders,
+                     const QByteArray &data);
 };
 
 #endif // HTTPCONNECTOR_H

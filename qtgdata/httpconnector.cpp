@@ -19,34 +19,43 @@
  ***************************************************************************/
 
 #include <sstream>
+#include <cstdio>
+
+#include <QDebug>
+#include <QNetworkAccessManager>
 
 #include "httpconnector.h"
 
+HttpConnectorException::HttpConnectorException(const QString &what) : _what(what)
+{
+}
+
+const char* HttpConnectorException::what() const throw()
+{
+    QString retval = "HttpConnectorException: " + _what;
+    return retval.toAscii();
+}
+
 void HttpConnector::httpRequest(HttpMethod httpMethod,
                                 QUrl url,
-                                HttpHeaders httpHeaders)
+                                HttpHeaders httpHeaders,
+                                const QByteArray &data)
 {
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    switch(httpMethod)
+    {
+    case GET:
+        break;
+    case POST:
+        break;
+    case PUT:
+        break;
+    case HEAD:
+        break;
+    default:
+        delete manager;
+        throw HttpConnectorException("Invalid HTTP method\n");
+    }
 
-}
-
-IEntity* HttpConnector::ReturnError(unsigned int reason)
-{
-    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID);
-    char aux[10];
-    snprintf(aux, sizeof(aux), "%d", reason);
-    res->addValue(aux);
-#ifdef QTGDATA_DEBUG
-    qDebug() << "\nReturnError:\n" << res->toString() << "\n";
-#endif
-    return res;
-}
-
-IEntity* HttpConnector::ReturnError(unsigned int uiReason, QString sReason)
-{
-    std::ostringstream oss;
-    oss << uiReason;
-    QString sCode(oss.str().c_str());
-    sCode += " - " + sReason;
-    IEntity *res = new IEntity(NamespaceId::NULLID, Id::NULLID, sCode);
-    return res;
+    delete manager;
 }
