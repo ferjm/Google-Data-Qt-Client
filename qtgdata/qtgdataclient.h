@@ -29,30 +29,25 @@
   */
 class QtgdataClient
 {
-protected:
-    IConnector *connector;
 
 public:        
+    enum CONNECTION_MODE { HTTP, MOCK };
+
+private:
+    CONNECTION_MODE connectionMode;
+
+public:
     /**
       Constructor QtgdataClient
       Creates a new QtgdataClient object
       @param [in] connMode ...
       */
-    QtgdataClient(const IConnector::CONNECTION_MODE connMode);
+    QtgdataClient(CONNECTION_MODE connMode = HTTP) : connectionMode(connMode);
 
     /**
       Destructor
       */
-    ~QtgdataClient();
-
-    /**
-      Returns the IConnector instance
-      @return IConnector instance
-      */
-    IConnector* getIConnector()
-    {
-        return connector;
-    }
+    ~QtgdataClient();    
 };
 
 #endif // QTGDATACLIENT_H

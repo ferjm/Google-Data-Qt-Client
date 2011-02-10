@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       -= gui
+QT       += network
 
 TARGET = qtgdata
 TEMPLATE = lib
@@ -13,11 +14,8 @@ DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
 
 SOURCES += qtgdata.cpp \
     ientity.cpp \
-    qtgdataclient.cpp \
     xmlserializer.cpp \
-    restconnector.cpp \
-    httpconnector.cpp \
-    mockconnector.cpp
+    httpconnector.cpp
 
 HEADERS += qtgdata.h\
         qtgdata_global.h \
@@ -25,12 +23,9 @@ HEADERS += qtgdata.h\
     defs.h \
     iparser.h \
     iserializer.h \
-    iconnector.h \
     qtgdataclient.h \
     xmlserializer.h \
-    restconnector.h \
-    httpconnector.h \
-    mockconnector.h
+    httpconnector.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

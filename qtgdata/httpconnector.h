@@ -21,15 +21,20 @@
 #ifndef HTTPCONNECTOR_H
 #define HTTPCONNECTOR_H
 
-#include "restconnector.h"
+#include <QtNetwork>
 
-class HttpConnector : public RestConnector
+#include "ientity.h"
+
+class HttpConnector
 {
 public:
-    HttpConnector(IConnector::CONNECTION_MODE connMode) : RestConnector(connMode) {};
+    enum HttpMethod { GET, POST, PUT };
+    typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
 
-private:
-    IEntity* LaunchMockFunction(const QString *serializedMockEntity);
+    HttpConnector() {}
+    void httpRequest(HttpMethod httpMethod,
+                     QUrl url,
+                     HttpHeaders httpHeaders);
 };
 
 #endif // HTTPCONNECTOR_H

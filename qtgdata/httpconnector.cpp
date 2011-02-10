@@ -20,7 +20,9 @@
 
 #include "httpconnector.h"
 
-IEntity* HttpConnector::LaunchMockFunction(const QString *serializedMockEntity)
+void HttpConnector::httpRequest(HttpMethod httpMethod,
+                                QUrl url,
+                                HttpHeaders httpHeaders)
 {
 
 }
