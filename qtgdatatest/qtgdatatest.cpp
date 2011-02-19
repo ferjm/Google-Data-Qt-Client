@@ -20,11 +20,13 @@
 
 #include <QtCore/QString>
 #include <QtTest/QtTest>
+#include <QDebug>
 
 #include <iostream>
 
 #include "qtgdata/ientity.h"
 #include "qtgdata/xmlserializer.h"
+#include "qtgdata/httpconnector.h"
 
 class QtgdataTest : public QObject
 {
@@ -32,6 +34,9 @@ class QtgdataTest : public QObject
 
 public:
     QtgdataTest();    
+
+public slots:
+    void requestFinished(QString s);
 
 private Q_SLOTS:
     //IEntity tests
@@ -50,6 +55,9 @@ private Q_SLOTS:
     void serializeNULLEntity();
     void serializeSingleEntity();
     void serializeComplexEntities();
+
+    //HttpConnector tests
+    void httpRequest();
 };
 
 QtgdataTest::QtgdataTest()
@@ -263,6 +271,20 @@ void QtgdataTest::serializeComplexEntities()
         QVERIFY(false);
         delete entity;
     }
+}
+
+void QtgdataTest::httpRequest()
+{
+    /*HttpConnector httpConnector;
+    HttpConnector::HttpHeaders headers;
+    QByteArray array;
+    connect(&httpConnector,SIGNAL(requestFinished(QString)), this, SLOT(requestFinished(QString)));
+    httpConnector.httpRequest(HttpConnector::GET,QUrl("http://www.fjimenez.es/index.html"),headers,array);*/
+}
+
+void QtgdataTest::requestFinished(QString s)
+{
+    qDebug() << s;
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);

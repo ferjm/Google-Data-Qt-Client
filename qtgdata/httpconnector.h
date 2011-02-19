@@ -57,19 +57,31 @@ protected:
     QString _what; /**< The reason or info/error clause informing about the error. */
 };
 
-class HttpConnector                
+class HttpConnector : public QObject
 {    
     Q_OBJECT
 
+    QNetworkReply *reply;
+    QNetworkAccessManager *manager;
+    QByteArray replyData;
 public:
     enum HttpMethod { GET, POST, PUT, HEAD };
     typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
 
-    HttpConnector() {}
+    HttpConnector();
+    ~HttpConnector();
     void httpRequest(HttpMethod httpMethod,
                      const QUrl url,
                      const HttpHeaders httpHeaders,
-                     const QByteArray &data);
+                     const QByteArray &data);    
+
+public slots:
+    void finished(QNetworkReply *);
+    void readyRead();
+    void error(QNetworkReply::NetworkError);
+
+signals:
+    void requestFinished(QByteArray reply);
 };
 
 #endif // HTTPCONNECTOR_H
