@@ -58,20 +58,23 @@ void HttpConnector::httpRequest(HttpMethod httpMethod,
     switch(httpMethod)
     {
     case GET:
-        reply = manager->get(request);        
-        connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));
-        connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
-        connect(manager, SIGNAL(finished(QNetworkReply *)),loop, SLOT(quit()));
-        connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));        
-        loop->exec();
+        reply = manager->get(request);                
         break;
     case POST:
+        reply = manager->post(request,data);
         break;
     case PUT:
+        reply = manager->put(request,data);
         break;
     case HEAD:
+        reply = manager->head(request);
         break;    
-    }        
+    }
+    connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
+    connect(manager, SIGNAL(finished(QNetworkReply *)),loop, SLOT(quit()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+    loop->exec();
 }
 
 void HttpConnector::finished(QNetworkReply *mReply)
