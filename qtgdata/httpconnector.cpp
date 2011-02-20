@@ -96,6 +96,8 @@ void HttpConnector::error(QNetworkReply::NetworkError errorCode)
     QString errorCodeStr;
     switch(errorCode)
     {
+    case QNetworkReply::NoError:
+        break;
     case QNetworkReply::ConnectionRefusedError:
     case QNetworkReply::RemoteHostClosedError:
     case QNetworkReply::HostNotFoundError:
