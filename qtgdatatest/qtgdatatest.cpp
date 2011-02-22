@@ -24,9 +24,9 @@
 
 #include <iostream>
 
-#include "qtgdata/ientity.h"
-#include "qtgdata/xmlserializer.h"
-#include "qtgdata/httpconnector.h"
+#include "qtgdata/qtgdataientity.h"
+#include "qtgdata/qtgdataxmlserializer.h"
+#include "qtgdata/qtgdatahttpconnector.h"
 
 class QtgdataTest : public QObject
 {

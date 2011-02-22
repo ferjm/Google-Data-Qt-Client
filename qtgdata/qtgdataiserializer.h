@@ -21,7 +21,7 @@
 #ifndef ISERIALIZER_H
 #define ISERIALIZER_H
 
-#include "ientity.h"
+#include "qtgdataientity.h"
 
 /**
   \class ISerializer

@@ -9,7 +9,7 @@ QT       += testlib network
 QT       -= gui
 
 TARGET = qtgdatatest
-CONFIG   += console
+CONFIG   += console kqoauth
 CONFIG   -= app_bundle
 
 TEMPLATE = app

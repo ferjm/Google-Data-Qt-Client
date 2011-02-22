@@ -7,25 +7,31 @@
 QT       -= gui
 QT       += network
 
+CONFIG += kqoauth
+
 TARGET = qtgdata
 TEMPLATE = lib
 
 DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
 
 SOURCES += qtgdata.cpp \
-    ientity.cpp \
-    xmlserializer.cpp \
-    httpconnector.cpp
+    qtgdataientity.cpp \
+    qtgdataxmlserializer.cpp \
+    qtgdatahttpconnector.cpp \
+    qtgdataxmlparser.cpp \
+    qtgdataoauth.cpp
 
 HEADERS += qtgdata.h\
         qtgdata_global.h \
-    ientity.h \
-    defs.h \
-    iparser.h \
-    iserializer.h \
+    qtgdataientity.h \
+    qtgdatadefs.h \
+    qtgdataiparser.h \
+    qtgdataiserializer.h \
     qtgdataclient.h \
-    xmlserializer.h \
-    httpconnector.h
+    qtgdataxmlserializer.h \
+    qtgdatahttpconnector.h \
+    qtgdataxmlparser.h \
+    qtgdataoauth.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

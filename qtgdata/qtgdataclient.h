@@ -21,7 +21,7 @@
 #ifndef QTGDATACLIENT_H
 #define QTGDATACLIENT_H
 
-#include "iconnector.h"
+#include "qtgdatahttpconnector.h"
 
 /**
   \class QtgdataClient
@@ -29,20 +29,13 @@
   */
 class QtgdataClient
 {
-
-public:        
-    enum CONNECTION_MODE { HTTP, MOCK };
-
-private:
-    CONNECTION_MODE connectionMode;
-
+    HttpConnector httpConnector;
 public:
     /**
       Constructor QtgdataClient
-      Creates a new QtgdataClient object
-      @param [in] connMode ...
+      Creates a new QtgdataClient object      
       */
-    QtgdataClient(CONNECTION_MODE connMode = HTTP) : connectionMode(connMode);
+    QtgdataClient();
 
     /**
       Destructor

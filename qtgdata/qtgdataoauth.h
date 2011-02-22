@@ -18,19 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef IPARSER_H
-#define IPARSER_H
+#ifndef OAUTH_H
+#define OAUTH_H
 
-#include "ientity.h"
+#include <QObject>
+#include <QtKOAuth/QtKOAuth>
 
-/**
-  \class IParser
-  IParser class: Base class for any parsing object.
- */
-class IParser
-{
+class OAuth : public QObject
+{    
+    Q_OBJECT
 public:
-    virtual IEntity* parse(void *data) = 0;
+    OAuth();
+    ~OAuth();
+    void getAccessToken(QUrl requestUrl,QString consumerKey,QString consumerSecret);
+
+private slots:
+    void onTemporaryTokenReceived(QString token,QString tokenSecret);
+    void onAuthorizationReceived(QString token, QString verifier);
+    void onAccessTokenReceived(QString token, QString tokenSecret);
+    void onRequestReady(QByteArray response);
+
+private:
+    KQOAuthManager *oauthManager;
+    KQOAuthRequest *oauthRequest;
 };
 
-#endif // IPARSER_H
+#endif // OAUTH_H

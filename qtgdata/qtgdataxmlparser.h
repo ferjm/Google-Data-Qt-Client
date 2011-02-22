@@ -18,42 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "qtgdata.h"
-#include "qtgdatadefs.h"
+#ifndef XMLPARSER_H
+#define XMLPARSER_H
 
-Qtgdata Qtgdata::qtgdata;
+#include "qtgdataiparser.h"
 
-Qtgdata::Qtgdata()
+class XMLParser : public IParser
 {
-}
+public:
+    XMLParser();
+    virtual IEntity* parse(void *data);
+};
 
-Qtgdata::~Qtgdata()
-{
-
-}
-
-Qtgdata* Qtgdata::getInstance()
-{
-    return &qtgdata;
-}
-
-QStringList& Qtgdata::getAttributes()
-{
-    if (attributes.isEmpty())
-        attributes = AttributeId::sAux.split(QString(", "));
-    return attributes;
-}
-
-QStringList& Qtgdata::getProperties()
-{
-    if (properties.isEmpty())
-        properties = Id::sAux.split(QString(", "));
-    return properties;
-}
-
-QStringList& Qtgdata::getNamespaces()
-{
-    if (namespaces.isEmpty())
-        namespaces = NamespaceId::sAux.split(QString(", "));
-    return namespaces;
-}
+#endif // XMLPARSER_H

@@ -22,7 +22,7 @@
 #include <QNetworkAccessManager>
 #include <QEventLoop>
 
-#include "httpconnector.h"
+#include "qtgdatahttpconnector.h"
 
 HttpConnectorException::HttpConnectorException(const QString &what) : _what(what)        
 {    
@@ -68,7 +68,10 @@ void HttpConnector::httpRequest(HttpMethod httpMethod,
         break;
     case HEAD:
         reply = manager->head(request);
-        break;    
+        break;
+    case DELETE:
+        reply = manager->deleteResource(request);
+        break;
     }
     connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
@@ -88,6 +91,7 @@ void HttpConnector::readyRead()
 #ifdef QTGDATA_DEBUG
     qDebug() << "HTTP Reply: \n\t" << replyData;
 #endif
+    //TODO: parse replyData and return IEntity body + header
     emit requestFinished(replyData);
 }
 

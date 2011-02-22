@@ -23,7 +23,7 @@
 
 #include <QStringList>
 
-#include "defs.h"
+#include "qtgdatadefs.h"
 #include "qtgdata_global.h"
 
 class QTGDATASHARED_EXPORT Qtgdata {

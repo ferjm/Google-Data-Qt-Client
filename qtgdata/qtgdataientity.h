@@ -25,7 +25,7 @@
 #include <QVector>
 #include <QList>
 
-#include "defs.h"
+#include "qtgdatadefs.h"
 #include "qtgdata_global.h"
 
 class Attribute

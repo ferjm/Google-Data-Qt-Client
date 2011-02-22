@@ -18,31 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef HTTPCONNECTOR_H
-#define HTTPCONNECTOR_H
+#ifndef XMLSERIALIZER_H
+#define XMLSERIALIZER_H
 
 #include <exception>
+#include <QStringList>
+#include <QtXml/QXmlStreamWriter>
 
-#include <QtNetwork>
+#include "qtgdataiserializer.h"
 
-#include "ientity.h"
-
-class HttpConnectorException : public std::exception
+class XMLSerializerException : public std::exception
 {
 public:
     /**
-     * Constructor "HttpConnectorException": Creates a new HttpConnectorException.
+     * Constructor "XMLSerializerException": Creates a new XMLSerializerException.
      * Default constructor.
      *
      * @param [in] what The reason or info/error clause informing about the error.
      *
      */
-    HttpConnectorException(const QString& what);
+    XMLSerializerException(const QString& what);
     /**
-     * Destructor "~HttpConnectorException": Virtual destructor
+     * Destructor "~XMLSerializerException": Virtual destructor
      *
      */
-    virtual ~HttpConnectorException() throw () {
+    virtual ~XMLSerializerException() throw () {
     }
     /**
      * Operation "What": It retrieves the reason or info/error clause informing
@@ -57,31 +57,40 @@ protected:
     QString _what; /**< The reason or info/error clause informing about the error. */
 };
 
-class HttpConnector : public QObject
-{    
-    Q_OBJECT
 
-    QNetworkReply *reply;
-    QNetworkAccessManager *manager;
-    QByteArray replyData;
+class XMLSerializer : public ISerializer
+{
+public:    
+    struct XMLSchema {
+        QString nameSpace;
+        QString xmlSchema;
+    };
+
+private:
+    QStringList m_lNameSpaces;
+    XMLSchema m_XMLSchema;
+
+    void serialize(const IEntity *obj, QXmlStreamWriter *stream);
+
 public:
-    enum HttpMethod { GET, POST, PUT, HEAD };
-    typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
+    /** XMLSerializer
+     *
+     * @lNameSpaces: list of namespaces
+     *
+     * XMLSerializer constructor
+     */
+    XMLSerializer(QStringList *lNameSpaces, XMLSchema schema);
 
-    HttpConnector();
-    ~HttpConnector();
-    void httpRequest(HttpMethod httpMethod,
-                     const QUrl url,
-                     const HttpHeaders httpHeaders,
-                     const QByteArray &data);    
-
-public slots:
-    void finished(QNetworkReply *);
-    void readyRead();
-    void error(QNetworkReply::NetworkError);
-
-signals:
-    void requestFinished(QByteArray reply);
+    /**
+     * serialize:
+     * @obj: IEntity object to serialize
+     *
+     * Recursive procedure to serialize a IEntity object
+     *
+     * Returns the QString containing the serialized entity
+     *
+     */
+    QString serialize(const IEntity *obj);
 };
 
-#endif // HTTPCONNECTOR_H
+#endif // XMLSERIALIZER_H
