@@ -28,9 +28,9 @@ class OAuth : public QObject
 {    
     Q_OBJECT
 public:
-    OAuth();
+    OAuth(QUrl requestTokenUrl,QUrl userAuthUrl,QUrl accessTokenUrl,QString consumerKey,QString consumerSecret);
     ~OAuth();
-    void getAccessToken(QUrl requestUrl,QString consumerKey,QString consumerSecret);
+    void getAccessToken();
 
 private slots:
     void onTemporaryTokenReceived(QString token,QString tokenSecret);
@@ -41,6 +41,11 @@ private slots:
 private:
     KQOAuthManager *oauthManager;
     KQOAuthRequest *oauthRequest;
+    QUrl _requestUrl;
+    QUrl _userAuthUrl;
+    QUrl _accessUrl;
+    QString _consumerSecret;
+    QString _consumerKey;
 };
 
 #endif // OAUTH_H

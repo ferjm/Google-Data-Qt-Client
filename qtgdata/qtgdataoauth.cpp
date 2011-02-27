@@ -22,7 +22,12 @@
 
 #include <QDebug>
 
-OAuth::OAuth()
+OAuth::OAuth(QUrl requestTokenUrl,QUrl userAuthUrl,QUrl accessTokenUrl,QString consumerKey,QString consumerSecret) :
+        _requestUrl(requestTokenUrl),
+        _userAuthUrl(userAuthUrl),
+        _accessUrl(accessTokenUrl),
+        _consumerKey(consumerKey),
+        _consumerSecret(consumerSecret)
 {
     oauthRequest = new KQOAuthRequest;
     oauthManager = new KQOAuthManager(this);
@@ -35,7 +40,7 @@ OAuth::~OAuth()
     delete oauthManager;
 }
 
-void OAuth::getAccessToken(QUrl requestUrl,QString consumerKey,QString consumerSecret)
+void OAuth::getAccessToken()
 {
     connect(oauthManager, SIGNAL(temporaryTokenReceived(QString,QString)),
             this, SLOT(onTemporaryTokenReceived(QString, QString)));
@@ -49,9 +54,9 @@ void OAuth::getAccessToken(QUrl requestUrl,QString consumerKey,QString consumerS
     connect(oauthManager, SIGNAL(requestReady(QByteArray)),
             this, SLOT(onRequestReady(QByteArray)));
 
-    oauthRequest->initRequest(KQOAuthRequest::TemporaryCredentials, requestUrl);
-    oauthRequest->setConsumerKey(consumerKey);
-    oauthRequest->setConsumerSecretKey(consumerSecret);
+    oauthRequest->initRequest(KQOAuthRequest::TemporaryCredentials, _requestUrl);
+    oauthRequest->setConsumerKey(_consumerKey);
+    oauthRequest->setConsumerSecretKey(_consumerSecret);
 
     oauthManager->setHandleUserAuthorization(true);
 
@@ -61,11 +66,19 @@ void OAuth::getAccessToken(QUrl requestUrl,QString consumerKey,QString consumerS
 void OAuth::onTemporaryTokenReceived(QString token,QString tokenSecret)
 {
     qDebug() << "Temporary token received: " << token << tokenSecret;
+    if( oauthManager->lastError() == KQOAuthManager::NoError) {
+        qDebug() << "Asking for user's permission to access protected resources. Opening URL: " << _userAuthUrl;
+        oauthManager->getUserAuthorization(_userAuthUrl);
+    }
 }
 
 void OAuth::onAuthorizationReceived(QString token, QString verifier)
 {
     qDebug() << "User authorization received: " << token << verifier;
+    oauthManager->getUserAccessTokens(QUrl("https://api.twitter.com/oauth/access_token"));
+    if( oauthManager->lastError() != KQOAuthManager::NoError) {
+            //TODO: emit signal? exception?
+    }
 }
 
 void OAuth::onAccessTokenReceived(QString token, QString tokenSecret)

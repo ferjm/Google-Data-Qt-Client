@@ -14,7 +14,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -L/usr/local/lib -lqtgdata
+LIBS += -L/usr/lib -lkqoauth -L/usr/local/lib -lqtgdata
 INCLUDEPATH += /usr/local/include
 
 SOURCES += qtgdatatest.cpp

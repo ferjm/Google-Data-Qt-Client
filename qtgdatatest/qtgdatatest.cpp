@@ -27,6 +27,7 @@
 #include "qtgdata/qtgdataientity.h"
 #include "qtgdata/qtgdataxmlserializer.h"
 #include "qtgdata/qtgdatahttpconnector.h"
+#include "qtgdata/qtgdataoauth.h"
 
 class QtgdataTest : public QObject
 {
@@ -58,6 +59,9 @@ private Q_SLOTS:
 
     //HttpConnector tests
     void httpRequest();
+
+    //OAuth tests
+    void getRequestToken();
 };
 
 QtgdataTest::QtgdataTest()
@@ -285,6 +289,16 @@ void QtgdataTest::httpRequest()
 void QtgdataTest::requestFinished(QString s)
 {
     qDebug() << s;
+}
+
+void QtgdataTest::getRequestToken()
+{
+    OAuth oAuth(QUrl("https://api.twitter.com/oauth/request_token"),
+                QUrl("https://api.twitter.com/oauth/authorize"),
+                QUrl("https://api.twitter.com/oauth/access_token"),
+                "9PqhX2sX7DlmjNJ5j2Q",
+                "1NYYhpIw1fXItywS9Bw6gGRmkRyF9zB54UXkTGcI8");
+    oAuth.getAccessToken();
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);
