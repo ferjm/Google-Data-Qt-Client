@@ -26,6 +26,7 @@
 #include <QtNetwork>
 
 #include "qtgdataientity.h"
+#include "qtgdatahttprequest.h"
 
 class HttpConnectorException : public std::exception
 {
@@ -64,16 +65,14 @@ class HttpConnector : public QObject
     QNetworkReply *reply;
     QNetworkAccessManager *manager;
     QByteArray replyData;
-public:
-    enum HttpMethod { GET, POST, PUT, HEAD, DELETE };
-    typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
-
+public:        
     HttpConnector();
-    ~HttpConnector();
-    void httpRequest(HttpMethod httpMethod,
+    ~HttpConnector();    
+    void httpRequest(const HttpRequest &request);
+    /*void httpRequest(HttpMethod httpMethod,
                      const QUrl url,
                      const HttpHeaders httpHeaders,
-                     const QByteArray &data);
+                     const QByteArray &data);*/
 
 public slots:
     void finished(QNetworkReply *);

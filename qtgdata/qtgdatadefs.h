@@ -21,8 +21,10 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#include <QString>
+
 #define Ids(...) typedef enum {__VA_ARGS__} tipo;             \
-  const QString sAux(#__VA_ARGS__);
+  const QString sAux(#__VA_ARGS__);  
 
 namespace Id
 {
@@ -102,5 +104,17 @@ typedef enum {
     QTGDATA_ERROR_HTTP_HTTP_VERSION_NOT_SUPPORTED = 505,
 } QTGDATAReturnCode;
 
+/* OAuth strings */
+const QString OAUTH_KEY_CONSUMER("oauth_consumer");
+const QString OAUTH_KEY_CONSUMER_KEY("oauth_consumer_key");
+const QString OAUTH_KEY_TOKEN("oauth_token");
+const QString OAUTH_KEY_TOKEN_SECRET("oauth_token_secret");
+const QString OAUTH_KEY_SIGNATURE_METHOD("oauth_signature_method");
+const QString OAUTH_KEY_TIMESTAMP("oauth_timestamp");
+const QString OAUTH_KEY_NONCE("oauth_nonce");
+const QString OAUTH_KEY_SIGNATURE("oauth_signature");
+const QString OAUTH_KEY_CALLBACK("oauth_callback");
+const QString OAUTH_KEY_VERIFIER("oauth_verifier");
+const QString OAUTH_KEY_VERSION("oauth_version");
 
 #endif // DEFS_H

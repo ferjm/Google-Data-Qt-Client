@@ -1,3 +1,23 @@
+/***************************************************************************
+ *   Copyright (C) 2010 Fernando Jiménez Moreno <ferjmoreno@gmail.com>     *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #ifndef HTTPREQUEST_H
 #define HTTPREQUEST_H
 
@@ -15,7 +35,8 @@ public:
     explicit HttpRequest(QObject *parent = 0);
 
     enum RequestHttpMethod { GET, POST, PUT, HEAD, DELETE };
-    typedef QList<QPair<QNetworkRequest::KnownHeaders,QVariant> > HttpHeaders;
+    typedef QPair<QNetworkRequest::KnownHeaders,QVariant> HttpHeader;
+    typedef QList<HttpHeader> HttpHeaders;
 
     virtual bool isValid() const;
 
@@ -23,15 +44,19 @@ public:
     void setRequestEndpoint(QUrl requestEndpoint);
     void setRequestBody(QByteArray body);
     void setRequestBody(QMultiMap<QString, QString> body);
+    void setHeader(HttpRequest::HttpHeader header);
+    void setContentTypeHeader(QVariant contentTypeHeader);
 
-    HttpRequest::RequestHttpMethod getHttpMethod();
-    QUrl getRequestEndpoint();
+    HttpRequest::RequestHttpMethod getHttpMethod() const;
+    QUrl getRequestEndpoint() const;
     QByteArray getRequestBody() const;
+    HttpRequest::HttpHeaders getHttpHeaders() const;
 
-private:
+protected:
     QUrl requestEndpoint;
     HttpRequest::RequestHttpMethod httpMethod;
     QByteArray requestBody;
+    HttpRequest::HttpHeaders requestHeaders;
 };
 
 #endif // HTTPREQUEST_H

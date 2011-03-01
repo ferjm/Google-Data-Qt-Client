@@ -44,33 +44,36 @@ HttpConnector::~HttpConnector()
     delete manager;
 }
 
-void HttpConnector::httpRequest(HttpMethod httpMethod,
-                                QUrl url,
-                                HttpHeaders httpHeaders,
-                                const QByteArray &data)
-{                    
+void HttpConnector::httpRequest(const HttpRequest &request)
+{
     replyData.clear();
-    QNetworkRequest request(url);
-    HttpHeaders::const_iterator it = httpHeaders.begin();
+    QNetworkRequest networkRequest(request.getRequestEndpoint());
+    HttpRequest::HttpHeaders httpHeaders = request.getHttpHeaders();
+    HttpRequest::HttpHeaders::const_iterator it = httpHeaders.begin();
     for(;it != httpHeaders.end(); it++)
-        request.setHeader((*it).first,(*it).second);    
+        networkRequest.setHeader((*it).first,(*it).second);
     QEventLoop *loop = new QEventLoop;
+    HttpRequest::RequestHttpMethod httpMethod = request.getHttpMethod();
     switch(httpMethod)
     {
-    case GET:
-        reply = manager->get(request);                
+    case HttpRequest::GET:
+        reply = manager->get(networkRequest);
         break;
-    case POST:
-        reply = manager->post(request,data);
+    case HttpRequest::POST: {
+        const QByteArray body = request.getRequestBody();
+        if(body != NULL)
+            reply = manager->post(networkRequest,body);
+        break; }
+    case HttpRequest::PUT: {
+        const QByteArray body = request.getRequestBody();
+        if(body != NULL)
+            reply = manager->put(networkRequest,body);
+        break; }
+    case HttpRequest::HEAD:
+        reply = manager->head(networkRequest);
         break;
-    case PUT:
-        reply = manager->put(request,data);
-        break;
-    case HEAD:
-        reply = manager->head(request);
-        break;
-    case DELETE:
-        reply = manager->deleteResource(request);
+    case HttpRequest::DELETE:
+        reply = manager->deleteResource(networkRequest);
         break;
     }
     connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));

@@ -20,7 +20,8 @@ SOURCES += qtgdata.cpp \
     qtgdatahttpconnector.cpp \
     qtgdataxmlparser.cpp \
     qtgdataoauth.cpp \
-    qtgdatahttprequest.cpp
+    qtgdatahttprequest.cpp \
+    qtgdataoauthrequest.cpp
 
 HEADERS += qtgdata.h\
         qtgdata_global.h \
@@ -33,7 +34,8 @@ HEADERS += qtgdata.h\
     qtgdatahttpconnector.h \
     qtgdataxmlparser.h \
     qtgdataoauth.h \
-    qtgdatahttprequest.h
+    qtgdatahttprequest.h \
+    qtgdataoauthrequest.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata
