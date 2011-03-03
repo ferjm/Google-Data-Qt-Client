@@ -1,8 +1,10 @@
 /***************************************************************************
  *   Copyright (C) 2010 Fernando Jiménez Moreno <ferjmoreno@gmail.com>     *
- *                                                                         *
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  *
  *   This class is based on KQOAuthRequest from KQOAuth Library            *
  *   by Johan Paul (johan.paul@d-pointer.com)                              *
+ *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,6 +21,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include <QCryptographicHash>
+#include <QDebug>
 
 #include "qtgdataoauthrequest.h"
 #include "qtgdatadefs.h"
@@ -86,3 +91,150 @@ void OAuthRequest::insertPostBody()
 {
 //TODO: ...
 }
+
+QString hmac_sha1(const QString &message, const QString &key)
+{
+    QByteArray keyBytes = key.toAscii();
+    int keyLength;              // Lenght of key word
+    const int blockSize = 64;   // Both MD5 and SHA-1 have a block size of 64.
+
+    keyLength = keyBytes.size();
+    // If key is longer than block size, we need to hash the key
+    if (keyLength > blockSize) {
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        hash.addData(keyBytes);
+        keyBytes = hash.result();
+    }
+
+    /* http://tools.ietf.org/html/rfc2104  - (1) */
+    // Create the opad and ipad for the hash function.
+    QByteArray ipad;
+    QByteArray opad;
+
+    ipad.fill( 0, blockSize);
+    opad.fill( 0, blockSize);
+
+    ipad.replace(0, keyBytes.length(), keyBytes);
+    opad.replace(0, keyBytes.length(), keyBytes);
+
+    /* http://tools.ietf.org/html/rfc2104 - (2) & (5) */
+    for (int i=0; i<64; i++) {
+        ipad[i] = ipad[i] ^ 0x36;
+        opad[i] = opad[i] ^ 0x5c;
+    }
+
+    QByteArray workArray;
+    workArray.clear();
+
+    workArray.append(ipad, 64);
+    /* http://tools.ietf.org/html/rfc2104 - (3) */
+    workArray.append(message.toAscii());
+
+
+    /* http://tools.ietf.org/html/rfc2104 - (4) */
+    QByteArray sha1 = QCryptographicHash::hash(workArray, QCryptographicHash::Sha1);
+
+    /* http://tools.ietf.org/html/rfc2104 - (6) */
+    workArray.clear();
+    workArray.append(opad, 64);
+    workArray.append(sha1);
+
+    sha1.clear();
+
+    /* http://tools.ietf.org/html/rfc2104 - (7) */
+    sha1 = QCryptographicHash::hash(workArray, QCryptographicHash::Sha1);
+    return QString(sha1.toBase64());
+}
+
+void OAuthRequest::signRequest()
+{
+    QString signature = this->oauthSignature();
+    requestParameters.append( qMakePair( OAUTH_KEY_SIGNATURE, signature) );
+}
+
+QString OAuthRequest::oauthSignature()
+{
+    QByteArray baseString = this->requestBaseString();
+
+    QString secret = QString(QUrl::toPercentEncoding(oauthConsumerSecretKey)) + "&" + QString(QUrl::toPercentEncoding(oauthTokenSecret));
+    QString signature = hmac_sha1(baseString, secret);
+
+#ifdef QTGDATA_DEBUG
+    qDebug() << " * Signature : " << QUrl::toPercentEncoding(signature) << "\n";
+#endif
+    return QString( QUrl::toPercentEncoding(signature) );
+}
+
+bool normalizedParameterSort(const QPair<QString, QString> &left, const QPair<QString, QString> &right)
+{
+    QString keyLeft = left.first;
+    QString valueLeft = left.second;
+    QString keyRight = right.first;
+    QString valueRight = right.second;
+
+    if(keyLeft == keyRight)
+        return (valueLeft < valueRight);
+    else
+        return (keyLeft < keyRight);
+}
+
+QByteArray OAuthRequest::requestBaseString()
+{
+    QByteArray baseString;
+    // Every request has these as the commont parameters.
+    baseString.append( httpMethodString.toUtf8() + "&");
+    baseString.append( QUrl::toPercentEncoding( requestEndpoint.toString(QUrl::RemoveQuery) ) + "&" );
+    QList< QPair<QString, QString> > baseStringParameters;
+    baseStringParameters.append(requestParameters);
+    // Sort the request parameters. These parameters have been
+    // initialized earlier.
+    qSort(baseStringParameters.begin(),
+          baseStringParameters.end(),
+          normalizedParameterSort);
+    // Last append the request parameters correctly encoded.
+    baseString.append( encodedParameterList(baseStringParameters) );
+#ifdef QTGDATA_DEBUG
+    qDebug() << "========== OAuthRequest has the following base string:";
+    qDebug() << baseString << "\n";
+#endif
+    return baseString;
+}
+
+QByteArray OAuthRequest::encodedParameterList(const QList< QPair<QString, QString> > &parameters)
+{
+    QByteArray resultList;
+
+    bool first = true;
+    QPair<QString, QString> parameter;
+
+    // Do the debug output.
+#ifdef QTGDATA_DEBUG
+    qDebug() << "========== OAuthRequest has the following parameters:";
+#endif
+    foreach (parameter, parameters)
+    {
+        if(!first)
+            resultList.append( "&" );
+        else
+            first = false;
+
+        // Here we don't need to explicitely encode the strings to UTF-8 since
+        // QUrl::toPercentEncoding() takes care of that for us.
+        resultList.append( QUrl::toPercentEncoding(parameter.first)     // Parameter key
+                           + "="
+                           + QUrl::toPercentEncoding(parameter.second)  // Parameter value
+                          );
+#ifdef QTGDATA_DEBUG
+            qDebug() << " * "
+                     << parameter.first
+                     << " : "
+                     << parameter.second;
+#endif
+    }
+#ifdef QTGDATA_DEBUG
+        qDebug() << "\n";
+#endif
+    return QUrl::toPercentEncoding(resultList);
+}
+
+

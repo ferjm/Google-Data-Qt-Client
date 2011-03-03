@@ -74,7 +74,7 @@ private:
     QByteArray requestBaseString();
     QByteArray encodedParameterList(const QList<QPair<QString,QString> > &requestParameters);
     void insertAdditionalParams(QList<QPair<QString,QString> > &requestParams);
-    void insertPostBody();
+    void insertPostBody();    
 };
 
 #endif // QTGDATAOAUTHREQUEST_H

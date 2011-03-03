@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QDebug>
+
 #include "qtgdatahttprequest.h"
 
 HttpRequest::HttpRequest(QObject *parent) :
@@ -28,7 +30,29 @@ HttpRequest::HttpRequest(QObject *parent) :
 
 void HttpRequest::setHttpMethod(HttpRequest::RequestHttpMethod httpMethod)
 {
+    QString requestHttpMethodString;
+    switch (httpMethod) {
+    case HttpRequest::GET:
+        requestHttpMethodString = "GET";
+        break;
+    case HttpRequest::POST:
+        requestHttpMethodString = "POST";
+        break;
+    case HttpRequest::PUT:
+        requestHttpMethodString = "PUT";
+        break;
+    case HttpRequest::HEAD:
+        requestHttpMethodString = "HEAD";
+        break;
+    case HttpRequest::DELETE:
+        requestHttpMethodString = "DELETE";
+        break;
+    default:
+        qWarning() << "Invalid HTTP method set.";
+        break;
+    }
     this->httpMethod = httpMethod;
+    this->httpMethodString = requestHttpMethodString;
 }
 
 HttpRequest::RequestHttpMethod HttpRequest::getHttpMethod() const

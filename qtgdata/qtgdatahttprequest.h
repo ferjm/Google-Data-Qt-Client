@@ -55,6 +55,7 @@ public:
 protected:
     QUrl requestEndpoint;
     HttpRequest::RequestHttpMethod httpMethod;
+    QString httpMethodString;
     QByteArray requestBody;
     HttpRequest::HttpHeaders requestHeaders;
 };
