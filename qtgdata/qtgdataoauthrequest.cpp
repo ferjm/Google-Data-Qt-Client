@@ -24,12 +24,14 @@
 
 #include <QCryptographicHash>
 #include <QDebug>
+#include <QDateTime>
 
 #include "qtgdataoauthrequest.h"
 #include "qtgdatadefs.h"
 
 OAuthRequest::OAuthRequest(QObject *parent) : HttpRequest(parent)
 {
+    qsrand(QTime::currentTime().msec());
 }
 
 void OAuthRequest::prepareRequest()
@@ -80,7 +82,7 @@ void OAuthRequest::insertAdditionalParams(QList<QPair<QString, QString> > &reque
     QList<QString> additionalKeys = this->additionalParams.keys();
     QList<QString> additionalValues = this->additionalParams.values();
     for(int i=0; i<additionalKeys.size(); i++)
-        requestParameters.append( qMakePair(QString(additionalKeys.at(i)),
+        requestParams.append( qMakePair(QString(additionalKeys.at(i)),
                                             QString(additionalValues.at(i))));
     if(this->httpMethod == HttpRequest::POST) {
         insertPostBody();
@@ -237,4 +239,67 @@ QByteArray OAuthRequest::encodedParameterList(const QList< QPair<QString, QStrin
     return QUrl::toPercentEncoding(resultList);
 }
 
+QString OAuthRequest::oauthTimestamp() const
+{
+    if (!oauthTimestamp_.isEmpty())
+        return oauthTimestamp_;
+#if QT_VERSION >= 0x040700
+    return QString::number(QDateTime::currentDateTimeUtc().toTime_t());
+#else
+   return QString::number(QDateTime::currentDateTime().toUTC().toTime_t());
+#endif
+}
+
+QString OAuthRequest::oauthNonce() const
+{
+    if (!oauthNonce_.isEmpty())
+        return oauthNonce_;
+
+    return QString::number(qrand());
+}
+
+bool OAuthRequest::validateRequest() const
+{
+    switch (requestType)
+    {
+    case OAuthRequest::TemporaryCredentials:
+        if (requestEndpoint.isEmpty()
+            || oauthConsumerKey.isEmpty()
+            || oauthNonce_.isEmpty()
+            || oauthSignatureMethod.isEmpty()
+            || oauthTimestamp_.isEmpty()
+            || oauthVersion.isEmpty())
+            return false;
+        return true;
+
+    case OAuthRequest::AccessToken:
+        if (requestEndpoint.isEmpty()
+            || oauthVerifier.isEmpty()
+            || oauthConsumerKey.isEmpty()
+            || oauthNonce_.isEmpty()
+            || oauthSignatureMethod.isEmpty()
+            || oauthTimestamp_.isEmpty()
+            || oauthToken.isEmpty()
+            || oauthTokenSecret.isEmpty()
+            || oauthVersion.isEmpty())
+            return false;
+        return true;
+
+    case OAuthRequest::AuthorizedRequest:
+        if (requestEndpoint.isEmpty()
+            || oauthConsumerKey.isEmpty()
+            || oauthNonce_.isEmpty()
+            || oauthSignatureMethod.isEmpty()
+            || oauthTimestamp_.isEmpty()
+            || oauthToken.isEmpty()
+            || oauthTokenSecret.isEmpty()
+            || oauthVersion.isEmpty())
+            return false;
+        return true;
+
+    default:
+        return false;
+    }
+    return false;
+}
 

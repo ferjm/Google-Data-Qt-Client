@@ -63,7 +63,7 @@ private:
     QString oauthVersion;
     QString oauthVerifier;
     QString oauthTimestamp_;
-    QString oauthnonce_;
+    QString oauthNonce_;
     QList<QPair<QString,QString> > requestParameters;
     QMultiMap<QString,QString> additionalParams;
 
@@ -74,7 +74,8 @@ private:
     QByteArray requestBaseString();
     QByteArray encodedParameterList(const QList<QPair<QString,QString> > &requestParameters);
     void insertAdditionalParams(QList<QPair<QString,QString> > &requestParams);
-    void insertPostBody();    
+    void insertPostBody();
+    bool validateRequest() const;
 };
 
 #endif // QTGDATAOAUTHREQUEST_H
