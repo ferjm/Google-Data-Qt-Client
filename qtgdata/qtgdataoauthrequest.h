@@ -29,8 +29,6 @@ class OAuthRequest : public HttpRequest
 {
     Q_OBJECT
 public:        
-    explicit OAuthRequest(QObject *parent = 0);
-
     enum OAuthRequestType {
         TemporaryCredentials = 0,
         AccessToken,
@@ -42,6 +40,7 @@ public:
         HMAC_SHA1,
         RSA_SHA1
     };
+    explicit OAuthRequest(OAuthRequest::OAuthRequestType requestType, QObject *parent = 0);
 
     void setConsumerKey(const QString &consumerKey);
     void setConsumerSecretKey(const QString &consumerSecretKey);
@@ -50,7 +49,8 @@ public:
     void setSignatureMethod(OAuthRequest::OAuthRequestSignatureMethod = OAuthRequest::HMAC_SHA1);
     void setCallbackUrl(const QUrl &callback);
     void setVerifier(const QString &verifier);
-    void signRequest();
+    void setAdditionalParameters(const QMultiMap<QString,QString> &additionalParams);
+    void signRequest();    
 
 private:
     OAuthRequest::OAuthRequestType requestType;
@@ -58,7 +58,7 @@ private:
     QString oauthConsumerSecretKey;
     QString oauthToken;
     QString oauthTokenSecret;
-    QString oauthSignatureMethod;
+    QString oauthSignatureMethod;    
     QUrl oauthCallbackUrl;
     QString oauthVersion;
     QString oauthVerifier;
@@ -76,6 +76,9 @@ private:
     void insertAdditionalParams(QList<QPair<QString,QString> > &requestParams);
     void insertPostBody();
     bool validateRequest() const;
+    QList<QByteArray> getRequestParameters();
+    QMultiMap<QString,QString> getAdditionalParameters();
+    OAuthRequest::OAuthRequestType getRequestType();
 };
 
 #endif // QTGDATAOAUTHREQUEST_H

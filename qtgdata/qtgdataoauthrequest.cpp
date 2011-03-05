@@ -29,8 +29,12 @@
 #include "qtgdataoauthrequest.h"
 #include "qtgdatadefs.h"
 
-OAuthRequest::OAuthRequest(QObject *parent) : HttpRequest(parent)
+OAuthRequest::OAuthRequest(OAuthRequest::OAuthRequestType requestType, QObject *parent) : HttpRequest(parent)
 {
+    this->requestType = requestType;
+    oauthTimestamp_ = oauthTimestamp();
+    oauthNonce_ = oauthNonce();
+    oauthVersion = "1.0";
     qsrand(QTime::currentTime().msec());
 }
 
@@ -303,3 +307,88 @@ bool OAuthRequest::validateRequest() const
     return false;
 }
 
+void OAuthRequest::setConsumerKey(const QString &consumerKey)
+{
+    oauthConsumerKey = consumerKey;
+}
+
+void OAuthRequest::setConsumerSecretKey(const QString &consumerSecretKey)
+{
+    oauthConsumerSecretKey = consumerSecretKey;
+}
+
+void OAuthRequest::setCallbackUrl(const QUrl &callback)
+{
+    oauthCallbackUrl = callback;
+}
+
+void OAuthRequest::setSignatureMethod(OAuthRequest::OAuthRequestSignatureMethod signatureMethod)
+{
+    switch(signatureMethod)
+    {
+    case OAuthRequest::PLAINTEXT:
+        oauthSignatureMethod = "PLAINTEXT";
+        break;
+    case OAuthRequest::HMAC_SHA1:
+        oauthSignatureMethod = "HMAC-SHA1";
+        break;
+    case OAuthRequest::RSA_SHA1:
+        oauthSignatureMethod = "RSA-SHA1";
+        break;
+    default:
+        qWarning() << "Invalid signature method\n";
+        break;
+    }
+}
+
+void OAuthRequest::setTokenSecret(const QString &tokenSecret)
+{
+    oauthTokenSecret = tokenSecret;
+}
+
+void OAuthRequest::setToken(const QString &token)
+{
+    oauthToken = token;
+}
+
+void OAuthRequest::setVerifier(const QString &verifier)
+{
+    oauthVerifier = verifier;
+}
+
+void OAuthRequest::setAdditionalParameters(const QMultiMap<QString,QString> &additionalParams)
+{
+    this->additionalParams = additionalParams;
+}
+
+QMultiMap<QString,QString> OAuthRequest::getAdditionalParameters()
+{
+    return this->additionalParams;
+}
+
+OAuthRequest::OAuthRequestType OAuthRequest::getRequestType()
+{
+    return this->requestType;
+}
+
+QList<QByteArray> OAuthRequest::getRequestParameters()
+{
+    QList<QByteArray> requestParamList;
+
+    prepareRequest();
+    if (!isValid() ) {
+       qWarning() << "Request is not valid! I will still sign it, but it will probably not work.";
+    }
+    signRequest();
+
+    QPair<QString, QString> requestParam;
+    QString param;
+    QString value;
+    foreach (requestParam, this->requestParameters) {
+       param = requestParam.first;
+       value = requestParam.second;
+       requestParamList.append(QString(param + "=\"" + value +"\"").toUtf8());
+    }
+
+    return requestParamList;
+}
