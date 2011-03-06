@@ -68,11 +68,7 @@ class HttpConnector : public QObject
 public:        
     HttpConnector();
     ~HttpConnector();    
-    void httpRequest(const HttpRequest &request);
-    /*void httpRequest(HttpMethod httpMethod,
-                     const QUrl url,
-                     const HttpHeaders httpHeaders,
-                     const QByteArray &data);*/
+    void httpRequest(const HttpRequest *request);
 
 public slots:
     void finished(QNetworkReply *);

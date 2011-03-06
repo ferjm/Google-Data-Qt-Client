@@ -44,35 +44,59 @@ HttpConnector::~HttpConnector()
     delete manager;
 }
 
-void HttpConnector::httpRequest(const HttpRequest &request)
+void HttpConnector::httpRequest(const HttpRequest *request)
 {
     replyData.clear();
-    QNetworkRequest networkRequest(request.getRequestEndpoint());
-    HttpRequest::HttpHeaders httpHeaders = request.getHttpHeaders();
-    HttpRequest::HttpHeaders::const_iterator it = httpHeaders.begin();
+#ifdef QTGDATA_DEBUG
+    qDebug() << "Url: " << request->getRequestEndpoint().toString();
+    qDebug() << "Headers: ";
+#endif
+    QNetworkRequest networkRequest(request->getRequestEndpoint());
+    QList<QPair<QByteArray,QByteArray> > httpHeaders = request->getHttpHeaders();
+    QList<QPair<QByteArray,QByteArray> >::const_iterator it = httpHeaders.begin();    
     for(;it != httpHeaders.end(); it++)
-        networkRequest.setHeader((*it).first,(*it).second);
+    {
+#ifdef QTGDATA_DEBUG
+        qDebug() << (*it).first << ": " << (*it).second;
+#endif
+        networkRequest.setRawHeader((*it).first,(*it).second);
+    }    
     QEventLoop *loop = new QEventLoop;
-    HttpRequest::RequestHttpMethod httpMethod = request.getHttpMethod();
+    HttpRequest::RequestHttpMethod httpMethod = request->getHttpMethod();
     switch(httpMethod)
     {
     case HttpRequest::GET:
+#ifdef QTGDATA_DEBUG
+        qDebug() << "GET\n";
+#endif
         reply = manager->get(networkRequest);
         break;
     case HttpRequest::POST: {
-        const QByteArray body = request.getRequestBody();
-        if(body != NULL)
-            reply = manager->post(networkRequest,body);
+        const QByteArray body = request->getRequestBody();
+#ifdef QTGDATA_DEBUG
+        qDebug() << "POST\n";
+        qDebug() << "Body: " << body;
+#endif
+        reply = manager->post(networkRequest,body);
         break; }
     case HttpRequest::PUT: {
-        const QByteArray body = request.getRequestBody();
-        if(body != NULL)
-            reply = manager->put(networkRequest,body);
+        const QByteArray body = request->getRequestBody();
+#ifdef QTGDATA_DEBUG
+        qDebug() << "PUT\n";
+        qDebug() << "Body: " << body;
+#endif
+        reply = manager->put(networkRequest,body);
         break; }
     case HttpRequest::HEAD:
+#ifdef QTGDATA_DEBUG
+        qDebug() << "PUT\n";
+#endif
         reply = manager->head(networkRequest);
         break;
     case HttpRequest::DELETE:
+#ifdef QTGDATA_DEBUG
+        qDebug() << "DELETE\n";
+#endif
         reply = manager->deleteResource(networkRequest);
         break;
     }

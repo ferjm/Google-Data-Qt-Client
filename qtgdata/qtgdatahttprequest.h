@@ -35,8 +35,6 @@ public:
     explicit HttpRequest(QObject *parent = 0);
 
     enum RequestHttpMethod { GET, POST, PUT, HEAD, DELETE };
-    typedef QPair<QNetworkRequest::KnownHeaders,QVariant> HttpHeader;
-    typedef QList<HttpHeader> HttpHeaders;
 
     virtual bool isValid() const;
 
@@ -44,20 +42,20 @@ public:
     void setRequestEndpoint(QUrl requestEndpoint);
     void setRequestBody(QByteArray body);
     void setRequestBody(QMultiMap<QString, QString> body);
-    void setHeader(HttpRequest::HttpHeader header);
+    void setHeader(const QByteArray & headerName, const QByteArray & headerValue);
     void setContentTypeHeader(QVariant contentTypeHeader);
 
     HttpRequest::RequestHttpMethod getHttpMethod() const;
     QUrl getRequestEndpoint() const;
     QByteArray getRequestBody() const;
-    HttpRequest::HttpHeaders getHttpHeaders() const;
+    QList<QPair<QByteArray,QByteArray> > getHttpHeaders() const;
 
 protected:
     QUrl requestEndpoint;
     HttpRequest::RequestHttpMethod httpMethod;
     QString httpMethodString;
     QByteArray requestBody;
-    HttpRequest::HttpHeaders requestHeaders;
+    QList<QPair<QByteArray,QByteArray> > requestHeaders;
 };
 
 #endif // HTTPREQUEST_H

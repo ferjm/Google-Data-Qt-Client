@@ -110,20 +110,12 @@ bool HttpRequest::isValid() const
 
 }
 
-void HttpRequest::setHeader(HttpRequest::HttpHeader header)
+void HttpRequest::setHeader(const QByteArray & headerName, const QByteArray & headerValue)
 {
-    this->requestHeaders.append(header);
+    this->requestHeaders.append(QPair<QByteArray,QByteArray>(headerName,headerValue));
 }
 
-void HttpRequest::setContentTypeHeader(QVariant contentTypeHeader)
-{
-    HttpHeader h;
-    h.first = QNetworkRequest::ContentTypeHeader;
-    h.second = contentTypeHeader;
-    this->requestHeaders.append(h);
-}
-
-HttpRequest::HttpHeaders HttpRequest::getHttpHeaders() const
+QList<QPair<QByteArray,QByteArray> > HttpRequest::getHttpHeaders() const
 {
     return requestHeaders;
 }

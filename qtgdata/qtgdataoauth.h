@@ -22,30 +22,41 @@
 #define OAUTH_H
 
 #include <QObject>
-#include <QtKOAuth/QtKOAuth>
+
+#include "qtgdataoauthrequest.h"
+#include "qtgdatahttpconnector.h"
+
+#define GOOGLE_OAUTH_REQUEST_TOKEN "https://www.google.com/accounts/OAuthGetRequestToken"
+#define GOOGLE_OAUTH_ACCESS_TOKEN "https://www.google.com/accounts/OAuthGetAccessToken"
 
 class OAuth : public QObject
 {    
     Q_OBJECT
 public:
-    OAuth(QUrl requestTokenUrl,QUrl userAuthUrl,QUrl accessTokenUrl,QString consumerKey,QString consumerSecret);
+    explicit OAuth(QObject *parent = 0);
     ~OAuth();
-    void getAccessToken();
+    /**
+     * @param consumerKey Domain identifying the third-party web application. This is the domain used when registering the application with Google
+     * @param consumerSecret
+     * @param scope URL identifying the service(s) to be accessed. The resulting token enables access to the specified service(s)
+     *              only. Scopes are defined by each Google service; see the service's documentation for the correct value.
+     *              To specify more than one scope, list each one separated with a space. This parameter is not defined in the OAuth standards; it is a Google-specific parameter.
+     * @param requestTokenUrl
+     */
+    void getRequestToken(QString consumerKey, QString consumerSecret, QList<QUrl> scope, QUrl requestTokenUrl = QUrl(GOOGLE_OAUTH_REQUEST_TOKEN));
+    void getAccessToken(QString requestToken, QString requestTokenSecret, QString verifier,QUrl accessTokenUrl);
 
-private slots:
-    void onTemporaryTokenReceived(QString token,QString tokenSecret);
-    void onAuthorizationReceived(QString token, QString verifier);
-    void onAccessTokenReceived(QString token, QString tokenSecret);
-    void onRequestReady(QByteArray response);
+private slots:    
+    void onRequestFinished(QByteArray response);
 
 private:
-    KQOAuthManager *oauthManager;
-    KQOAuthRequest *oauthRequest;
-    QUrl _requestUrl;
-    QUrl _userAuthUrl;
-    QUrl _accessUrl;
-    QString _consumerSecret;
-    QString _consumerKey;
+    OAuthRequest *request;
+    HttpConnector *connector;
+
+signals:
+    // This signal is emited when temporary tokens are returned from the service.
+    // Note that this signal is also emited in case temporary tokens are not available.
+    void temporaryTokenReceived(QString oauth_token, QString oauth_token_secret);
 };
 
 #endif // OAUTH_H

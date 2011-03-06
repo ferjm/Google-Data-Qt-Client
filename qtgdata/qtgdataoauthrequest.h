@@ -50,7 +50,9 @@ public:
     void setCallbackUrl(const QUrl &callback);
     void setVerifier(const QString &verifier);
     void setAdditionalParameters(const QMultiMap<QString,QString> &additionalParams);
-    void signRequest();    
+    QList<QByteArray> getRequestParameters();
+    void signRequest();
+    void prepareRequest();
 
 private:
     OAuthRequest::OAuthRequestType requestType;
@@ -69,14 +71,12 @@ private:
 
     QString oauthTimestamp() const;
     QString oauthNonce() const;
-    QString oauthSignature();
-    void prepareRequest();
+    QString oauthSignature();    
     QByteArray requestBaseString();
     QByteArray encodedParameterList(const QList<QPair<QString,QString> > &requestParameters);
     void insertAdditionalParams(QList<QPair<QString,QString> > &requestParams);
     void insertPostBody();
-    bool validateRequest() const;
-    QList<QByteArray> getRequestParameters();
+    bool validateRequest() const;    
     QMultiMap<QString,QString> getAdditionalParameters();
     OAuthRequest::OAuthRequestType getRequestType();
 };

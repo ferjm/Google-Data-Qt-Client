@@ -19,74 +19,68 @@
  ***************************************************************************/
 
 #include "qtgdataoauth.h"
+#include "qtgdatahttpconnector.h"
 
 #include <QDebug>
 
-OAuth::OAuth(QUrl requestTokenUrl,QUrl userAuthUrl,QUrl accessTokenUrl,QString consumerKey,QString consumerSecret) :
-        _requestUrl(requestTokenUrl),
-        _userAuthUrl(userAuthUrl),
-        _accessUrl(accessTokenUrl),
-        _consumerKey(consumerKey),
-        _consumerSecret(consumerSecret)
+OAuth::OAuth(QObject *parent)
 {
-    oauthRequest = new KQOAuthRequest;
-    oauthManager = new KQOAuthManager(this);
-    oauthRequest->setEnableDebugOutput(true);
+    connector = new HttpConnector();
 }
 
 OAuth::~OAuth()
 {
-    delete oauthRequest;
-    delete oauthManager;
+    delete connector;
 }
 
-void OAuth::getAccessToken()
+void OAuth::getRequestToken(QString consumerKey, QString consumerSecret, QList<QUrl> scope, QUrl requestTokenUrl)
 {
-    connect(oauthManager, SIGNAL(temporaryTokenReceived(QString,QString)),
-            this, SLOT(onTemporaryTokenReceived(QString, QString)));
-
-    connect(oauthManager, SIGNAL(authorizationReceived(QString,QString)),
-            this, SLOT( onAuthorizationReceived(QString, QString)));
-
-    connect(oauthManager, SIGNAL(accessTokenReceived(QString,QString)),
-            this, SLOT(onAccessTokenReceived(QString,QString)));
-
-    connect(oauthManager, SIGNAL(requestReady(QByteArray)),
-            this, SLOT(onRequestReady(QByteArray)));
-
-    oauthRequest->initRequest(KQOAuthRequest::TemporaryCredentials, _requestUrl);
-    oauthRequest->setConsumerKey(_consumerKey);
-    oauthRequest->setConsumerSecretKey(_consumerSecret);
-
-    oauthManager->setHandleUserAuthorization(true);
-
-    oauthManager->executeRequest(oauthRequest);
-}
-
-void OAuth::onTemporaryTokenReceived(QString token,QString tokenSecret)
-{
-    qDebug() << "Temporary token received: " << token << tokenSecret;
-    if( oauthManager->lastError() == KQOAuthManager::NoError) {
-        qDebug() << "Asking for user's permission to access protected resources. Opening URL: " << _userAuthUrl;
-        oauthManager->getUserAuthorization(_userAuthUrl);
+    request = new OAuthRequest(OAuthRequest::TemporaryCredentials,this);
+    request->setRequestEndpoint(requestTokenUrl);
+    request->setConsumerKey(consumerKey);
+    request->setConsumerSecretKey(consumerSecret);
+    request->setCallbackUrl(QUrl("oob"));
+    request->setHttpMethod(HttpRequest::GET);
+    QUrl scopeUrl;
+    QString scopes;
+    foreach(scopeUrl,scope)
+        scopes += scopeUrl.toString();
+    QMultiMap<QString,QString> additionalParams;
+    additionalParams.insert("scope",scopes);
+    request->setAdditionalParameters(additionalParams);
+    QList<QByteArray> requestHeaders = request->getRequestParameters();
+    QByteArray authHeader;
+    bool first = true;
+    foreach (const QByteArray header, requestHeaders) {
+       if (!first) {
+           authHeader.append(", ");
+       } else {
+           authHeader.append("OAuth ");
+           first = false;
+       }
+       authHeader.append(header);
     }
+    request->setHeader("Authorization",authHeader);
+    request->prepareRequest();
+    connect(connector, SIGNAL(requestFinished(QByteArray)), this, SLOT(onRequestFinished(QByteArray)));
+    connector->httpRequest(request);
 }
 
-void OAuth::onAuthorizationReceived(QString token, QString verifier)
+void OAuth::onRequestFinished(QByteArray response)
 {
-    qDebug() << "User authorization received: " << token << verifier;
-    oauthManager->getUserAccessTokens(QUrl("https://api.twitter.com/oauth/access_token"));
-    if( oauthManager->lastError() != KQOAuthManager::NoError) {
-            //TODO: emit signal? exception?
+    QMultiMap<QString, QString> result;
+    QString replyString(response);
+
+    QStringList parameterPairs = replyString.split('&', QString::SkipEmptyParts);
+    foreach (const QString &parameterPair, parameterPairs) {
+        QStringList parameter = parameterPair.split('=');
+#ifdef QTGDATA_DEBUG
+        qDebug() << parameter.value(0) << " = " << parameter.value(1) << "\n";
+#endif
+        result.insert(parameter.value(0), parameter.value(1));
     }
-}
+    QString requestToken = QUrl::fromPercentEncoding( QString(result.value("oauth_token")).toLocal8Bit() );
+    QString requestTokenSecret =  QUrl::fromPercentEncoding( QString(result.value("oauth_token_secret")).toLocal8Bit() );
+    emit temporaryTokenReceived(requestToken,requestTokenSecret);
 
-void OAuth::onAccessTokenReceived(QString token, QString tokenSecret)
-{
-    qDebug() << "Access token received: " << token << tokenSecret;
-}
-
-void OAuth::onRequestReady(QByteArray response)
-{
-    qDebug() << "Response from the service: " << response;
 }

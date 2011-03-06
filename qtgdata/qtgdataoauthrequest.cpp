@@ -35,6 +35,7 @@ OAuthRequest::OAuthRequest(OAuthRequest::OAuthRequestType requestType, QObject *
     oauthTimestamp_ = oauthTimestamp();
     oauthNonce_ = oauthNonce();
     oauthVersion = "1.0";
+    oauthSignatureMethod = "HMAC-SHA1";
     qsrand(QTime::currentTime().msec());
 }
 
@@ -81,7 +82,7 @@ void OAuthRequest::prepareRequest()
     }
 }
 
-void OAuthRequest::insertAdditionalParams(QList<QPair<QString, QString> > &requestParams)
+void OAuthRequest::insertAdditionalParams(QList<QPair<QString,QString> > &requestParams)
 {
     QList<QString> additionalKeys = this->additionalParams.keys();
     QList<QString> additionalValues = this->additionalParams.values();
@@ -268,7 +269,7 @@ bool OAuthRequest::validateRequest() const
     {
     case OAuthRequest::TemporaryCredentials:
         if (requestEndpoint.isEmpty()
-            || oauthConsumerKey.isEmpty()
+            || oauthConsumerKey.isEmpty()            
             || oauthNonce_.isEmpty()
             || oauthSignatureMethod.isEmpty()
             || oauthTimestamp_.isEmpty()
