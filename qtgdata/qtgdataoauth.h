@@ -33,30 +33,26 @@ class OAuth : public QObject
 {    
     Q_OBJECT
 public:
-    explicit OAuth(QObject *parent = 0);
+    explicit OAuth(QString consumerKey = "anonymous",QString consumerSecret = "anonymous",QObject *parent = 0);
     ~OAuth();
-    /**
-     * @param consumerKey Domain identifying the third-party web application. This is the domain used when registering the application with Google
-     * @param consumerSecret
-     * @param scope URL identifying the service(s) to be accessed. The resulting token enables access to the specified service(s)
-     *              only. Scopes are defined by each Google service; see the service's documentation for the correct value.
-     *              To specify more than one scope, list each one separated with a space. This parameter is not defined in the OAuth standards; it is a Google-specific parameter.
-     * @param requestTokenUrl
-     */
-    void getRequestToken(QString consumerKey, QString consumerSecret, QList<QUrl> scope, QUrl requestTokenUrl = QUrl(GOOGLE_OAUTH_REQUEST_TOKEN));
-    void getAccessToken(QString requestToken, QString requestTokenSecret, QString verifier,QUrl accessTokenUrl);
+    void getRequestToken(QList<QUrl> scope, QUrl requestTokenUrl = QUrl(GOOGLE_OAUTH_REQUEST_TOKEN));
+    void getAccessToken(QString requestToken, QString requestTokenSecret, QString verifier,QUrl accessTokenUrl = QUrl(GOOGLE_OAUTH_ACCESS_TOKEN));
 
 private slots:    
-    void onRequestFinished(QByteArray response);
+    void onRequestTokenReceived(QByteArray response);
+    void onAccessTokenReceived(QByteArray response);
 
-private:
-    OAuthRequest *request;
+private:    
     HttpConnector *connector;
+    QString consumerKey;
+    QString consumerSecret;
 
+    void initRequest(OAuthRequest &request,QUrl url);
 signals:
     // This signal is emited when temporary tokens are returned from the service.
     // Note that this signal is also emited in case temporary tokens are not available.
-    void temporaryTokenReceived(QString oauth_token, QString oauth_token_secret);
+    void temporaryTokenReceived(QString oauthToken, QString oauthTokenSecret, QUrl authorizationUrl);
+    void accessTokenReceived(QString oauthToken, QString oauthTokenSecret);
 };
 
 #endif // OAUTH_H
