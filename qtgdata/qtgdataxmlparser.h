@@ -21,13 +21,52 @@
 #ifndef XMLPARSER_H
 #define XMLPARSER_H
 
+#include <exception>
+#include <QDomNode>
+
 #include "qtgdataiparser.h"
+
+class XMLParserException : public std::exception
+{
+public:
+    /**
+     * Constructor "XMLParserException": Creates a new XMLParserException.
+     * Default constructor.
+     *
+     * @param [in] what The reason or info/error clause informing about the error.
+     *
+     */
+    XMLParserException(const QString& what);
+    /**
+     * Destructor "~XMLParserException": Virtual destructor
+     *
+     */
+    virtual ~XMLParserException() throw () {
+    }
+    /**
+     * Operation "What": It retrieves the reason or info/error clause informing
+     * about the error.
+     *
+     * @return const char*. The reason or info/error clause informing about the error.
+     *
+     */
+    virtual const char* what() const throw ();
+
+protected:
+    QString _what; /**< The reason or info/error clause informing about the error. */
+};
 
 class XMLParser : public IParser
 {
 public:
     XMLParser();
-    virtual IEntity* parse(void *data);
+    IEntity* parse(void *data) {
+        return(parse((QString*)data));
+    }
+    IEntity* parse(QString *data);
+    IEntity* parse(QByteArray buff,int size);
+private:
+    void parseNode(IEntity *entity,QDomNode *node);
 };
 
 #endif // XMLPARSER_H

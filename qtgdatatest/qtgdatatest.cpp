@@ -28,6 +28,7 @@
 #include "qtgdata/qtgdataxmlserializer.h"
 #include "qtgdata/qtgdatahttpconnector.h"
 #include "qtgdata/qtgdataoauth.h"
+#include "qtgdata/qtgdataxmlparser.h"
 
 class QtgdataTest : public QObject
 {
@@ -62,6 +63,9 @@ private Q_SLOTS:
 
     //OAuth tests
     void getRequestToken();
+
+    //XMLParser tests
+    void parseXML();
 };
 
 QtgdataTest::QtgdataTest()
@@ -293,12 +297,44 @@ void QtgdataTest::requestFinished(QString s)
 
 void QtgdataTest::getRequestToken()
 {
-    OAuth oAuth(QUrl("https://api.twitter.com/oauth/request_token"),
-                QUrl("https://api.twitter.com/oauth/authorize"),
-                QUrl("https://api.twitter.com/oauth/access_token"),
-                "9PqhX2sX7DlmjNJ5j2Q",
-                "1NYYhpIw1fXItywS9Bw6gGRmkRyF9zB54UXkTGcI8");
-    oAuth.getAccessToken();
+    //TODO: ...
+}
+
+void QtgdataTest::parseXML()
+{
+    XMLParser parser;
+    QString xml = "<?xml version=\"1.0\"?>"
+                  "<n1:mockId xmlns:n1=\"mockId\" xmlns:n2=\"http://testnamespace\">"
+                       "<n1:mockId2>test</n1:mockId2>"
+                       "<n1:mockId3>test2</n1:mockId3>"
+                       "<n1:mockId4 n1:mockId1=\"attributeValue\" n1:mockId2=\"attributeValue2\" n1:mockId3=\"attributeValue3\">"
+                           "<n1:mockId>"
+                            "<n1:mockId2>test</n1:mockId2>"
+                           "</n1:mockId>"
+                       "</n1:mockId4>"
+                  "</n1:mockId>\n";
+    IEntity *e = NULL;
+    try
+    {
+        e = parser.parse(&xml);
+        QVERIFY(e->getName() == "mockId");
+        IEntity::itConstEntities begin, end, begin2, end2;
+        e->getEntityList(begin,end);
+        QVERIFY(((IEntity*)(*begin))->getName() == "mockId2");
+        QVERIFY(((IEntity*)(*begin))->getValue() == "test");
+        QVERIFY(((IEntity*)(*(begin+1)))->getName() == "mockId3");
+        QVERIFY(((IEntity*)(*(begin+1)))->getValue() == "test2");
+        QVERIFY(((IEntity*)(*(begin+2)))->getName() == "mockId4");
+        QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId1)->sValue == "attributeValue");
+        QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId2)->sValue == "attributeValue2");
+        QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId3)->sValue == "attributeValue3");
+         if(e) delete e;
+    }
+    catch(XMLParserException)
+    {
+        QVERIFY(false);
+         if(e) delete e;
+    }
 }
 
 QTEST_APPLESS_MAIN(QtgdataTest);

@@ -43,7 +43,10 @@ namespace AttributeId
     Ids
     (
         NULLID,
-        mockId
+        mockId,
+        mockId1,
+        mockId2,
+        mockId3
     )
 }
 

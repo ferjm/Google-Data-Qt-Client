@@ -5,9 +5,7 @@
 #-------------------------------------------------
 
 QT       -= gui
-QT       += network
-
-CONFIG += kqoauth
+QT       += network xml
 
 TARGET = qtgdata
 TEMPLATE = lib

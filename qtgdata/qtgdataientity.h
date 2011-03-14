@@ -75,6 +75,7 @@ private:
     IEntity* getPrivateProperty(const QString sname, const bool recursive = false) const;
     void clear();
     bool initNamespace(const int iNamespace);
+    bool initNamespace(const QString sNamespace);
 
 protected:
     QList<IEntity*> iEntityList;
@@ -88,10 +89,11 @@ public:
     typedef QVector<QString>::const_iterator itConstStrings;
 
     IEntity(const int inamespace, const int iname);
+    IEntity(const QString snamespace, const QString sname);
     IEntity(const int inamespace, const int iname, const QList<IEntity*> iEList);
     IEntity(const int inamespace, const int iname, const IEntity* iEntity);
     IEntity(const int inamespace, const int iname, const QVector<QString> basicValues);
-    IEntity(const int inamespace, const int iname, const QString basicValue);
+    IEntity(const int inamespace, const int iname, const QString basicValue);    
 
     virtual ~IEntity();
 
@@ -104,6 +106,7 @@ public:
     }
     virtual QString getValue(const int index = 0) const;
     bool checkNamespaceId(const int iNamespace) const;
+    bool checkNamespaceId(const QString &sNamespace) const;
 
     virtual void addAttribute(const Attribute attribute);
     virtual void addAttribute(const int iNamespace, const int attributeId, const QString attributeValue);
