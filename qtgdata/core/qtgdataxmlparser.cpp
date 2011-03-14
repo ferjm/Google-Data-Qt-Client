@@ -84,7 +84,7 @@ void XMLParser::parseNode(IEntity *entity,QDomNode *node)
         if(node->hasAttributes())
         {
             QDomNamedNodeMap attributes = node->attributes();
-            for(int i=0;i<=attributes.length();i++)
+            for(unsigned int i=0;i<=attributes.length();i++)
             {
                 QDomNode n = attributes.item(i);
                 if(n.isAttr())
@@ -117,7 +117,7 @@ void XMLParser::parseNode(IEntity *entity,QDomNode *node)
 IEntity* XMLParser::parse(QByteArray buff,int size)
 {
     IEntity *ent = NULL;
-    if ((buff == NULL) || (size == 0))
+    if ((buff.isNull()) || (size == 0))
         return ent;
     QDomDocument domDocument;
     if(domDocument.setContent(buff))

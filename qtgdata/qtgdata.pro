@@ -12,28 +12,30 @@ TEMPLATE = lib
 
 DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
 
-SOURCES += qtgdata.cpp \
-    qtgdataientity.cpp \
-    qtgdataxmlserializer.cpp \
-    qtgdatahttpconnector.cpp \
-    qtgdataxmlparser.cpp \
-    qtgdataoauth.cpp \
-    qtgdatahttprequest.cpp \
-    qtgdataoauthrequest.cpp
+SOURCES += core/qtgdata.cpp \
+    core/qtgdataientity.cpp \
+    core/qtgdataxmlserializer.cpp \
+    core/qtgdatahttpconnector.cpp \
+    core/qtgdataxmlparser.cpp \
+    core/qtgdataoauth.cpp \
+    core/qtgdatahttprequest.cpp \
+    core/qtgdataoauthrequest.cpp \
+    clients/qtgdatacontactsclient.cpp
 
-HEADERS += qtgdata.h\
-        qtgdata_global.h \
-    qtgdataientity.h \
-    qtgdatadefs.h \
-    qtgdataiparser.h \
-    qtgdataiserializer.h \
-    qtgdataclient.h \
-    qtgdataxmlserializer.h \
-    qtgdatahttpconnector.h \
-    qtgdataxmlparser.h \
-    qtgdataoauth.h \
-    qtgdatahttprequest.h \
-    qtgdataoauthrequest.h
+HEADERS += core/qtgdata.h\
+        core/qtgdata_global.h \
+    core/qtgdataientity.h \
+    core/qtgdatadefs.h \
+    core/qtgdataiparser.h \
+    core/qtgdataiserializer.h \
+    core/qtgdataclient.h \
+    core/qtgdataxmlserializer.h \
+    core/qtgdatahttpconnector.h \
+    core/qtgdataxmlparser.h \
+    core/qtgdataoauth.h \
+    core/qtgdatahttprequest.h \
+    core/qtgdataoauthrequest.h \
+    clients/qtgdatacontactsclient.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

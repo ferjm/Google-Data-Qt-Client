@@ -327,8 +327,8 @@ void QtgdataTest::parseXML()
         QVERIFY(((IEntity*)(*(begin+2)))->getName() == "mockId4");
         QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId1)->sValue == "attributeValue");
         QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId2)->sValue == "attributeValue2");
-        QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId3)->sValue == "attributeValue3");
-         if(e) delete e;
+        QVERIFY(((IEntity*)(*(begin+2)))->getAttribute(AttributeId::mockId3)->sValue == "attributeValue3");        
+        if(e) delete e;
     }
     catch(XMLParserException)
     {

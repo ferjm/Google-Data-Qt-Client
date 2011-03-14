@@ -18,29 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef QTGDATACLIENT_H
-#define QTGDATACLIENT_H
+#ifndef QTGDATACONTACTSCLIENT_H
+#define QTGDATACONTACTSCLIENT_H
 
-#include "qtgdatahttpconnector.h"
+#include "core/qtgdataclient.h"
 
-/**
-  \class QtgdataClient
-  Base class for any Qtgdata API client
-  */
-class QtgdataClient
+class QtgdataContactsClient : public QtgdataClient
 {
-    HttpConnector httpConnector;
+    Q_OBJECT
 public:
-    /**
-      Constructor QtgdataClient
-      Creates a new QtgdataClient object      
-      */
-    QtgdataClient();
+    explicit QtgdataContactsClient(QObject *parent = 0);
 
-    /**
-      Destructor
-      */
-    ~QtgdataClient();    
+signals:
+
+public slots:
+
 };
 
-#endif // QTGDATACLIENT_H
+#endif // QTGDATACONTACTSCLIENT_H

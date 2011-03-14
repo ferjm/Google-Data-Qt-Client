@@ -159,7 +159,7 @@ bool IEntity::initNamespace(const int iNamespace)
 bool IEntity::initNamespace(const QString sNamespace)
 {
     QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
-    for(unsigned int i=0;i<namespaces.size();i++)
+    for(int i=0;i<namespaces.size();i++)
         if(sNamespace == namespaces[i])
         {
            this->sNamespace = sNamespace;
@@ -246,7 +246,7 @@ bool IEntity::checkNamespaceId(const int inamespace) const
 bool IEntity::checkNamespaceId(const QString &sNamespace) const
 {
     QStringList namespaces = Qtgdata::getInstance()->getNamespaces();
-    for(unsigned int i=0; i<namespaces.size();i++)
+    for(int i=0; i<namespaces.size();i++)
         if(sNamespace == namespaces[i])
             return true;
     return false;
