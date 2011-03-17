@@ -40,7 +40,7 @@ OAuthRequest::OAuthRequest(OAuthRequest::OAuthRequestType requestType, QObject *
 }
 
 void OAuthRequest::prepareRequest()
-{
+{    
     if( !requestParameters.isEmpty() ) {
         return;
     }
@@ -80,6 +80,24 @@ void OAuthRequest::prepareRequest()
     default:
         break;
     }
+}
+
+void OAuthRequest::setAuthHeader()
+{
+    QList<QByteArray> reqHeaders = this->getRequestParameters();
+    QByteArray authHeader;
+    bool first = true;
+    foreach (const QByteArray header, reqHeaders) {
+       if (!first) {
+           authHeader.append(", ");
+       } else {
+           authHeader.append("OAuth ");
+           first = false;
+       }
+       authHeader.append(header);
+    }
+    this->setHeader("Authorization",authHeader);
+    prepareRequest();
 }
 
 void OAuthRequest::insertAdditionalParams(QList<QPair<QString,QString> > &requestParams)

@@ -53,6 +53,7 @@ public:
     QList<QByteArray> getRequestParameters();
     void signRequest();
     void prepareRequest();
+    void setAuthHeader();
 
 private:
     OAuthRequest::OAuthRequestType requestType;

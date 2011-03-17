@@ -46,7 +46,7 @@ void OAuth::initRequest(OAuthRequest &request,QUrl url)
     request.setHttpMethod(HttpRequest::GET);
 }
 
-void prepareRequest(OAuthRequest &request)
+void OAuth::prepareRequest(OAuthRequest &request)
 {
     QList<QByteArray> requestHeaders = request.getRequestParameters();
     QByteArray authHeader;
@@ -75,7 +75,8 @@ void OAuth::getRequestToken(QList<QUrl> scope, QUrl requestTokenUrl)
     QMultiMap<QString,QString> additionalParams;
     additionalParams.insert("scope",scopes);
     request.setAdditionalParameters(additionalParams);
-    prepareRequest(request);
+    request.setAuthHeader();
+    //prepareRequest(request);
     connect(connector, SIGNAL(requestFinished(QByteArray)), this, SLOT(onRequestTokenReceived(QByteArray)));
     connector->httpRequest(&request);
 }
@@ -87,7 +88,8 @@ void OAuth::getAccessToken(QString requestToken, QString requestTokenSecret, QSt
     request.setToken(requestToken);
     request.setTokenSecret(requestTokenSecret);
     request.setVerifier(verifier);
-    prepareRequest(request);
+    request.setAuthHeader();
+    //prepareRequest(request);
     connect(connector,SIGNAL(requestFinished(QByteArray)), this, SLOT(onAccessTokenReceived(QByteArray)));
     connector->httpRequest(&request);
 }

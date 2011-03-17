@@ -37,6 +37,7 @@ public:
     ~OAuth();
     void getRequestToken(QList<QUrl> scope, QUrl requestTokenUrl = QUrl(GOOGLE_OAUTH_REQUEST_TOKEN));
     void getAccessToken(QString requestToken, QString requestTokenSecret, QString verifier,QUrl accessTokenUrl = QUrl(GOOGLE_OAUTH_ACCESS_TOKEN));
+    static void prepareRequest(OAuthRequest &request);
 
 private slots:    
     void onRequestTokenReceived(QByteArray response);
