@@ -41,6 +41,7 @@ protected:
     HttpConnector httpConnector;
     IAuthentication *authenticationData;
 
+    HttpRequest* authenticatedRequest();
 public:
     /**
       Constructor QtgdataClient
