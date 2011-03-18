@@ -33,5 +33,5 @@ void QtgdataClient::setAuthenticationData(IAuthentication *authenticationData)
 {
     this->authenticationData = authenticationData;
     if(dynamic_cast<OAuthData*>(authenticationData) != NULL)
-        authenticationMode = OAUTH1_0;
+        authenticationMode = OAUTH_1_0;
 }

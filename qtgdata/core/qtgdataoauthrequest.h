@@ -40,7 +40,7 @@ public:
         HMAC_SHA1,
         RSA_SHA1
     };
-    explicit OAuthRequest(OAuthRequest::OAuthRequestType requestType, QObject *parent = 0);
+    explicit OAuthRequest(OAuthRequest::OAuthRequestType requestType = OAuthRequest::AuthorizedRequest, QObject *parent = 0);
 
     void setConsumerKey(const QString &consumerKey);
     void setConsumerSecretKey(const QString &consumerSecretKey);

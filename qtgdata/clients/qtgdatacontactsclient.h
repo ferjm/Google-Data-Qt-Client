@@ -22,12 +22,17 @@
 #define QTGDATACONTACTSCLIENT_H
 
 #include "core/qtgdataclient.h"
+#include "core/qtgdataoauthdata.h"
+#include "core/qtgdatahttprequest.h"
 
 class QtgdataContactsClient : public QtgdataClient
 {
     Q_OBJECT
 public:
-    explicit QtgdataContactsClient(QObject *parent = 0);
+    explicit QtgdataContactsClient(IAuthentication *auth, QObject *parent = 0);
+
+private:
+    HttpRequest* authenticatedRequest();
 
 signals:
 
