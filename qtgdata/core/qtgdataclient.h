@@ -24,6 +24,7 @@
 #include <QObject>
 
 #include "qtgdatahttpconnector.h"
+#include "qtgdataiauthentication.h"
 
 /**
   \class QtgdataClient
@@ -33,7 +34,11 @@ class QtgdataClient : public QObject
 {
     Q_OBJECT
 
+    //for now the only authentication supported is oauth1.0
+    enum AuthenticationMode { OAUTH1_0 } authenticationMode;
+
     HttpConnector httpConnector;
+    IAuthentication *authenticationData;
 public:
     /**
       Constructor QtgdataClient
@@ -44,7 +49,9 @@ public:
     /**
       Destructor
       */
-    ~QtgdataClient();    
+    ~QtgdataClient();
+
+    void setAuthenticationData(IAuthentication *authenticationData);
 };
 
 #endif // QTGDATACLIENT_H

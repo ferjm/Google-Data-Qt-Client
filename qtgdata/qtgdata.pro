@@ -21,7 +21,8 @@ SOURCES += core/qtgdata.cpp \
     core/qtgdatahttprequest.cpp \
     core/qtgdataoauthrequest.cpp \
     clients/qtgdatacontactsclient.cpp \
-    core/qtgdataclient.cpp
+    core/qtgdataclient.cpp \
+    core/qtgdataoauthdata.cpp
 
 HEADERS += core/qtgdata.h\
         core/qtgdata_global.h \
@@ -36,7 +37,9 @@ HEADERS += core/qtgdata.h\
     core/qtgdataoauth.h \
     core/qtgdatahttprequest.h \
     core/qtgdataoauthrequest.h \
-    clients/qtgdatacontactsclient.h
+    clients/qtgdatacontactsclient.h \
+    core/qtgdataiauthentication.h \
+    core/qtgdataoauthdata.h
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

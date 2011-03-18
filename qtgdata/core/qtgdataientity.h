@@ -69,8 +69,8 @@ protected:
 class QTGDATASHARED_EXPORT IEntity : public PropertyBasic
 {
 private:
-    IEntity& operator=(const IEntity& old) { return *this; }
-    IEntity& operator&(const IEntity& old) { return *this; }
+    IEntity& operator=(const IEntity&) { return *this; }
+    IEntity& operator&(const IEntity&) { return *this; }
     IEntity* getPrivateProperty(const int iname, const bool recursive = false) const;
     IEntity* getPrivateProperty(const QString sname, const bool recursive = false) const;
     void clear();
