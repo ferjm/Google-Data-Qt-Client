@@ -35,7 +35,7 @@ class QtgdataClient : public QObject
     Q_OBJECT
 
 protected:
-    //for now the only authentication supported is oauth1.0
+    //for now the only authentication supported is oauth v1.0
     enum AuthenticationMode { OAUTH_1_0 } authenticationMode;
 
     HttpConnector httpConnector;

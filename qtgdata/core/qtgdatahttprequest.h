@@ -49,13 +49,14 @@ public:
     QUrl getRequestEndpoint() const;
     QByteArray getRequestBody() const;
     QList<QPair<QByteArray,QByteArray> > getHttpHeaders() const;
+    virtual void setAuthHeader() {}
 
 protected:
     QUrl requestEndpoint;
     HttpRequest::RequestHttpMethod httpMethod;
     QString httpMethodString;
     QByteArray requestBody;
-    QList<QPair<QByteArray,QByteArray> > requestHeaders;
+    QList<QPair<QByteArray,QByteArray> > requestHeaders;    
 };
 
 #endif // HTTPREQUEST_H

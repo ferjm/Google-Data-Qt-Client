@@ -41,6 +41,8 @@ HEADERS += core/qtgdata.h\
     core/qtgdataiauthentication.h \
     core/qtgdataoauthdata.h
 
+INCLUDEPATH += core
+
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata
 INSTALLS += header_files

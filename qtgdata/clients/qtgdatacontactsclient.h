@@ -21,15 +21,19 @@
 #ifndef QTGDATACONTACTSCLIENT_H
 #define QTGDATACONTACTSCLIENT_H
 
-#include "core/qtgdataclient.h"
+#include "qtgdataclient.h"
 
 class QtgdataContactsClient : public QtgdataClient
 {
     Q_OBJECT
 public:
-    explicit QtgdataContactsClient(IAuthentication *auth, QObject *parent = 0);
+    explicit QtgdataContactsClient(IAuthentication *auth, QObject *parent = 0);        
 
+    void retrieveAllContacts();
 signals:
+
+private slots:
+    void onRetrieveAllContactsFinished(QByteArray reply);
 
 public slots:
 

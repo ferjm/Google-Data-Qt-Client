@@ -31,20 +31,25 @@ void OAuthData::setTokenSecret(QString tokenSecret)
 
 QString OAuthData::getConsumerKey()
 {
-    return data.value(CONSUMER_KEY);
+    return data.value(CONSUMER_KEY).toString();
 }
 
 QString OAuthData::getConsumerSecret()
 {
-    return data.value(CONSUMER_SECRET);
+    return data.value(CONSUMER_SECRET).toString();
 }
 
 QString OAuthData::getToken()
 {
-    return data.value(TOKEN);
+    return data.value(TOKEN).toString();
 }
 
 QString OAuthData::getTokenSecret()
 {
-    return data.value(TOKEN_SECRET);
+    return data.value(TOKEN_SECRET).toString();
+}
+
+QVariant OAuthData::getAuthentication()
+{
+    return data;
 }

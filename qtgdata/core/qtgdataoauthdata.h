@@ -5,7 +5,7 @@
 
 class OAuthData : public IAuthentication
 {
-    QHash<QString, QString> data;
+    QHash<QString, QVariant> data;
 public:
     OAuthData();
     void setConsumerKey(QString consumerKey);
@@ -16,6 +16,8 @@ public:
     QString getConsumerSecret();
     QString getToken();
     QString getTokenSecret();
+
+    QVariant getAuthentication();
 };
 
 #endif // QTGDATAOAUTHDATA_H

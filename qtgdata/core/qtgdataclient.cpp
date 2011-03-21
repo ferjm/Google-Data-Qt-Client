@@ -28,6 +28,7 @@ QtgdataClient::QtgdataClient(QObject *parent)
 
 QtgdataClient::~QtgdataClient()
 {
+    if(authenticationData) delete authenticationData;
 }
 
 void QtgdataClient::setAuthenticationData(IAuthentication *authenticationData)
@@ -55,3 +56,5 @@ HttpRequest* QtgdataClient::authenticatedRequest()
         return NULL;
     }
 }
+
+

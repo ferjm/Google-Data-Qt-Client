@@ -21,8 +21,29 @@
 #include "qtgdatacontactsclient.h"
 #include "core/qtgdataoauthrequest.h"
 
+#define GOOGLE_FEEDS "https://www.google.com/m8/feeds"
+#define GOOGLE_CONTACTS "/contacts/default"
+
+
 QtgdataContactsClient::QtgdataContactsClient(IAuthentication *auth, QObject *parent) :
     QtgdataClient(parent)
 {
     setAuthenticationData(auth);
 }
+
+void QtgdataContactsClient::retrieveAllContacts()
+{
+    HttpRequest *request = authenticatedRequest();
+    request->setRequestEndpoint(QUrl(QString(GOOGLE_FEEDS) + QString(GOOGLE_CONTACTS) + "/full"));
+    request->setHttpMethod(HttpRequest::GET);
+    request->setAuthHeader();
+    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onRetrieveAllContactsFinished(QByteArray)));
+    this->httpConnector.httpRequest(request);
+    delete request;
+}
+
+void QtgdataContactsClient::onRetrieveAllContactsFinished(QByteArray reply)
+{
+
+}
+
