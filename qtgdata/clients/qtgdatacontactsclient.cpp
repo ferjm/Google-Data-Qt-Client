@@ -20,6 +20,9 @@
 
 #include "qtgdatacontactsclient.h"
 #include "core/qtgdataoauthrequest.h"
+#include "core/qtgdataxmlparser.h"
+
+#include <QDebug>
 
 #define GOOGLE_FEEDS "https://www.google.com/m8/feeds"
 #define GOOGLE_CONTACTS "/contacts/default"
@@ -44,6 +47,15 @@ void QtgdataContactsClient::retrieveAllContacts()
 
 void QtgdataContactsClient::onRetrieveAllContactsFinished(QByteArray reply)
 {
-
+#ifdef QTGDATA_DEBUG
+    qDebug() << "onRetrieveAllContactsFinished";
+#endif
+    XMLParser parser;
+    try {
+        IEntity *entity = parser.parse(reply,reply.size());
+        qDebug() << entity->toString();
+    } catch(XMLParserException e) {
+        qDebug() << e.what();
+    }
 }
 

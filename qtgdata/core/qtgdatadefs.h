@@ -34,7 +34,23 @@ namespace Id
         mockId,
         mockId2,
         mockId3,
-        mockId4
+        mockId4,
+
+        //atom
+        feed,
+        id,
+        category,
+        link,
+        author,
+        name,
+        email,
+        generator,
+        entry,
+        updated,
+
+        //gd
+        phoneNumber,
+        extendedProperty
     )
 }
 
@@ -46,7 +62,22 @@ namespace AttributeId
         mockId,
         mockId1,
         mockId2,
-        mockId3
+        mockId3,
+
+        //atom
+        scheme,
+        term,
+        title,
+        type,
+        rel,
+        href,
+        version,
+        uri,
+
+        //openSearch
+        totalResults,
+        startIndex,
+        itemsPerPage
     )
 }
 
@@ -54,7 +85,12 @@ namespace NamespaceId {
     Ids
     (
         NULLID,
-        mockId
+        mockId,
+        atom,
+        openSearch,
+        gContact,
+        batch,
+        gd
     )
 }
 

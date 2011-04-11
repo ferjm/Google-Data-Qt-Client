@@ -55,11 +55,12 @@ void splitNode(QString node, QString &namesp, QString &name)
     if(!node.isEmpty())
     {
         QStringList strings = node.split(":");
-        if((!strings.isEmpty()) && (strings.length() == 2))
-        {
-            namesp = strings[0];
-            name = strings[1];
-        }
+        if(!strings.isEmpty())
+            if(strings.length() == 2)
+            {
+                namesp = strings[0];
+                name = strings[1];
+            } else name = strings[0];
     }
 }
 

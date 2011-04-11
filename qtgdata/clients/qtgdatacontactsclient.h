@@ -23,6 +23,19 @@
 
 #include "qtgdataclient.h"
 
+//
+class QtgataContact
+{
+public:
+    QString name;
+    QString email;
+    QString imAddress;
+    QString organization;
+    QList<QPair<QString,QString> > phoneNumber;
+    QString postalAddress;
+    QString where;
+};
+
 class QtgdataContactsClient : public QtgdataClient
 {
     Q_OBJECT
