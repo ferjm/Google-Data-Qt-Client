@@ -47,10 +47,15 @@ namespace Id
         generator,
         entry,
         updated,
+        title,
+        cc,
 
         //gd
         phoneNumber,
-        extendedProperty
+        extendedProperty,
+        postalAddress,
+        orgName,
+        organization
     )
 }
 
@@ -73,11 +78,13 @@ namespace AttributeId
         href,
         version,
         uri,
+        primary,
 
         //openSearch
         totalResults,
         startIndex,
-        itemsPerPage
+        itemsPerPage,
+
     )
 }
 

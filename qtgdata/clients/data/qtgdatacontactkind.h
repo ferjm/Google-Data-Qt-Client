@@ -18,34 +18,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef QTGDATACONTACTSCLIENT_H
-#define QTGDATACONTACTSCLIENT_H
+#ifndef QTGDATACONTACTKIND_H
+#define QTGDATACONTACTKIND_H
 
-#include "qtgdataclient.h"
-#include "data/qtgdatacontactkind.h"
+//POD Classes representing part of gdContactKind
+//http://code.google.com/apis/gdata/docs/2.0/elements.html#gdContactKind
 
-//
-class QtgataContact
-{
-    QtgdataContactKind contactKind;
+class ExtendedProperty {
 public:
-
+    QString name;
+    QString value;
+    QString realm;
 };
 
-class QtgdataContactsClient : public QtgdataClient
-{
-    Q_OBJECT
-public:
-    QtgdataContactsClient(IAuthentication *auth, QObject *parent = 0);
-
-    void retrieveAllContacts();
-signals:
-
-private slots:
-    void onRetrieveAllContactsFinished(QByteArray reply);
-
-public slots:
-
+class Name {
+    QString givenName;
+    QString additionalName;
+    QString familyName;
+    QString namePrefix;
+    QString nameSuffix;
+    QString fullName;
 };
 
-#endif // QTGDATACONTACTSCLIENT_H
+class Organization {
+    QString label;
+    QString orgName;
+    QString orgTitle;
+    QString where;
+    bool primary;
+};
+
+class PhoneNumber {
+    QString label;
+    QString number;
+    bool primary;
+};
+
+class StructuredPostalAddress {
+    QString street;
+    QString city;
+    QString region;
+    QString formattedAddress;
+    QString country;
+    QString postcode;
+};
+
+class QtgdataContactKind
+{
+public:
+    // atom namespace
+    QStringList category;
+    QString content;
+    QStringList link;
+    QString title;
+    // gd namespace
+    QStringList email;
+    QList<ExtendedProperty> extendedProperty;
+    bool deleted;
+    QStringList im;
+    Name name;
+    QList<Organization> organization;
+    QList<PhoneNumber> phoneNumber;
+    QList<StructuredPostalAddress> structuredPostalAddress;
+    QString where;
+};
+
+#endif // QTGDATACONTACTKIND_H

@@ -10,7 +10,7 @@ QT       += network xml
 TARGET = qtgdata
 TEMPLATE = lib
 
-DEFINES += QTGDATA_LIBRARY QTGDATA_DEBUG
+DEFINES += QTGDATA_LIBRARY
 
 SOURCES += core/qtgdata.cpp \
     core/qtgdataientity.cpp \
@@ -39,9 +39,10 @@ HEADERS += core/qtgdata.h\
     core/qtgdataoauthrequest.h \
     clients/qtgdatacontactsclient.h \
     core/qtgdataiauthentication.h \
-    core/qtgdataoauthdata.h
+    core/qtgdataoauthdata.h \
+    clients/data/qtgdatacontactkind.h
 
-INCLUDEPATH += core
+INCLUDEPATH += core clients
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata
