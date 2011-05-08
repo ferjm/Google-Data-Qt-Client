@@ -20,7 +20,6 @@ SOURCES += core/qtgdata.cpp \
     core/qtgdataoauth.cpp \
     core/qtgdatahttprequest.cpp \
     core/qtgdataoauthrequest.cpp \
-    clients/qtgdatacontactsclient.cpp \
     core/qtgdataclient.cpp \
     core/qtgdataoauthdata.cpp
 
@@ -37,10 +36,8 @@ HEADERS += core/qtgdata.h\
     core/qtgdataoauth.h \
     core/qtgdatahttprequest.h \
     core/qtgdataoauthrequest.h \
-    clients/qtgdatacontactsclient.h \
     core/qtgdataiauthentication.h \
-    core/qtgdataoauthdata.h \
-    clients/data/qtgdatacontactkind.h
+    core/qtgdataoauthdata.h
 
 INCLUDEPATH += core clients
 
