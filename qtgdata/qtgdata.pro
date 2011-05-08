@@ -21,7 +21,8 @@ SOURCES += core/qtgdata.cpp \
     core/qtgdatahttprequest.cpp \
     core/qtgdataoauthrequest.cpp \
     core/qtgdataclient.cpp \
-    core/qtgdataoauthdata.cpp
+    core/qtgdataoauthdata.cpp \
+    clients/blogger/qtgdatabloggerclient.cpp
 
 HEADERS += core/qtgdata.h\
         core/qtgdata_global.h \
@@ -37,9 +38,11 @@ HEADERS += core/qtgdata.h\
     core/qtgdatahttprequest.h \
     core/qtgdataoauthrequest.h \
     core/qtgdataiauthentication.h \
-    core/qtgdataoauthdata.h
+    core/qtgdataoauthdata.h \
+    clients/blogger/qtgdatabloggerclient.h \
+    data/blogger/qtgdatabloggerdata.h
 
-INCLUDEPATH += core clients
+INCLUDEPATH += core clients data
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

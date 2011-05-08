@@ -49,6 +49,7 @@ namespace Id
         updated,
         title,
         cc,
+        uri,
 
         //gd
         phoneNumber,
