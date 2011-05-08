@@ -22,7 +22,7 @@
 #include "qtgdataoauthdata.h"
 #include "qtgdataoauthrequest.h"
 
-QtgdataClient::QtgdataClient(QObject *parent)
+QtgdataClient::QtgdataClient(int version, QObject *parent) : version(version)
 {
 }
 

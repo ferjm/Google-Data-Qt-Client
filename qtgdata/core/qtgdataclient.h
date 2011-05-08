@@ -40,6 +40,7 @@ protected:
 
     HttpConnector httpConnector;
     IAuthentication *authenticationData;
+    int version;
 
     HttpRequest* authenticatedRequest();
 public:
@@ -47,7 +48,7 @@ public:
       Constructor QtgdataClient
       Creates a new QtgdataClient object      
       */
-    QtgdataClient(QObject *parent = 0);
+    QtgdataClient(int version, QObject *parent = 0);
 
     /**
       Destructor
