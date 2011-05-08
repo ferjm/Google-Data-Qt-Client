@@ -53,6 +53,7 @@ void QtgdataContactsClient::onRetrieveAllContactsFinished(QByteArray reply)
     XMLParser parser;
     try {
         IEntity *entity = parser.parse(reply,reply.size());
+
 #ifdef QTGDATA_DEBUG
         qDebug() << entity->toString();
 #endif
