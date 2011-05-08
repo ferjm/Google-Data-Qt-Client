@@ -18,43 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "qtgdataclient.h"
-#include "qtgdataoauthdata.h"
-#include "qtgdataoauthrequest.h"
+#include "qtgdatabloggerclient.h"
 
-QtgdataClient::QtgdataClient(int version, QObject *parent) : version(version)
+QtgdataBloggerClient::QtgdataBloggerClient(IAuthentication *auth, int version, QObject *parent) :
+    QtgdataClient(version,parent)
 {
+    setAuthenticationData(auth);
 }
 
-QtgdataClient::~QtgdataClient()
+void QtgdataBloggerClient::retrieveListOfBlogs()
 {
-    if(authenticationData) delete authenticationData;
+
 }
-
-void QtgdataClient::setAuthenticationData(IAuthentication *authenticationData)
-{
-    this->authenticationData = authenticationData;
-    if(dynamic_cast<OAuthData*>(authenticationData) != NULL)
-        authenticationMode = OAUTH_1_0;
-}
-
-HttpRequest* QtgdataClient::authenticatedRequest()
-{
-    switch(authenticationMode)
-    {
-    case OAUTH_1_0: {
-            OAuthRequest *request = new OAuthRequest();
-            OAuthData *oAuthData = dynamic_cast<OAuthData*>(authenticationData);
-            request->setConsumerKey(oAuthData->getConsumerKey());
-            request->setConsumerSecretKey(oAuthData->getConsumerSecret());
-            request->setToken(oAuthData->getToken());
-            request->setTokenSecret(oAuthData->getTokenSecret());
-            return dynamic_cast<HttpRequest*>(request);
-            break;
-        }
-    default:
-        return NULL;
-    }
-}
-
-
