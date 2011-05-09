@@ -104,7 +104,7 @@ public:
         begin = basicValues.begin();
         end = basicValues.end();
     }
-    virtual QString getValue(const int index = 0) const;
+    virtual QString getValue(const int index = 0) const;    
     bool checkNamespaceId(const int iNamespace) const;
     bool checkNamespaceId(const QString &sNamespace) const;
 

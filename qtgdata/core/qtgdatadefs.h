@@ -50,6 +50,8 @@ namespace Id
         title,
         cc,
         uri,
+        published,
+        summary,
 
         //gd
         phoneNumber,

@@ -42,7 +42,7 @@ HEADERS += core/qtgdata.h\
     clients/blogger/qtgdatabloggerclient.h \
     data/blogger/qtgdatabloggerdata.h
 
-INCLUDEPATH += core clients data
+INCLUDEPATH += core clients data data/blogger
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

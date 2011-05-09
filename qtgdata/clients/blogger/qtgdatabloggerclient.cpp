@@ -52,6 +52,55 @@ void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
     XMLParser parser;
     try {
         IEntity *entity = parser.parse(reply,reply.size());
+        if((entity != NULL)&&(entity->getId() != Id::NULLID))
+        {
+            IEntity::itConstEntities begin,end;
+            entity->getEntityList(begin,end);
+            QList<Blog> blogs;
+            if(begin != end)
+            {
+                for(IEntity::itConstEntities it = begin; it != end; it++ )
+                {
+                    IEntity *sit = dynamic_cast<IEntity *>(*it);
+                    if(sit->getId() == Id::entry)
+                    {
+                        Blog blog;
+                        IEntity *author = NULL;
+                        IEntity *aux = NULL;
+                        IEntity::itConstEntities entryBegin,entryEnd;
+                        sit->getEntityList(entryBegin,entryEnd);
+                        for(IEntity::itConstEntities itEntry = entryBegin;
+                            itEntry != entryEnd;
+                            itEntry++)
+                        {
+                            IEntity *entry = dynamic_cast<IEntity *>(*itEntry);
+                            int id = entry->getId();
+                            switch(id)
+                            {
+                            case Id::author: break;
+                            case Id::id:
+                                blog.id = entry->getValue();
+                                break;
+                            case Id::published:
+                                blog.published.fromString(entry->getValue(),Qt::ISODate);
+                                break;
+                            case Id::updated:
+                                blog.updated.fromString(entry->getValue(),Qt::ISODate);
+                                break;
+                            case Id::summary:
+                                blog.summary = entry->getValue();
+                                break;
+                            case Id::title:
+                                blog.title = entry->getValue();
+                                break;                            
+                            default: break;
+                            }
+                        }                        
+                        blogs.append(blog);
+                    }
+                 }
+            }
+        }
         delete entity;
     } catch(XMLParserException e) {
         qDebug() << e.what();

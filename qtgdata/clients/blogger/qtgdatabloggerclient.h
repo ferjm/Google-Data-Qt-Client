@@ -22,7 +22,7 @@
 #define QTGDATABLOGGERCLIENT_H
 
 #include "qtgdataclient.h"
-#include "blogger/qtgdatabloggerdata.h"
+#include "qtgdatabloggerdata.h"
 
 class QtgdataBloggerClient : public QtgdataClient
 {

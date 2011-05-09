@@ -46,7 +46,7 @@ public:
     Author author;
     QDateTime published;
     QDateTime updated;
-    QByteArray summary;
+    QString summary;
     QList<Link> links;
 };
 
