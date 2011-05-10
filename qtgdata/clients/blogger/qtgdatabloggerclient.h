@@ -33,10 +33,10 @@ public:
     void retrieveListOfBlogs(QString profileID = "default");
 
 private slots:
-    void onRetrieveListOfBlogsFinished(QByteArray reply);
+    void onListOfBlogsRetrieved(QByteArray reply);
 
 signals:
-    void listOfBlogs(QList<Blog>);
+    void onRetrieveListOfBlogsFinished(QList<Blog>);
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

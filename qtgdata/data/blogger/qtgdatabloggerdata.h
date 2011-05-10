@@ -21,6 +21,8 @@
 #ifndef QTGDATABLOGGERDATA_H
 #define QTGDATABLOGGERDATA_H
 
+#include <ostream>
+
 /*atom*/
 class Author
 {
@@ -48,6 +50,14 @@ public:
     QDateTime updated;
     QString summary;
     QList<Link> links;
+
+    friend std::ostream& operator<< (std::ostream &out,Blog &blog) {
+        out << "Blog: \n" << "\t id: " << blog.id.toAscii().data() <<
+               "\n\t title: " << blog.title.toAscii().data() <<
+               "\n\t author: " << blog.author.name.toAscii().data() << " " << blog.author.email.toAscii().data() <<
+               "\n\t QString summary: " << blog.summary.toAscii().data();
+        return out;
+    };
 };
 
 

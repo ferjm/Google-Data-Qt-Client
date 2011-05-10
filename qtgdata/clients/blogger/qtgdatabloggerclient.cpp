@@ -44,7 +44,7 @@ void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
     delete request;
 }
 
-void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
+void QtgdataBloggerClient::onListOfBlogsRetrieved(QByteArray reply)
 {
 #ifdef QTGDATA_DEBUG
     qDebug() << "onRetrieveListOfBlogsFinished";
@@ -64,9 +64,7 @@ void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
                     IEntity *sit = dynamic_cast<IEntity *>(*it);
                     if(sit->getId() == Id::entry)
                     {
-                        Blog blog;
-                        IEntity *author = NULL;
-                        IEntity *aux = NULL;
+                        Blog blog;                        
                         IEntity::itConstEntities entryBegin,entryEnd;
                         sit->getEntityList(entryBegin,entryEnd);
                         for(IEntity::itConstEntities itEntry = entryBegin;
@@ -77,7 +75,15 @@ void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
                             int id = entry->getId();
                             switch(id)
                             {
-                            case Id::author: break;
+                            case Id::author: {
+                                IEntity *author = entry->getEntity(Id::author);
+                                if((author)&&(author->getId()!=NULL))
+                                {
+                                    IEntity *aux = NULL;
+                                    if((aux=author->getEntity(Id::name)));
+                                        blog.author.name = aux->getValue();
+                                }
+                                break; }
                             case Id::id:
                                 blog.id = entry->getValue();
                                 break;
@@ -92,7 +98,7 @@ void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
                                 break;
                             case Id::title:
                                 blog.title = entry->getValue();
-                                break;                            
+                                break;
                             default: break;
                             }
                         }                        
@@ -100,6 +106,8 @@ void QtgdataBloggerClient::onRetrieveListOfBlogsFinished(QByteArray reply)
                     }
                  }
             }
+            if(!blogs.isEmpty())
+                emit onRetrieveListOfBlogsFinished(blogs);
         }
         delete entity;
     } catch(XMLParserException e) {
