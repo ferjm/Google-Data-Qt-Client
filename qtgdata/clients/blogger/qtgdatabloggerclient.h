@@ -28,15 +28,31 @@ class QtgdataBloggerClient : public QtgdataClient
 {
     Q_OBJECT
 public:
+    enum OrderBy { STARTTIME, UPDATED };
+    enum Alt { ATOM, RSS };
+
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
 
     void retrieveListOfBlogs(QString profileID = "default");
+    void retrieveListOfPosts(QString blogID,
+                             Alt alt= ATOM,
+                             OrderBy orderby = UPDATED,
+                             QStringList categories = QStringList(),
+                             QDateTime publishedmin = QDateTime(),
+                             QDateTime publishedmax = QDateTime(),
+                             QDateTime updatedmin = QDateTime(),
+                             QDateTime updatedmax = QDateTime(),
+                             int maxresults = 10,
+                             int startindex = 1,
+                             QString etag = "");
 
 private slots:
     void onListOfBlogsRetrieved(QByteArray reply);
+    void onListOfPostsRetrieved(QByteArray reply);
 
 signals:
     void onRetrieveListOfBlogsFinished(QList<Blog>);
+    //void onRetrieveListOfPostsFinished(QList<Post>);
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

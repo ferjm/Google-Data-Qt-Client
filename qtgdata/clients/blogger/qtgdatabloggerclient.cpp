@@ -39,7 +39,7 @@ void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
     request->setHttpMethod(HttpRequest::GET);
     request->setHeader(QByteArray("GData-Version"),QByteArray::number(this->version));
     request->setAuthHeader();
-    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onRetrieveListOfBlogsFinished(QByteArray)));
+    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onListOfBlogsRetrieved(QByteArray)));
     this->httpConnector.httpRequest(request);
     delete request;
 }
@@ -109,6 +109,71 @@ void QtgdataBloggerClient::onListOfBlogsRetrieved(QByteArray reply)
             if(!blogs.isEmpty())
                 emit onRetrieveListOfBlogsFinished(blogs);
         }
+        delete entity;
+    } catch(XMLParserException e) {
+        qDebug() << e.what();
+    }
+}
+
+void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
+                                               Alt alt,
+                                               OrderBy orderby,
+                                               QStringList categories,
+                                               QDateTime publishedmin,
+                                               QDateTime publishedmax,
+                                               QDateTime updatedmin,
+                                               QDateTime updatedmax,
+                                               int maxresults,
+                                               int startindex,
+                                               QString etag)
+{
+    HttpRequest *request = authenticatedRequest();
+    QString endpoint = QString(BLOGGER_FEEDS) + blogID + "/posts/default";
+    if(!categories.isEmpty())
+    {
+        endpoint += "/-";
+        foreach(const QString& category,categories)
+            endpoint += "/" + category;
+    }
+    switch(orderby)
+    {
+    case STARTTIME:
+        endpoint += "?orderby=starttime";
+        break;
+    case UPDATED:
+        endpoint += "?orderby=updated";
+        break;
+    }
+    endpoint += "&max-results=" + QString::number(maxresults);
+    endpoint += "&start-index=" + QString::number(startindex);
+    if((!publishedmin.isNull()) && (!publishedmax.QDateTime::isNull()))
+        endpoint += "&published-min=" + publishedmin.toString(Qt::ISODate) +
+                    "&published-max=" + publishedmax.toString(Qt::ISODate);
+    if((!updatedmin.isNull()) && (!updatedmax.QDateTime::isNull()))
+        if(orderby == UPDATED)
+            endpoint += "&updated-min=" + updatedmin.toString(Qt::ISODate) +
+                        "&updated-max=" + updatedmax.toString(Qt::ISODate);
+        else
+            qWarning("Updatedmin and updatedmax are ignored cause orderby parameter is not set to UPDATED");
+    request->setRequestEndpoint(QUrl(endpoint));
+    request->setHttpMethod(HttpRequest::GET);
+    request->setHeader(QByteArray("GData-Version"),QByteArray::number(this->version));
+    if(!etag.isEmpty())
+        request->setHeader(QByteArray("If-None-Match"),QByteArray(etag.toAscii()));
+    //request->setAuthHeader();
+    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onListOfPostsRetrieved(QByteArray)));
+    this->httpConnector.httpRequest(request);
+    delete request;
+}
+
+void QtgdataBloggerClient::onListOfPostsRetrieved(QByteArray reply)
+{
+#ifdef QTGDATA_DEBUG
+    qDebug() << "onRetrieveListOfPostsFinished";
+#endif
+    XMLParser parser;
+    try {
+        IEntity *entity = parser.parse(reply,reply.size());
         delete entity;
     } catch(XMLParserException e) {
         qDebug() << e.what();
