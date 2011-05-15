@@ -22,7 +22,7 @@
 #define QTGDATABLOGGERCLIENT_H
 
 #include "qtgdataclient.h"
-#include "qtgdatabloggerdata.h"
+#include "qtgdataatomentry.h"
 
 class QtgdataBloggerClient : public QtgdataClient
 {
@@ -46,13 +46,9 @@ public:
                              int startindex = 1,
                              QString etag = "");
 
-private slots:
-    void onListOfBlogsRetrieved(QByteArray reply);
-    void onListOfPostsRetrieved(QByteArray reply);
-
 signals:
-    void onRetrieveListOfBlogsFinished(QList<Blog>);
-    //void onRetrieveListOfPostsFinished(QList<Post>);
+    virtual void atomFeedRetrievedFinished(QList<AtomEntry>);
+
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

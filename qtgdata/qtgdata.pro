@@ -40,7 +40,8 @@ HEADERS += core/qtgdata.h\
     core/qtgdataiauthentication.h \
     core/qtgdataoauthdata.h \
     clients/blogger/qtgdatabloggerclient.h \
-    data/blogger/qtgdatabloggerdata.h
+    data/blogger/qtgdatabloggerdata.h \
+    data/blogger/qtgdataatomentry.h
 
 INCLUDEPATH += core clients data data/blogger
 

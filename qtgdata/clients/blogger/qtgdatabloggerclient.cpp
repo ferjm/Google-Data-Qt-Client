@@ -34,85 +34,17 @@ QtgdataBloggerClient::QtgdataBloggerClient(IAuthentication *auth, int version, Q
 
 void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
 {
-    HttpRequest *request = authenticatedRequest();
-    request->setRequestEndpoint(QUrl(QString(BLOGGER_FEEDS) + profileID +"/blogs"));    
-    request->setHttpMethod(HttpRequest::GET);
-    request->setHeader(QByteArray("GData-Version"),QByteArray::number(this->version));
-    request->setAuthHeader();
-    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onListOfBlogsRetrieved(QByteArray)));
-    this->httpConnector.httpRequest(request);
-    delete request;
-}
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    sendClientRequest(HttpRequest::GET,
+                      QUrl(QString(BLOGGER_FEEDS) + profileID +"/blogs"),
+                      headers,
+                      &(this->httpConnector),
+                      SIGNAL(requestFinished(QByteArray)),
+                      this,
+                      SLOT(onAtomFeedRetrieved(QByteArray))
+                      );
 
-void QtgdataBloggerClient::onListOfBlogsRetrieved(QByteArray reply)
-{
-#ifdef QTGDATA_DEBUG
-    qDebug() << "onRetrieveListOfBlogsFinished";
-#endif
-    XMLParser parser;
-    try {
-        IEntity *entity = parser.parse(reply,reply.size());
-        if((entity != NULL)&&(entity->getId() != Id::NULLID))
-        {
-            IEntity::itConstEntities begin,end;
-            entity->getEntityList(begin,end);
-            QList<Blog> blogs;
-            if(begin != end)
-            {
-                for(IEntity::itConstEntities it = begin; it != end; it++ )
-                {
-                    IEntity *sit = dynamic_cast<IEntity *>(*it);
-                    if(sit->getId() == Id::entry)
-                    {
-                        Blog blog;                        
-                        IEntity::itConstEntities entryBegin,entryEnd;
-                        sit->getEntityList(entryBegin,entryEnd);
-                        for(IEntity::itConstEntities itEntry = entryBegin;
-                            itEntry != entryEnd;
-                            itEntry++)
-                        {
-                            IEntity *entry = dynamic_cast<IEntity *>(*itEntry);
-                            int id = entry->getId();
-                            switch(id)
-                            {
-                            case Id::author: {
-                                IEntity *author = entry->getEntity(Id::author);
-                                if((author)&&(author->getId()!=NULL))
-                                {
-                                    IEntity *aux = NULL;
-                                    if((aux=author->getEntity(Id::name)));
-                                        blog.author.name = aux->getValue();
-                                }
-                                break; }
-                            case Id::id:
-                                blog.id = entry->getValue();
-                                break;
-                            case Id::published:
-                                blog.published.fromString(entry->getValue(),Qt::ISODate);
-                                break;
-                            case Id::updated:
-                                blog.updated.fromString(entry->getValue(),Qt::ISODate);
-                                break;
-                            case Id::summary:
-                                blog.summary = entry->getValue();
-                                break;
-                            case Id::title:
-                                blog.title = entry->getValue();
-                                break;
-                            default: break;
-                            }
-                        }                        
-                        blogs.append(blog);
-                    }
-                 }
-            }
-            if(!blogs.isEmpty())
-                emit onRetrieveListOfBlogsFinished(blogs);
-        }
-        delete entity;
-    } catch(XMLParserException e) {
-        qDebug() << e.what();
-    }
 }
 
 void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
@@ -126,8 +58,7 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
                                                int maxresults,
                                                int startindex,
                                                QString etag)
-{
-    HttpRequest *request = authenticatedRequest();
+{    
     QString endpoint = QString(BLOGGER_FEEDS) + blogID + "/posts/default";
     if(!categories.isEmpty())
     {
@@ -155,27 +86,16 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
                         "&updated-max=" + updatedmax.toString(Qt::ISODate);
         else
             qWarning("Updatedmin and updatedmax are ignored cause orderby parameter is not set to UPDATED");
-    request->setRequestEndpoint(QUrl(endpoint));
-    request->setHttpMethod(HttpRequest::GET);
-    request->setHeader(QByteArray("GData-Version"),QByteArray::number(this->version));
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
     if(!etag.isEmpty())
-        request->setHeader(QByteArray("If-None-Match"),QByteArray(etag.toAscii()));
-    //request->setAuthHeader();
-    connect(&(this->httpConnector), SIGNAL(requestFinished(QByteArray)), this, SLOT(onListOfPostsRetrieved(QByteArray)));
-    this->httpConnector.httpRequest(request);
-    delete request;
-}
-
-void QtgdataBloggerClient::onListOfPostsRetrieved(QByteArray reply)
-{
-#ifdef QTGDATA_DEBUG
-    qDebug() << "onRetrieveListOfPostsFinished";
-#endif
-    XMLParser parser;
-    try {
-        IEntity *entity = parser.parse(reply,reply.size());
-        delete entity;
-    } catch(XMLParserException e) {
-        qDebug() << e.what();
-    }
+        headers.append(qMakePair(QByteArray("If-None-Match"),QByteArray(etag.toAscii())));
+    sendClientRequest(HttpRequest::GET,
+                      QUrl(endpoint),
+                      headers,
+                      &(this->httpConnector),
+                      SIGNAL(requestFinished(QByteArray)),
+                      this,
+                      SLOT(onAtomFeedRetrieved(QByteArray)),
+                      false);
 }

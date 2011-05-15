@@ -18,58 +18,46 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef QTGDATACLIENT_H
-#define QTGDATACLIENT_H
+#ifndef QTGDATAATOMFEED_H
+#define QTGDATAATOMFEED_H
 
-#include <QObject>
+#include <ostream>
 
-#include "qtgdatahttpconnector.h"
-#include "qtgdataiauthentication.h"
-#include "qtgdataatomentry.h"
-
-/**
-  \class QtgdataClient
-  Base class for any Qtgdata API client
-  */
-class QtgdataClient : public QObject
+/*atom*/
+class Author
 {
-    Q_OBJECT
-
 public:
-    /**
-      Constructor QtgdataClient
-      Creates a new QtgdataClient object
-      */
-    QtgdataClient(int version, QObject *parent = 0);
-
-    /**
-      Destructor
-      */
-    virtual ~QtgdataClient();
-
-    void setAuthenticationData(IAuthentication *authenticationData);
-
-protected:
-    //for now the only authentication supported is oauth v1.0
-    enum AuthenticationMode { OAUTH_1_0 } authenticationMode;
-
-    HttpConnector httpConnector;
-    IAuthentication *authenticationData;
-    int version;
-
-    HttpRequest* authenticatedRequest();
-    void sendClientRequest(HttpRequest::RequestHttpMethod method,
-                           QUrl endpoint,
-                           QList<QPair<QByteArray,QByteArray> > &headers,
-                           const QObject *sender,
-                           const char* signal,
-                           const QObject *receiver,
-                           const char* slot,
-                           bool oauth = true);
-    virtual void atomFeedRetrievedFinished(QList<AtomEntry>) = 0;
-
-protected slots:
-    void onAtomFeedRetrieved(QByteArray reply);
+    QString name;
+    QString email;
+    QUrl uri;
 };
 
-#endif // QTGDATACLIENT_H
+class Link
+{
+public:
+    QString rel;
+    QString type;
+    QUrl href;
+};
+
+class AtomEntry
+{
+public:
+    QString id;
+    QString title;
+    Author author;
+    QDateTime published;
+    QDateTime updated;
+    QString summary;
+    QList<Link> links;
+
+    friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
+        out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<
+               "\n\t title: " << atomEntry.title.toAscii().data() <<
+               "\n\t author: " << atomEntry.author.name.toAscii().data() << " " << atomEntry.author.email.toAscii().data() <<
+               "\n\t QString summary: " << atomEntry.summary.toAscii().data();
+        return out;
+    };
+};
+
+#endif // QTGDATAATOMFEED_H
