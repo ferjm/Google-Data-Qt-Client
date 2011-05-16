@@ -103,7 +103,8 @@ namespace NamespaceId {
         gContact,
         batch,
         gd,
-        thr
+        thr,
+        xmlns
     )
 }
 

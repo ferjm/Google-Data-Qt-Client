@@ -88,6 +88,7 @@ public:
     typedef QList<IEntity*>::iterator itEntities;
     typedef QVector<QString>::const_iterator itConstStrings;
 
+    IEntity(const int iname);
     IEntity(const int inamespace, const int iname);
     IEntity(const QString snamespace, const QString sname);
     IEntity(const int inamespace, const int iname, const QList<IEntity*> iEList);

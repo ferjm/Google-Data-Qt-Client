@@ -60,15 +60,8 @@ protected:
 
 class XMLSerializer : public ISerializer
 {
-public:    
-    struct XMLSchema {
-        QString nameSpace;
-        QString xmlSchema;
-    };
-
 private:
-    QStringList m_lNameSpaces;
-    XMLSchema m_XMLSchema;
+    QStringList m_lNameSpaces; 
 
     void serialize(const IEntity *obj, QXmlStreamWriter *stream);
 
@@ -79,7 +72,7 @@ public:
      *
      * XMLSerializer constructor
      */
-    XMLSerializer(QStringList *lNameSpaces, XMLSchema schema);
+    XMLSerializer(QStringList lNameSpaces = QStringList());
 
     /**
      * serialize:

@@ -61,10 +61,7 @@ HttpRequest* QtgdataClient::authenticatedRequest()
 void QtgdataClient::sendClientRequest(HttpRequest::RequestHttpMethod method,
                                       QUrl endpoint,
                                       QList<QPair<QByteArray,QByteArray> > &headers,
-                                      const QObject *sender,
-                                      const char* signal,
-                                      const QObject *receiver,
-                                      const char* slot,
+                                      QByteArray *body,
                                       bool oauth)
 {
     HttpRequest *request = authenticatedRequest();
@@ -74,6 +71,10 @@ void QtgdataClient::sendClientRequest(HttpRequest::RequestHttpMethod method,
         request->setHeader(headers.at(i).first,headers.at(i).second);
     if(oauth)
         request->setAuthHeader();
+    if(!body->isNull())
+        request->setRequestBody(*body);
+    if(method == HttpRequest::POST)
+        request->setHeader(QByteArray("Content-Type"),QByteArray("application/atom+xml"));
     connect(&this->httpConnector,
             SIGNAL(requestFinished(QByteArray)),
             this,

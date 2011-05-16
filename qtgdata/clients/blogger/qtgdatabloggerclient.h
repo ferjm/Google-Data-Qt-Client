@@ -34,8 +34,7 @@ public:
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
 
     void retrieveListOfBlogs(QString profileID = "default");
-    void retrieveListOfPosts(QString blogID,
-                             Alt alt= ATOM,
+    void retrieveListOfPosts(QString blogID,                             
                              OrderBy orderby = UPDATED,
                              QStringList categories = QStringList(),
                              QDateTime publishedmin = QDateTime(),
@@ -44,7 +43,12 @@ public:
                              QDateTime updatedmax = QDateTime(),
                              int maxresults = 10,
                              int startindex = 1,
-                             QString etag = "");
+                             QString etag = "");    
+    void createPost(QString blogID,
+                    QString title,
+                    QByteArray xhtmlContent,
+                    QList<Category> categories = QList<Category>(),
+                    bool draft = false);
 
 signals:
     virtual void atomFeedRetrievedFinished(QList<AtomEntry>);

@@ -40,6 +40,13 @@ public:
     QUrl href;
 };
 
+class Category
+{
+public:
+    QUrl scheme;
+    QString term;        
+};
+
 class AtomEntry
 {
 public:
@@ -50,6 +57,7 @@ public:
     QDateTime updated;
     QString summary;
     QList<Link> links;
+    QList<Category> categories;
 
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<

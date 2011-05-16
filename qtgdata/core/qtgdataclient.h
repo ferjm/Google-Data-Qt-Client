@@ -61,10 +61,7 @@ protected:
     void sendClientRequest(HttpRequest::RequestHttpMethod method,
                            QUrl endpoint,
                            QList<QPair<QByteArray,QByteArray> > &headers,
-                           const QObject *sender,
-                           const char* signal,
-                           const QObject *receiver,
-                           const char* slot,
+                           QByteArray *body = NULL,
                            bool oauth = true);
     virtual void atomFeedRetrievedFinished(QList<AtomEntry>) = 0;
 

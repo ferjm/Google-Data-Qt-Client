@@ -21,6 +21,7 @@
 #include "qtgdatabloggerclient.h"
 #include "qtgdataoauthrequest.h"
 #include "qtgdataxmlparser.h"
+#include "qtgdataxmlserializer.h"
 
 #include <QDebug>
 
@@ -39,16 +40,11 @@ void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
     sendClientRequest(HttpRequest::GET,
                       QUrl(QString(BLOGGER_FEEDS) + profileID +"/blogs"),
                       headers,
-                      &(this->httpConnector),
-                      SIGNAL(requestFinished(QByteArray)),
-                      this,
-                      SLOT(onAtomFeedRetrieved(QByteArray))
-                      );
+                      NULL);
 
 }
 
-void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
-                                               Alt alt,
+void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,                                               
                                                OrderBy orderby,
                                                QStringList categories,
                                                QDateTime publishedmin,
@@ -93,9 +89,39 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
     sendClientRequest(HttpRequest::GET,
                       QUrl(endpoint),
                       headers,
-                      &(this->httpConnector),
-                      SIGNAL(requestFinished(QByteArray)),
-                      this,
-                      SLOT(onAtomFeedRetrieved(QByteArray)),
+                      NULL,
                       false);
 }
+
+void QtgdataBloggerClient::createPost(QString blogID,
+                                      QString title,
+                                      QByteArray xhtmlContent,
+                                      QList<Category> categories,
+                                      bool draft)
+{
+    IEntity *entry = new IEntity(Id::entry);
+    IEntity *titleEntity = new IEntity(NamespaceId::NULLID,Id::title,title);
+    entry->addEntity(titleEntity);
+    IEntity *content = new IEntity(NamespaceId::NULLID,Id::content);
+    content->addAttribute(NamespaceId::NULLID,AttributeId::type,QString("xhtml"));
+    content->addValue(QString(xhtmlContent));
+    entry->addEntity(content);
+    for(int i= 0; i < categories.size(); i++)
+    {
+        IEntity *category = new IEntity(NamespaceId::NULLID,Id::category);
+        category->addAttribute(NamespaceId::NULLID,AttributeId::scheme,categories.at(i).scheme.toString());
+        category->addAttribute(NamespaceId::NULLID,AttributeId::term,categories.at(i).term);
+        entry->addEntity(category);
+    }
+    QStringList namespaces;
+    namespaces.append("http://www.w3.org/2005/Atom");
+    XMLSerializer serializer(namespaces);
+    QString serializedBody = serializer.serialize(entry);
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    sendClientRequest(HttpRequest::POST,
+                      QUrl(QString(BLOGGER_FEEDS) + blogID + "/posts/default"),
+                      headers,
+                      &QByteArray(serializedBody.toAscii()));
+}
+

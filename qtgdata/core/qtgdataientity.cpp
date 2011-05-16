@@ -171,6 +171,13 @@ bool IEntity::initNamespace(const QString sNamespace)
     return false;
 }
 
+IEntity::IEntity(const int iname)
+{
+    int inamespace = NamespaceId::NULLID;
+    if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
+        iNamespace = inamespace;
+}
+
 IEntity::IEntity(const int inamespace, const int iname)
 {
     if(init(iname) && checkNamespaceId(inamespace) && initNamespace(inamespace))
