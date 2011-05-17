@@ -54,6 +54,7 @@ namespace Id
         published,
         summary,
         content,
+        total,
 
         //gd
         phoneNumber,

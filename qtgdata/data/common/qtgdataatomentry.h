@@ -47,6 +47,13 @@ public:
     QString term;        
 };
 
+class Content
+{
+public:
+    QByteArray content;
+    QString type;
+};
+
 class AtomEntry
 {
 public:
@@ -57,7 +64,8 @@ public:
     QDateTime updated;
     QString summary;
     QList<Link> links;
-    QList<Category> categories;
+    QList<Category> categories;    
+    Content content;
 
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<

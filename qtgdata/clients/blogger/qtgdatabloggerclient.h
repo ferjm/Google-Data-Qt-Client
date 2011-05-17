@@ -47,8 +47,9 @@ public:
     void createPost(QString blogID,
                     QString title,
                     QByteArray xhtmlContent,
-                    QList<Category> categories = QList<Category>(),
-                    bool draft = false);
+                    QList<Category> categories = QList<Category>());
+    void updatePost(AtomEntry entry);
+    void deletePost(QString blogID,QString postID);
 
 signals:
     virtual void atomFeedRetrievedFinished(QList<AtomEntry>);

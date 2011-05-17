@@ -41,7 +41,6 @@ void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
                       QUrl(QString(BLOGGER_FEEDS) + profileID +"/blogs"),
                       headers,
                       NULL);
-
 }
 
 void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,                                               
@@ -96,8 +95,9 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
 void QtgdataBloggerClient::createPost(QString blogID,
                                       QString title,
                                       QByteArray xhtmlContent,
-                                      QList<Category> categories,
-                                      bool draft)
+                                      QList<Category> categories)
+//FIXME: onAtomFeedRetrieved
+//TODO: draft support
 {
     IEntity *entry = new IEntity(Id::entry);
     IEntity *titleEntity = new IEntity(NamespaceId::NULLID,Id::title,title);
@@ -108,7 +108,7 @@ void QtgdataBloggerClient::createPost(QString blogID,
     entry->addEntity(content);
     for(int i= 0; i < categories.size(); i++)
     {
-        IEntity *category = new IEntity(NamespaceId::NULLID,Id::category);
+        IEntity *category = new IEntity(Id::category);
         category->addAttribute(NamespaceId::NULLID,AttributeId::scheme,categories.at(i).scheme.toString());
         category->addAttribute(NamespaceId::NULLID,AttributeId::term,categories.at(i).term);
         entry->addEntity(category);
@@ -117,11 +117,81 @@ void QtgdataBloggerClient::createPost(QString blogID,
     namespaces.append("http://www.w3.org/2005/Atom");
     XMLSerializer serializer(namespaces);
     QString serializedBody = serializer.serialize(entry);
+    delete entry;
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
     sendClientRequest(HttpRequest::POST,
                       QUrl(QString(BLOGGER_FEEDS) + blogID + "/posts/default"),
                       headers,
                       &QByteArray(serializedBody.toAscii()));
+}
+
+void QtgdataBloggerClient::updatePost(AtomEntry entry)
+{
+    IEntity *entryEntity = new IEntity(Id::entry);
+    bool relUrl = false;
+    QUrl endpoint;
+    for(int i=0; i < entry.links.size(); i++)
+    {
+        IEntity *link = new IEntity(Id::link);
+        link->addAttribute(NamespaceId::NULLID,AttributeId::rel,entry.links.at(i).rel);
+        link->addAttribute(NamespaceId::NULLID,AttributeId::type,entry.links.at(i).type);
+        link->addAttribute(NamespaceId::NULLID,AttributeId::href,entry.links.at(i).href.toString());
+        if(entry.links.at(i).rel == "edit")
+        {
+            endpoint = entry.links.at(i).href;
+            relUrl = true;
+        }
+        entryEntity->addEntity(link);
+    }
+    if(!relUrl) return;
+    IEntity *id = new IEntity(NamespaceId::NULLID,Id::id,entry.id);
+    entryEntity->addEntity(id);
+    IEntity *published = new IEntity(NamespaceId::NULLID,Id::published,entry.published.toString(Qt::ISODate));
+    entryEntity->addEntity(published);
+    IEntity *updated = new IEntity(NamespaceId::NULLID,Id::updated,entry.updated.toString(Qt::ISODate));
+    entryEntity->addEntity(updated);
+    for(int i=0; i<entry.categories.size(); i++)
+    {
+        IEntity *category = new IEntity(Id::category);
+        category->addAttribute(NamespaceId::NULLID,AttributeId::scheme,entry.categories.at(i).scheme.toString());
+        category->addAttribute(NamespaceId::NULLID,AttributeId::term,entry.categories.at(i).term);
+        entryEntity->addEntity(category);
+    }
+    IEntity *content = new IEntity(NamespaceId::NULLID,Id::content,QString(entry.content.content));
+    content->addAttribute(NamespaceId::NULLID,AttributeId::type,entry.content.type);
+    entryEntity->addEntity(content);
+    IEntity *author = new IEntity(Id::author);
+    IEntity *name = new IEntity(NamespaceId::NULLID,Id::name,entry.author.name);
+    author->addEntity(name);
+    IEntity *uri = new IEntity(NamespaceId::NULLID,Id::uri,entry.author.uri.toString());
+    author->addEntity(uri);
+    IEntity *email = new IEntity(NamespaceId::NULLID,Id::email,entry.author.email);
+    author->addEntity(email);
+    entryEntity->addEntity(author);
+    QStringList namespaces;
+    namespaces.append("http://www.w3.org/2005/Atom");
+    XMLSerializer serializer(namespaces);
+    QString serializedBody = serializer.serialize(entryEntity);
+    delete entryEntity;
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    headers.append(qMakePair(QByteArray("X-HTTP-Method-Override"),QByteArray("PUT")));
+    sendClientRequest(HttpRequest::PUT,
+                      endpoint,
+                      headers,
+                      &QByteArray(serializedBody.toAscii()));
+}
+
+void QtgdataBloggerClient::deletePost(QString blogID,QString postID)
+{
+    QUrl endpoint(QString(BLOGGER_FEEDS) + blogID + "/posts/default/" + postID);
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    headers.append(qMakePair(QByteArray("X-HTTP-Method-Override"),QByteArray("DELETE")));
+    sendClientRequest(HttpRequest::DELETE,
+                      endpoint,
+                      headers,
+                      NULL);
 }
 

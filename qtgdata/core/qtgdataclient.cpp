@@ -71,9 +71,9 @@ void QtgdataClient::sendClientRequest(HttpRequest::RequestHttpMethod method,
         request->setHeader(headers.at(i).first,headers.at(i).second);
     if(oauth)
         request->setAuthHeader();
-    if(!body->isNull())
+    if(body != NULL)
         request->setRequestBody(*body);
-    if(method == HttpRequest::POST)
+    if((method == HttpRequest::POST) || (method == HttpRequest::PUT))
         request->setHeader(QByteArray("Content-Type"),QByteArray("application/atom+xml"));
     connect(&this->httpConnector,
             SIGNAL(requestFinished(QByteArray)),
@@ -88,7 +88,7 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
 #ifdef QTGDATA_DEBUG
     qDebug() << "onAtomFeedRetrieved";
 #endif
-    XMLParser parser;
+    XMLParser parser;  
     try {
         IEntity *entity = parser.parse(reply,reply.size());
         if((entity != NULL)&&(entity->getId() != Id::NULLID))
@@ -146,6 +146,12 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                                 link.rel = entry->getAttribute(AttributeId::rel)->sValue;
                                 link.type = entry->getAttribute(AttributeId::type)->sValue;
                                 atomEntry.links.append(link);
+                                break;
+                            }
+                            case Id::content:
+                            {
+                                atomEntry.content.type = entry->getAttribute(AttributeId::type)->sValue;
+                                atomEntry.content.content = QByteArray(entry->getValue().toAscii());;
                                 break;
                             }
                             default: break;
