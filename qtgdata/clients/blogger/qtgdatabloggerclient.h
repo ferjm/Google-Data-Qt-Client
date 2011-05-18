@@ -50,6 +50,9 @@ public:
                     QList<Category> categories = QList<Category>());
     void updatePost(AtomEntry entry);
     void deletePost(QString blogID,QString postID);
+    void createComment(QString blogID,QString postID,AtomEntry entry);
+    void retrieveListOfComments(QString blogID,QString postID = QString());
+    void deleteComment(QString blogID,QString postID,QString commentID);
 
 signals:
     virtual void atomFeedRetrievedFinished(QList<AtomEntry>);

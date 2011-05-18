@@ -195,3 +195,47 @@ void QtgdataBloggerClient::deletePost(QString blogID,QString postID)
                       NULL);
 }
 
+void QtgdataBloggerClient::createComment(QString blogID,QString postID,AtomEntry entry)
+{
+    IEntity *entryEntity = new IEntity(Id::entry);
+    IEntity *title = new IEntity(0,Id::title,entry.title);
+    entryEntity->addEntity(title);
+    IEntity *content = new IEntity(0,Id::content,QString(entry.content.content));
+    entryEntity->addEntity(content);
+    QStringList namespaces;
+    namespaces.append("http://www.w3.org/2005/Atom");
+    XMLSerializer serializer(namespaces);
+    QString serializedBody = serializer.serialize(entryEntity);
+    delete entryEntity;
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    sendClientRequest(HttpRequest::POST,
+                      QUrl(QString(BLOGGER_FEEDS) + blogID + "/" + postID +"/comments/default"),
+                      headers,
+                      &QByteArray(serializedBody.toAscii()));
+}
+
+void QtgdataBloggerClient::deleteComment(QString blogID, QString postID, QString commentID)
+{
+    //http://www.blogger.com/feeds/blogID/postID/comments/default/commentID
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    sendClientRequest(HttpRequest::DELETE,
+                      QUrl(QString(BLOGGER_FEEDS) + blogID + "/" + postID + "/comments/default/" + commentID),
+                      headers,
+                      NULL);
+}
+
+void QtgdataBloggerClient::retrieveListOfComments(QString blogID, QString postID)
+{
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    QString endpoint = QString(BLOGGER_FEEDS) + blogID;
+    if(!postID.isEmpty())
+        endpoint += "/" + postID;
+    endpoint += "/comments/default";
+    sendClientRequest(HttpRequest::GET,
+                      QUrl(endpoint),
+                      headers,
+                      NULL);
+}
