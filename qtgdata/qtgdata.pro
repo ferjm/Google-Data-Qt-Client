@@ -22,7 +22,8 @@ SOURCES += core/qtgdata.cpp \
     core/qtgdataoauthrequest.cpp \
     core/qtgdataclient.cpp \
     core/qtgdataoauthdata.cpp \
-    clients/blogger/qtgdatabloggerclient.cpp
+    clients/blogger/qtgdatabloggerclient.cpp \
+    clients/codesearch/qtgdatacodesearchclient.cpp
 
 HEADERS += core/qtgdata.h\
         core/qtgdata_global.h \
@@ -40,7 +41,8 @@ HEADERS += core/qtgdata.h\
     core/qtgdataiauthentication.h \
     core/qtgdataoauthdata.h \
     clients/blogger/qtgdatabloggerclient.h \
-    data/common/qtgdataatomentry.h
+    data/common/qtgdataatomentry.h \
+    clients/codesearch/qtgdatacodesearchclient.h
 
 INCLUDEPATH += core clients data data/common
 
