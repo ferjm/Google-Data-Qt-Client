@@ -49,13 +49,14 @@ public:
 
     void setAuthenticationData(IAuthentication *authenticationData);
 
-protected:
+protected:    
     //for now the only authentication supported is oauth v1.0
     enum AuthenticationMode { OAUTH_1_0 } authenticationMode;
+    enum ClientID { BASE, BLOGGER, CODESEARCH } ID;
 
     HttpConnector httpConnector;
     IAuthentication *authenticationData;
-    int version;
+    int version;    
 
     HttpRequest* authenticatedRequest();
     void sendClientRequest(HttpRequest::RequestHttpMethod method,
@@ -66,7 +67,7 @@ protected:
     virtual void atomFeedRetrievedFinished(AtomFeed) = 0;
 
 protected slots:
-    void onAtomFeedRetrieved(QByteArray reply);
+    void onAtomFeedRetrieved(QByteArray reply);       
 };
 
 #endif // QTGDATACLIENT_H

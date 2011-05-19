@@ -24,7 +24,8 @@
 #include "qtgdataxmlparser.h"
 
 QtgdataClient::QtgdataClient(int version, QObject *parent) : version(version)
-{
+{    
+    ID = BASE;
 }
 
 QtgdataClient::~QtgdataClient()
@@ -86,9 +87,9 @@ void QtgdataClient::sendClientRequest(HttpRequest::RequestHttpMethod method,
 void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
 {
 #ifdef QTGDATA_DEBUG
-    qDebug() << "onAtomFeedRetrieved";
+    qDebug() << "onAtomFeedRetrieved. Client ID: " << ID;
 #endif
-    XMLParser parser;  
+    XMLParser parser;
     try {
         IEntity *entity = parser.parse(reply,reply.size());
         if((entity != NULL)&&(entity->getId() != Id::NULLID))

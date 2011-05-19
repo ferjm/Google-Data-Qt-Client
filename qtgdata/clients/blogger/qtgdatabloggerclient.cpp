@@ -31,6 +31,7 @@
 QtgdataBloggerClient::QtgdataBloggerClient(IAuthentication *auth, int version, QObject *parent) :
     QtgdataClient(version,parent)
 {
+    ID = BLOGGER;
     setAuthenticationData(auth);
 }
 
