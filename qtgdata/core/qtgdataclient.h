@@ -63,7 +63,7 @@ protected:
                            QList<QPair<QByteArray,QByteArray> > &headers,
                            QByteArray *body = NULL,
                            bool oauth = true);
-    virtual void atomFeedRetrievedFinished(QList<AtomEntry>) = 0;
+    virtual void atomFeedRetrievedFinished(AtomFeed) = 0;
 
 protected slots:
     void onAtomFeedRetrieved(QByteArray reply);

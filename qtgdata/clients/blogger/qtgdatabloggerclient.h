@@ -55,7 +55,7 @@ public:
     void deleteComment(QString blogID,QString postID,QString commentID);
 
 signals:
-    virtual void atomFeedRetrievedFinished(QList<AtomEntry>);
+    virtual void atomFeedRetrievedFinished(AtomFeed);
 
 };
 

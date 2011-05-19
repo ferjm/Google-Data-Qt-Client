@@ -93,76 +93,83 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
         IEntity *entity = parser.parse(reply,reply.size());
         if((entity != NULL)&&(entity->getId() != Id::NULLID))
         {
-            IEntity::itConstEntities begin,end;
-            entity->getEntityList(begin,end);
-            QList<AtomEntry> entries;
-            if(begin != end)
+            if(entity->getId() == Id::feed)
             {
-                for(IEntity::itConstEntities it = begin; it != end; it++ )
+                AtomFeed atomFeed;
+                IEntity::itConstEntities begin,end;
+                entity->getEntityList(begin,end);
+                QList<AtomEntry> entries;
+                if(begin != end)
                 {
-                    IEntity *sit = dynamic_cast<IEntity *>(*it);
-                    if(sit->getId() == Id::entry)
+                    for(IEntity::itConstEntities it = begin; it != end; it++ )
                     {
-                        AtomEntry atomEntry;
-                        IEntity::itConstEntities entryBegin,entryEnd;
-                        sit->getEntityList(entryBegin,entryEnd);
-                        for(IEntity::itConstEntities itEntry = entryBegin;
-                            itEntry != entryEnd;
-                            itEntry++)
+                        IEntity *sit = dynamic_cast<IEntity *>(*it);
+                        if(sit->getId() == Id::entry)
                         {
-                            IEntity *entry = dynamic_cast<IEntity *>(*itEntry);
-                            int id = entry->getId();
-                            switch(id)
+                            AtomEntry atomEntry;
+                            IEntity::itConstEntities entryBegin,entryEnd;
+                            sit->getEntityList(entryBegin,entryEnd);
+                            for(IEntity::itConstEntities itEntry = entryBegin;
+                                itEntry != entryEnd;
+                                itEntry++)
                             {
-                            case Id::author: {
-                                IEntity *author = entry->getEntity(Id::author);
-                                if((author)&&(author->getId()!=NULL))
+                                IEntity *entry = dynamic_cast<IEntity *>(*itEntry);
+                                int id = entry->getId();
+                                switch(id)
                                 {
-                                    IEntity *aux = NULL;
-                                    if((aux=author->getEntity(Id::name)));
-                                        atomEntry.author.name = aux->getValue();
+                                case Id::author: {
+                                    IEntity *author = entry->getEntity(Id::author);
+                                    if((author)&&(author->getId()!=NULL))
+                                    {
+                                        IEntity *aux = NULL;
+                                        if((aux=author->getEntity(Id::name)))
+                                        {
+                                            Author author;
+                                            author.name = aux->getValue();
+                                            atomEntry.authors.append(author);
+                                        }
+                                    }
+                                    break;
                                 }
-                                break;
+                                case Id::id:
+                                    atomEntry.id = entry->getValue();
+                                    break;
+                                case Id::published:
+                                    atomEntry.published.fromString(entry->getValue(),Qt::ISODate);
+                                    break;
+                                case Id::updated:
+                                    atomEntry.updated.fromString(entry->getValue(),Qt::ISODate);
+                                    break;
+                                case Id::summary:
+                                    atomEntry.summary = entry->getValue();
+                                    break;
+                                case Id::title:
+                                    atomEntry.title = entry->getValue();
+                                    break;
+                                case Id::link:
+                                {
+                                    Link link;
+                                    link.href = QUrl(entry->getAttribute(AttributeId::href)->sValue);
+                                    link.rel = entry->getAttribute(AttributeId::rel)->sValue;
+                                    link.type = entry->getAttribute(AttributeId::type)->sValue;
+                                    atomEntry.links.append(link);
+                                    break;
+                                }
+                                case Id::content:
+                                {
+                                    atomEntry.content.type = entry->getAttribute(AttributeId::type)->sValue;
+                                    atomEntry.content.content = QByteArray(entry->getValue().toAscii());;
+                                    break;
+                                }
+                                default: break;
+                                }
                             }
-                            case Id::id:
-                                atomEntry.id = entry->getValue();
-                                break;
-                            case Id::published:
-                                atomEntry.published.fromString(entry->getValue(),Qt::ISODate);
-                                break;
-                            case Id::updated:
-                                atomEntry.updated.fromString(entry->getValue(),Qt::ISODate);
-                                break;
-                            case Id::summary:
-                                atomEntry.summary = entry->getValue();
-                                break;
-                            case Id::title:
-                                atomEntry.title = entry->getValue();
-                                break;
-                            case Id::link:
-                            {
-                                Link link;
-                                link.href = QUrl(entry->getAttribute(AttributeId::href)->sValue);
-                                link.rel = entry->getAttribute(AttributeId::rel)->sValue;
-                                link.type = entry->getAttribute(AttributeId::type)->sValue;
-                                atomEntry.links.append(link);
-                                break;
-                            }
-                            case Id::content:
-                            {
-                                atomEntry.content.type = entry->getAttribute(AttributeId::type)->sValue;
-                                atomEntry.content.content = QByteArray(entry->getValue().toAscii());;
-                                break;
-                            }
-                            default: break;
-                            }
+                            atomFeed.entries.append(atomEntry);
                         }
-                        entries.append(atomEntry);
-                    }
-                 }
-            }
-            if(!entries.isEmpty())
-                emit atomFeedRetrievedFinished(entries);
+                     }
+                }
+                emit atomFeedRetrievedFinished(atomFeed);
+            } // if feed
         }
         delete entity;
     } catch(XMLParserException e) {

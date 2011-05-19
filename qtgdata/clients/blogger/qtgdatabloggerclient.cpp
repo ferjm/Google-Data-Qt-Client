@@ -161,14 +161,17 @@ void QtgdataBloggerClient::updatePost(AtomEntry entry)
     IEntity *content = new IEntity(NamespaceId::NULLID,Id::content,QString(entry.content.content));
     content->addAttribute(NamespaceId::NULLID,AttributeId::type,entry.content.type);
     entryEntity->addEntity(content);
-    IEntity *author = new IEntity(Id::author);
-    IEntity *name = new IEntity(NamespaceId::NULLID,Id::name,entry.author.name);
-    author->addEntity(name);
-    IEntity *uri = new IEntity(NamespaceId::NULLID,Id::uri,entry.author.uri.toString());
-    author->addEntity(uri);
-    IEntity *email = new IEntity(NamespaceId::NULLID,Id::email,entry.author.email);
-    author->addEntity(email);
-    entryEntity->addEntity(author);
+    for(int i=0; i<entry.authors.size(); i++)
+    {
+        IEntity *author = new IEntity(Id::author);
+        IEntity *name = new IEntity(NamespaceId::NULLID,Id::name,entry.authors.at(i).name);
+        author->addEntity(name);
+        IEntity *uri = new IEntity(NamespaceId::NULLID,Id::uri,entry.authors.at(i).uri.toString());
+        author->addEntity(uri);
+        IEntity *email = new IEntity(NamespaceId::NULLID,Id::email,entry.authors.at(i).email);
+        author->addEntity(email);
+        entryEntity->addEntity(author);
+    }
     QStringList namespaces;
     namespaces.append("http://www.w3.org/2005/Atom");
     XMLSerializer serializer(namespaces);

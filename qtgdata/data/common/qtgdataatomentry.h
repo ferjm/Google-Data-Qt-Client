@@ -54,26 +54,92 @@ public:
     QString type;
 };
 
+/**
+   From http://www.ietf.org/rfc/rfc4287.txt
+   The "atom:entry" element represents an individual entry, acting as a
+   container for metadata and data associated with the entry.  This
+   element can appear as a child of the atom:feed element, or it can
+   appear as the document (i.e., top-level) element of a stand-alone
+   Atom Entry Document.
+
+   atomEntry =
+      element atom:entry {
+         atomCommonAttributes,
+         (atomAuthor*
+          & atomCategory*
+          & atomContent?
+          & atomContributor*
+          & atomId
+          & atomLink*
+          & atomPublished?
+          & atomRights?
+          & atomSource?
+          & atomSummary?
+          & atomTitle
+          & atomUpdated
+          & extensionElement*)
+      }
+
+ */
+
 class AtomEntry
 {
 public:
     QString id;
     QString title;
-    Author author;
-    QDateTime published;
-    QDateTime updated;
     QString summary;
+    QList<Author> authors;
+    QDateTime published;
+    QDateTime updated;    
     QList<Link> links;
     QList<Category> categories;    
     Content content;
 
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<
-               "\n\t title: " << atomEntry.title.toAscii().data() <<
-               "\n\t author: " << atomEntry.author.name.toAscii().data() << " " << atomEntry.author.email.toAscii().data() <<
+               "\n\t title: " << atomEntry.title.toAscii().data() <<               
                "\n\t QString summary: " << atomEntry.summary.toAscii().data();
         return out;
     };
+};
+
+/**
+   From http://www.ietf.org/rfc/rfc4287.txt
+   The "atom:feed" element is the document (i.e., top-level) element of
+   an Atom Feed Document, acting as a container for metadata and data
+   associated with the feed.  Its element children consist of metadata
+   elements followed by zero or more atom:entry child elements.
+
+   atomFeed =
+      element atom:feed {
+         atomCommonAttributes,
+         (atomAuthor*
+          & atomCategory*
+          & atomContributor*
+          & atomGenerator?
+          & atomIcon?
+          & atomId
+          & atomLink*
+          & atomLogo?
+          & atomRights?
+          & atomSubtitle?
+          & atomTitle
+          & atomUpdated
+          & extensionElement*),
+         atomEntry*
+      }
+*/
+
+class AtomFeed
+{
+public:
+    QString id;
+    QString title;
+    QList<Author> authors;
+    QList<Category> categories;
+    QList<Link> links;
+    QList<AtomEntry> entries;
+    QDateTime published;
 };
 
 #endif // QTGDATAATOMFEED_H
