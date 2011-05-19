@@ -30,11 +30,9 @@ const char* XMLSerializerException::what() const throw()
     return retval.toAscii();
 }
 
-XMLSerializer::XMLSerializer(QStringList *lNameSpaces,XMLSchema schema)
+XMLSerializer::XMLSerializer(QStringList lNameSpaces)
 {
-    m_lNameSpaces = *lNameSpaces;
-    m_XMLSchema.nameSpace = schema.nameSpace;
-    m_XMLSchema.xmlSchema = schema.xmlSchema;
+    m_lNameSpaces = lNameSpaces;
 }
 
 void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
@@ -46,15 +44,14 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
         IEntity *it_ent = (*it);
         if(it_ent->getType() == PropertyBasic::ComplexProperty)
         {
-            stream->writeStartElement(it_ent->getNamespace(), it_ent->getName());
+            stream->writeStartElement(it_ent->getName());
             Attributes *attributes = it_ent->getAttributes();
             if((attributes) && (!attributes->empty()))
             {
                 Attributes::const_iterator it = attributes->begin();
                 while(it != attributes->end())
                 {
-                    stream->writeAttribute(((Attribute)(*it)).nSpace,
-                                           ((Attribute)(*it)).sName,
+                    stream->writeAttribute(((Attribute)(*it)).sName,
                                            ((Attribute)(*it)).sValue);
                     it++;
                 }
@@ -70,8 +67,7 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
                 it_ent->getValues(its,itse);
                 for(;its != itse; its++)
                 {
-                    stream->writeTextElement(it_ent->getNamespace(),
-                                             it_ent->getName(),
+                    stream->writeTextElement(it_ent->getName(),
                                              (QString)(*its));
                     Attributes *attributes = it_ent->getAttributes();
                     if((attributes) && (!attributes->empty()))
@@ -79,11 +75,25 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
                         Attributes::const_iterator it = attributes->begin();
                         while(it != attributes->end())
                         {
-                            stream->writeAttribute(((Attribute)(*it)).nSpace,
-                                                   ((Attribute)(*it)).sName,
+                            stream->writeAttribute(((Attribute)(*it)).sName,
                                                    ((Attribute)(*it)).sValue);
                             it++;
                         }
+                    }
+                }
+            }
+            else if (it_ent->getType()== PropertyBasic::BlankProperty)
+            {
+                stream->writeEmptyElement(it_ent->getName());
+                Attributes *attributes = it_ent->getAttributes();
+                if((attributes) && (!attributes->empty()))
+                {
+                    Attributes::const_iterator it = attributes->begin();
+                    while(it != attributes->end())
+                    {
+                        stream->writeAttribute(((Attribute)(*it)).sName,
+                                               ((Attribute)(*it)).sValue);
+                        it++;
                     }
                 }
             }
@@ -96,12 +106,12 @@ QString XMLSerializer::serialize(const IEntity *obj)
     if((obj == NULL) || (!obj->isValid())) throw XMLSerializerException("Invalid entity\n");
     QString output;
     QXmlStreamWriter stream(&output);    
-    stream.writeStartDocument();
-    stream.writeStartElement(obj->getNamespace(),obj->getName());
+    stream.writeStartDocument();        
     QStringList::iterator it;
     for (QStringList::iterator it = m_lNameSpaces.begin();it
             != m_lNameSpaces.end();it++)
-        stream.writeNamespace((QString)(*it));
+        stream.writeDefaultNamespace((QString)(*it));
+    stream.writeStartElement(obj->getName());
     serialize(obj,&stream);
     stream.writeEndElement();
     stream.writeEndDocument();

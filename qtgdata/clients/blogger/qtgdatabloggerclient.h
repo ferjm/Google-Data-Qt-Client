@@ -21,14 +21,41 @@
 #ifndef QTGDATABLOGGERCLIENT_H
 #define QTGDATABLOGGERCLIENT_H
 
-#include "core/qtgdataclient.h"
+#include "qtgdataclient.h"
+#include "qtgdataatomentry.h"
 
 class QtgdataBloggerClient : public QtgdataClient
 {
+    Q_OBJECT
 public:
+    enum OrderBy { STARTTIME, UPDATED };
+    enum Alt { ATOM, RSS };
+
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
 
-    void retrieveListOfBlogs();
+    void retrieveListOfBlogs(QString profileID = "default");
+    void retrieveListOfPosts(QString blogID,                             
+                             OrderBy orderby = UPDATED,
+                             QStringList categories = QStringList(),
+                             QDateTime publishedmin = QDateTime(),
+                             QDateTime publishedmax = QDateTime(),
+                             QDateTime updatedmin = QDateTime(),
+                             QDateTime updatedmax = QDateTime(),
+                             int maxresults = 10,
+                             int startindex = 1,
+                             QString etag = "");    
+    void createPost(QString blogID,
+                    QString title,
+                    QByteArray xhtmlContent,
+                    QList<Category> categories = QList<Category>());
+    void updatePost(AtomEntry entry);
+    void deletePost(QString blogID,QString postID);
+    void createComment(QString blogID,QString postID,AtomEntry entry);
+    void retrieveListOfComments(QString blogID,QString postID = QString());
+    void deleteComment(QString blogID,QString postID,QString commentID);
+
+signals:
+    virtual void atomFeedRetrievedFinished(AtomFeed);
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

@@ -42,8 +42,7 @@ public:
     void setRequestEndpoint(QUrl requestEndpoint);
     void setRequestBody(QByteArray body);
     void setRequestBody(QMultiMap<QString, QString> body);
-    void setHeader(const QByteArray & headerName, const QByteArray & headerValue);
-    void setContentTypeHeader(QVariant contentTypeHeader);
+    void setHeader(const QByteArray & headerName, const QByteArray & headerValue);   
 
     HttpRequest::RequestHttpMethod getHttpMethod() const;
     QUrl getRequestEndpoint() const;

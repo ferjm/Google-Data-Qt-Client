@@ -48,7 +48,13 @@ namespace Id
         entry,
         updated,
         title,
+        subtitle,
         cc,
+        uri,
+        published,
+        summary,
+        content,
+        total,
 
         //gd
         phoneNumber,
@@ -78,7 +84,7 @@ namespace AttributeId
         href,
         version,
         uri,
-        primary,
+        primary,        
 
         //openSearch
         totalResults,
@@ -97,7 +103,9 @@ namespace NamespaceId {
         openSearch,
         gContact,
         batch,
-        gd
+        gd,
+        thr,
+        xmlns
     )
 }
 

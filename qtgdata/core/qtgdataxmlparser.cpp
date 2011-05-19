@@ -60,7 +60,10 @@ void splitNode(QString node, QString &namesp, QString &name)
             {
                 namesp = strings[0];
                 name = strings[1];
-            } else name = strings[0];
+            } else
+            {
+                name = strings[0];
+            }
     }
 }
 

@@ -25,6 +25,7 @@
 
 #include "qtgdatahttpconnector.h"
 #include "qtgdataiauthentication.h"
+#include "qtgdataatomentry.h"
 
 /**
   \class QtgdataClient
@@ -33,6 +34,20 @@
 class QtgdataClient : public QObject
 {
     Q_OBJECT
+
+public:
+    /**
+      Constructor QtgdataClient
+      Creates a new QtgdataClient object
+      */
+    QtgdataClient(int version, QObject *parent = 0);
+
+    /**
+      Destructor
+      */
+    virtual ~QtgdataClient();
+
+    void setAuthenticationData(IAuthentication *authenticationData);
 
 protected:
     //for now the only authentication supported is oauth v1.0
@@ -43,19 +58,15 @@ protected:
     int version;
 
     HttpRequest* authenticatedRequest();
-public:
-    /**
-      Constructor QtgdataClient
-      Creates a new QtgdataClient object      
-      */
-    QtgdataClient(int version, QObject *parent = 0);
+    void sendClientRequest(HttpRequest::RequestHttpMethod method,
+                           QUrl endpoint,
+                           QList<QPair<QByteArray,QByteArray> > &headers,
+                           QByteArray *body = NULL,
+                           bool oauth = true);
+    virtual void atomFeedRetrievedFinished(AtomFeed) = 0;
 
-    /**
-      Destructor
-      */
-    ~QtgdataClient();
-
-    void setAuthenticationData(IAuthentication *authenticationData);    
+protected slots:
+    void onAtomFeedRetrieved(QByteArray reply);
 };
 
 #endif // QTGDATACLIENT_H

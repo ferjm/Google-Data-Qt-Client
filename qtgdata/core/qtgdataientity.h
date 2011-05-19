@@ -88,6 +88,7 @@ public:
     typedef QList<IEntity*>::iterator itEntities;
     typedef QVector<QString>::const_iterator itConstStrings;
 
+    IEntity(const int iname);
     IEntity(const int inamespace, const int iname);
     IEntity(const QString snamespace, const QString sname);
     IEntity(const int inamespace, const int iname, const QList<IEntity*> iEList);
@@ -104,7 +105,7 @@ public:
         begin = basicValues.begin();
         end = basicValues.end();
     }
-    virtual QString getValue(const int index = 0) const;
+    virtual QString getValue(const int index = 0) const;    
     bool checkNamespaceId(const int iNamespace) const;
     bool checkNamespaceId(const QString &sNamespace) const;
 

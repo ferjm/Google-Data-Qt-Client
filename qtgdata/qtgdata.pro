@@ -39,9 +39,10 @@ HEADERS += core/qtgdata.h\
     core/qtgdataoauthrequest.h \
     core/qtgdataiauthentication.h \
     core/qtgdataoauthdata.h \
-    clients/blogger/qtgdatabloggerclient.h
+    clients/blogger/qtgdatabloggerclient.h \
+    data/common/qtgdataatomentry.h
 
-INCLUDEPATH += core clients
+INCLUDEPATH += core clients data data/common
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata
