@@ -42,7 +42,8 @@ HEADERS += core/qtgdata.h\
     core/qtgdataoauthdata.h \
     clients/blogger/qtgdatabloggerclient.h \
     data/common/qtgdataatomentry.h \
-    clients/codesearch/qtgdatacodesearchclient.h
+    clients/codesearch/qtgdatacodesearchclient.h \
+    data/codesearch/qtgdatacodesearchfeed.h
 
 INCLUDEPATH += core clients data data/common
 

@@ -94,6 +94,7 @@ public:
     QList<Link> links;
     QList<Category> categories;    
     Content content;
+    QString rights;
 
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<

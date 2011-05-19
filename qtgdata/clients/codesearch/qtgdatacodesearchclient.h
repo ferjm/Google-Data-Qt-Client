@@ -9,10 +9,10 @@ class QtgdataCodeSearchClient : public QtgdataClient
 public:
     explicit QtgdataCodeSearchClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
 
+    void query(QStringList keywords);
+
 signals:
-
-public slots:
-
+    virtual void atomFeedRetrievedFinished(AtomFeed);
 };
 
 #endif // QTGDATACODESEARCHCLIENT_H

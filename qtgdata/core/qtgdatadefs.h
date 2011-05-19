@@ -55,13 +55,19 @@ namespace Id
         summary,
         content,
         total,
+        rights,
 
         //gd
         phoneNumber,
         extendedProperty,
         postalAddress,
         orgName,
-        organization
+        organization,
+
+        //gcs
+        file,
+        match,
+        package
     )
 }
 
@@ -105,7 +111,8 @@ namespace NamespaceId {
         batch,
         gd,
         thr,
-        xmlns
+        xmlns,
+        gcs
     )
 }
 
