@@ -90,13 +90,16 @@ namespace AttributeId
         href,
         version,
         uri,
-        primary,        
+        primary,
+        name,
 
         //openSearch
         totalResults,
         startIndex,
         itemsPerPage,
 
+        //gcs
+        lineNumber
     )
 }
 

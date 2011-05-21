@@ -45,7 +45,7 @@ HEADERS += core/qtgdata.h\
     clients/codesearch/qtgdatacodesearchclient.h \
     data/codesearch/qtgdatacodesearchfeed.h
 
-INCLUDEPATH += core clients data data/common
+INCLUDEPATH += core clients data data/common data/codesearch
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

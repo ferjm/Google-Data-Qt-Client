@@ -19,12 +19,45 @@
  ***************************************************************************/
 
 #include "qtgdatacodesearchclient.h"
+#include "data/codesearch/qtgdatacodesearchfeed.h"
 
 QtgdataCodeSearchClient::QtgdataCodeSearchClient(IAuthentication *auth, int version, QObject *parent) :
     QtgdataClient(version,parent)
 {
     ID = CODESEARCH;
     setAuthenticationData(auth);
+}
+
+QtgdataCodeSearchClient::~QtgdataCodeSearchClient()
+{
+
+}
+
+AtomEntry* QtgdataCodeSearchClient::createAtomEntry()
+{
+    return new CodeSearchEntry();
+}
+
+void QtgdataCodeSearchClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)
+{
+    CodeSearchEntry *codeSearchEntry = dynamic_cast<CodeSearchEntry*>(atomEntry);
+    if(codeSearchEntry)
+    {
+        switch(id)
+        {
+        case Id::file:
+            codeSearchEntry->file = entry->getAttribute(AttributeId::name)->sValue;
+            break;
+        case Id::match:
+            codeSearchEntry->match.type = entry->getAttribute(AttributeId::type)->sValue;
+            codeSearchEntry->match.lineNumber = entry->getAttribute(AttributeId::lineNumber)->sValue;
+            break;
+        case Id::package:
+            codeSearchEntry->package.name = entry->getAttribute(AttributeId::name)->sValue;
+            codeSearchEntry->package.uri = entry->getAttribute(AttributeId::uri)->sValue;
+            break;
+        }
+    }
 }
 
 void QtgdataCodeSearchClient::query(QStringList keywords)

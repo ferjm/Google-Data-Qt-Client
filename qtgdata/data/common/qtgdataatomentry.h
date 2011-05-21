@@ -96,6 +96,8 @@ public:
     Content content;
     QString rights;
 
+    virtual ~AtomEntry(){};
+
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<
                "\n\t title: " << atomEntry.title.toAscii().data() <<               
@@ -139,8 +141,19 @@ public:
     QList<Author> authors;
     QList<Category> categories;
     QList<Link> links;
-    QList<AtomEntry> entries;
+    QList<AtomEntry*> entries;
     QDateTime published;
+
+    void clear() {
+        this->id.clear();
+        this->title.clear();
+        this->authors.clear();
+        this->categories.clear();
+        this->links.clear();
+        for(int i=0;i<this->entries.size();i++)
+            if(entries.at(i) != NULL) delete entries.at(i);
+        this->published = QDateTime();
+    }
 };
 
 #endif // QTGDATAATOMFEED_H

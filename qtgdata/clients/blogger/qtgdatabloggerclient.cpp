@@ -22,6 +22,7 @@
 #include "qtgdataoauthrequest.h"
 #include "qtgdataxmlparser.h"
 #include "qtgdataxmlserializer.h"
+#include "data/codesearch/qtgdatacodesearchfeed.h"
 
 #include <QDebug>
 
@@ -32,7 +33,22 @@ QtgdataBloggerClient::QtgdataBloggerClient(IAuthentication *auth, int version, Q
     QtgdataClient(version,parent)
 {
     ID = BLOGGER;
-    setAuthenticationData(auth);
+    setAuthenticationData(auth);    
+}
+
+QtgdataBloggerClient::~QtgdataBloggerClient()
+{
+
+}
+
+AtomEntry* QtgdataBloggerClient::createAtomEntry()
+{
+    return new AtomEntry();
+}
+
+void QtgdataBloggerClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)
+{
+    return;
 }
 
 void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)

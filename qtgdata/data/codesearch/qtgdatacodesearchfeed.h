@@ -25,21 +25,26 @@
 
 class Match
 {
+public:
     QString type;
     QString lineNumber;
 };
 
 class Package
 {
+public:
     QString name;
     QUrl uri;
 };
 
-class CodeSearchFeed : public AtomFeed
+class CodeSearchEntry : public AtomEntry
 {
+public:
     QString file;
     Match match;
     Package package;
+
+    virtual ~CodeSearchEntry(){};
 };
 
 #endif // QTGDATACODESEARCHFEED_H

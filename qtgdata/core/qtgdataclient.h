@@ -57,6 +57,7 @@ protected:
     HttpConnector httpConnector;
     IAuthentication *authenticationData;
     int version;    
+    AtomFeed atomFeed;
 
     HttpRequest* authenticatedRequest();
     void sendClientRequest(HttpRequest::RequestHttpMethod method,
@@ -65,6 +66,8 @@ protected:
                            QByteArray *body = NULL,
                            bool oauth = true);
     virtual void atomFeedRetrievedFinished(AtomFeed) = 0;
+    virtual AtomEntry* createAtomEntry() = 0;
+    virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry) = 0;
 
 protected slots:
     void onAtomFeedRetrieved(QByteArray reply);       

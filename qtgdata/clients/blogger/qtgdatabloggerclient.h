@@ -32,6 +32,10 @@ public:
     enum Alt { ATOM, RSS };
 
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
+    virtual ~QtgdataBloggerClient();
+
+    virtual AtomEntry* createAtomEntry();
+    virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
 
     void retrieveListOfBlogs(QString profileID = "default");
     void retrieveListOfPosts(QString blogID,                             
@@ -52,7 +56,7 @@ public:
     void deletePost(QString blogID,QString postID);
     void createComment(QString blogID,QString postID,AtomEntry entry);
     void retrieveListOfComments(QString blogID,QString postID = QString());
-    void deleteComment(QString blogID,QString postID,QString commentID);
+    void deleteComment(QString blogID,QString postID,QString commentID);    
 
 signals:
     virtual void atomFeedRetrievedFinished(AtomFeed);

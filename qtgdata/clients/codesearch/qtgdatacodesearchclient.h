@@ -28,6 +28,10 @@ class QtgdataCodeSearchClient : public QtgdataClient
     Q_OBJECT
 public:
     explicit QtgdataCodeSearchClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
+    virtual ~QtgdataCodeSearchClient();
+
+    virtual AtomEntry* createAtomEntry();
+    virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
 
     void query(QStringList keywords);
 
