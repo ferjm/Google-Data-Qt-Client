@@ -21,7 +21,7 @@
 #ifndef QTGDATACODESEARCHFEED_H
 #define QTGDATACODESEARCHFEED_H
 
-#include "common/qtgdataatomentry.h"
+#include "qtgdataatomentry.h"
 
 class Match
 {
@@ -45,6 +45,23 @@ public:
     Package package;
 
     virtual ~CodeSearchEntry(){};
+};
+
+class CodeSearchFeed : public AtomFeedBase
+{
+public:
+    QList<CodeSearchEntry*> entries;
+
+    virtual void clear() {
+        this->id.clear();
+        this->title.clear();
+        this->authors.clear();
+        this->categories.clear();
+        this->links.clear();
+        for(int i=0;i<this->entries.size();i++)
+            if(entries.at(i) != NULL) delete entries.at(i);
+        this->published = QDateTime();
+    }
 };
 
 #endif // QTGDATACODESEARCHFEED_H

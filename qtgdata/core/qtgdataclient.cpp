@@ -27,13 +27,18 @@
 QtgdataClient::QtgdataClient(int version, QObject *parent) : version(version)
 {    
     ID = BASE;
+    atomFeed = NULL;
 }
 
 QtgdataClient::~QtgdataClient()
 {
     if(authenticationData) delete authenticationData;
     authenticationData = NULL;
-    atomFeed.clear();
+    if(atomFeed!=NULL) {
+        atomFeed->clear();
+        delete atomFeed;
+        atomFeed = NULL;
+    }
 }
 
 void QtgdataClient::setAuthenticationData(IAuthentication *authenticationData)
@@ -98,8 +103,8 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
         if((entity != NULL)&&(entity->getId() != Id::NULLID))
         {
             if(entity->getId() == Id::feed)
-            {
-                atomFeed.clear();
+            {                
+                atomFeed = createAtomFeed();
                 IEntity::itConstEntities begin,end;
                 entity->getEntityList(begin,end);                
                 if(begin != end)
@@ -107,7 +112,47 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                     for(IEntity::itConstEntities it = begin; it != end; it++ )
                     {
                         IEntity *sit = dynamic_cast<IEntity *>(*it);
-                        if(sit->getId() == Id::entry)
+                        switch(sit->getId())
+                        {
+                        case Id::id:
+                            atomFeed->id = sit->getValue();
+                            break;
+                        case Id::updated:
+                            atomFeed->updated.fromString(sit->getValue(),Qt::ISODate);
+                            break;
+                        case Id::title:
+                            atomFeed->title = sit->getValue();
+                            break;
+                        case Id::generator:
+                            atomFeed->generator.generator = sit->getValue();
+                            atomFeed->generator.version = sit->getAttribute(AttributeId::version)->sValue;
+                            atomFeed->generator.uri = QUrl(sit->getAttribute(AttributeId::uri)->sValue);
+                            break;
+                        case Id::author:
+                        {
+                            IEntity *aux = NULL;
+                            Author author;
+                            if((aux=sit->getEntity(Id::name)))
+                                author.name = aux->getValue();
+                            aux = NULL;
+                            if(aux=sit->getEntity(Id::uri))
+                                author.uri = QUrl(aux->getValue());
+                            aux = NULL;
+                            if(aux=sit->getEntity(Id::email))
+                                author.email = aux->getValue();
+                            atomFeed->authors.append(author);
+                            break;
+                        }
+                        case Id::link:
+                        {
+                            Link link;
+                            link.href = QUrl(sit->getAttribute(AttributeId::href)->sValue);
+                            link.rel = sit->getAttribute(AttributeId::rel)->sValue;
+                            link.type = sit->getAttribute(AttributeId::type)->sValue;
+                            atomFeed->links.append(link);
+                            break;
+                        }
+                        case Id::entry:
                         {
                             AtomEntry *atomEntry = createAtomEntry();
                             IEntity::itConstEntities entryBegin,entryEnd;
@@ -169,11 +214,12 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                                     break;
                                 }
                             }
-                            atomFeed.entries.append(atomEntry);
+                            appendEntry(atomEntry);
+                        }
                         }
                      }
-                }
-                emit atomFeedRetrievedFinished(atomFeed);
+                }                
+                emitAtomFeedRetrieved();
             } // if feed
         }
         delete entity;

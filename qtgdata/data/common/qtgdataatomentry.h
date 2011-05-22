@@ -54,6 +54,14 @@ public:
     QString type;
 };
 
+class Generator
+{
+public:
+    QString version;
+    QUrl uri;
+    QString generator;
+};
+
 /**
    From http://www.ietf.org/rfc/rfc4287.txt
    The "atom:entry" element represents an individual entry, acting as a
@@ -132,8 +140,7 @@ public:
          atomEntry*
       }
 */
-
-class AtomFeed
+class AtomFeedBase
 {
 public:
     QString id;
@@ -141,10 +148,19 @@ public:
     QList<Author> authors;
     QList<Category> categories;
     QList<Link> links;
-    QList<AtomEntry*> entries;
     QDateTime published;
+    QDateTime updated;
+    Generator generator;
 
-    void clear() {
+    virtual void clear() = 0;
+};
+
+class AtomFeed : public AtomFeedBase
+{
+public:
+    QList<AtomEntry*> entries;
+
+    virtual void clear() {
         this->id.clear();
         this->title.clear();
         this->authors.clear();
@@ -155,5 +171,4 @@ public:
         this->published = QDateTime();
     }
 };
-
 #endif // QTGDATAATOMFEED_H

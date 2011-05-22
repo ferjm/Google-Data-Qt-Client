@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010-2001 Fernando Jiménez Moreno <ferjmoreno@gmail.com>*
+ *   Copyright (C) 2010-2011 Fernando Jiménez Moreno <ferjmoreno@gmail.com>*
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,6 +22,7 @@
 #define QTGDATACODESEARCHCLIENT_H
 
 #include "qtgdataclient.h"
+#include "qtgdatacodesearchfeed.h"
 
 class QtgdataCodeSearchClient : public QtgdataClient
 {
@@ -30,13 +31,16 @@ public:
     explicit QtgdataCodeSearchClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
     virtual ~QtgdataCodeSearchClient();
 
+    virtual AtomFeedBase* createAtomFeed();
     virtual AtomEntry* createAtomEntry();
+    virtual const int appendEntry(AtomEntry *entry);
+    virtual void emitAtomFeedRetrieved();
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
 
     void query(QStringList keywords);
 
-signals:
-    virtual void atomFeedRetrievedFinished(AtomFeed);
+signals:    
+    void codeSearchFeedRetrieved(CodeSearchFeed*);
 };
 
 #endif // QTGDATACODESEARCHCLIENT_H

@@ -34,7 +34,10 @@ public:
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
     virtual ~QtgdataBloggerClient();
 
+    virtual AtomFeedBase* createAtomFeed();
     virtual AtomEntry* createAtomEntry();
+    virtual const int appendEntry(AtomEntry *entry);
+    virtual void emitAtomFeedRetrieved();
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
 
     void retrieveListOfBlogs(QString profileID = "default");
@@ -58,8 +61,8 @@ public:
     void retrieveListOfComments(QString blogID,QString postID = QString());
     void deleteComment(QString blogID,QString postID,QString commentID);    
 
-signals:
-    virtual void atomFeedRetrievedFinished(AtomFeed);
+signals:    
+    void bloggerFeedRetrieved(AtomFeed*);
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

@@ -57,16 +57,18 @@ protected:
     HttpConnector httpConnector;
     IAuthentication *authenticationData;
     int version;    
-    AtomFeed atomFeed;
+    AtomFeedBase *atomFeed;
 
     HttpRequest* authenticatedRequest();
     void sendClientRequest(HttpRequest::RequestHttpMethod method,
                            QUrl endpoint,
                            QList<QPair<QByteArray,QByteArray> > &headers,
                            QByteArray *body = NULL,
-                           bool oauth = true);
-    virtual void atomFeedRetrievedFinished(AtomFeed) = 0;
+                           bool oauth = true);    
+    virtual AtomFeedBase* createAtomFeed() = 0;
     virtual AtomEntry* createAtomEntry() = 0;
+    virtual const int appendEntry(AtomEntry *entry) = 0;
+    virtual void emitAtomFeedRetrieved() = 0;
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry) = 0;
 
 protected slots:

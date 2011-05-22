@@ -33,9 +33,34 @@ QtgdataCodeSearchClient::~QtgdataCodeSearchClient()
 
 }
 
+AtomFeedBase* QtgdataCodeSearchClient::createAtomFeed()
+{
+    if(atomFeed) delete atomFeed;
+    atomFeed = new CodeSearchFeed();
+    return atomFeed;
+}
+
+const int QtgdataCodeSearchClient::appendEntry(AtomEntry *entry)
+{
+    CodeSearchFeed* csfeed = dynamic_cast<CodeSearchFeed*>(atomFeed);
+    CodeSearchEntry* csentry = dynamic_cast<CodeSearchEntry*>(entry);
+    if(csfeed) csfeed->entries.append(csentry);
+    else return -1;
+    return 0;
+}
+
 AtomEntry* QtgdataCodeSearchClient::createAtomEntry()
 {
     return new CodeSearchEntry();
+}
+
+void QtgdataCodeSearchClient::emitAtomFeedRetrieved()
+{
+    if(atomFeed)
+    {
+        CodeSearchFeed *feed = dynamic_cast<CodeSearchFeed*>(atomFeed);
+        if(feed) emit codeSearchFeedRetrieved(feed);
+    }
 }
 
 void QtgdataCodeSearchClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)
