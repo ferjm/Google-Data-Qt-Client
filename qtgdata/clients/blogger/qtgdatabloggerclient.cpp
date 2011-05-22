@@ -71,7 +71,7 @@ const int QtgdataBloggerClient::appendEntry(AtomEntry *entry)
 
 void QtgdataBloggerClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)
 {
-    return;
+
 }
 
 void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)

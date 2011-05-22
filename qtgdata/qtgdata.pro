@@ -23,7 +23,8 @@ SOURCES += core/qtgdata.cpp \
     core/qtgdataclient.cpp \
     core/qtgdataoauthdata.cpp \
     clients/blogger/qtgdatabloggerclient.cpp \
-    clients/codesearch/qtgdatacodesearchclient.cpp
+    clients/codesearch/qtgdatacodesearchclient.cpp \
+    clients/picasa/qtgdatapicasaclient.cpp
 
 HEADERS += core/qtgdata.h\
         core/qtgdata_global.h \
@@ -43,7 +44,9 @@ HEADERS += core/qtgdata.h\
     clients/blogger/qtgdatabloggerclient.h \
     data/common/qtgdataatomentry.h \
     clients/codesearch/qtgdatacodesearchclient.h \
-    data/codesearch/qtgdatacodesearchfeed.h
+    data/codesearch/qtgdatacodesearchfeed.h \
+    clients/picasa/qtgdatapicasaclient.h \
+    data/picasa/qtgdatapicasadata.h
 
 INCLUDEPATH += core clients data data/common data/codesearch
 

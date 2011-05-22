@@ -52,7 +52,7 @@ public:
 protected:    
     //for now the only authentication supported is oauth v1.0
     enum AuthenticationMode { OAUTH_1_0 } authenticationMode;
-    enum ClientID { BASE, BLOGGER, CODESEARCH } ID;
+    enum ClientID { BASE, BLOGGER, CODESEARCH, PICASA } ID;
 
     HttpConnector httpConnector;
     IAuthentication *authenticationData;

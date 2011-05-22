@@ -67,7 +67,26 @@ namespace Id
         //gcs
         file,
         match,
-        package
+        package,
+
+        //gphoto
+        thumbnail,
+        quotalimit,
+        quotacurrent,
+        maxPhotosPerAlbum,
+        access,
+        timestamp,
+        numphotos,
+        numphotosremaining,
+        bytesUsed,
+        user,
+        nickname,
+        albumType,
+        group,
+        credit,
+
+        //app
+        edited
     )
 }
 
@@ -92,6 +111,8 @@ namespace AttributeId
         uri,
         primary,
         name,
+        description,
+
 
         //openSearch
         totalResults,

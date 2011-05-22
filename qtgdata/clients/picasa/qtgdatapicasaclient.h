@@ -18,21 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef QTGDATABLOGGERCLIENT_H
-#define QTGDATABLOGGERCLIENT_H
+#ifndef QTGDATAPICASACLIENT_H
+#define QTGDATAPICASACLIENT_H
 
 #include "qtgdataclient.h"
-#include "qtgdataatomentry.h"
 
-class QtgdataBloggerClient : public QtgdataClient
+/**
+  \class QtgdataPicasaClient
+  Picasa Web Albums allows client applications to view and update albums, photos,
+  and comments in the form of Google Data API feeds. Your client application can
+  use the Picasa Web Albums Data API to create new albums, upload photos, add
+  comments, edit or delete existing albums, photos, and comments, and query for
+  items that match particular criteria.
+ */
+
+class QtgdataPicasaClient : public QtgdataClient
 {
     Q_OBJECT
 public:
-    enum OrderBy { STARTTIME, UPDATED };
-    enum Alt { ATOM, RSS };
+    enum PicasaClientReturnCode
+    {
+        OK = 0
+    };
 
-    QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
-    virtual ~QtgdataBloggerClient();
+    explicit QtgdataPicasaClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
+    virtual ~QtgdataPicasaClient();
 
     virtual AtomFeedBase* createAtomFeed();
     virtual AtomEntry* createAtomEntry();
@@ -40,29 +50,23 @@ public:
     virtual void emitAtomFeedRetrieved();
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
 
-    void retrieveListOfBlogs(QString profileID = "default");
-    void retrieveListOfPosts(QString blogID,                             
-                             OrderBy orderby = UPDATED,
-                             QStringList categories = QStringList(),
-                             QDateTime publishedmin = QDateTime(),
-                             QDateTime publishedmax = QDateTime(),
-                             QDateTime updatedmin = QDateTime(),
-                             QDateTime updatedmax = QDateTime(),
-                             int maxresults = 10,
-                             int startindex = 1,
-                             QString etag = "");    
-    void createPost(QString blogID,
-                    QString title,
-                    QByteArray xhtmlContent,
-                    QList<Category> categories = QList<Category>());
-    void updatePost(AtomEntry entry);
-    void deletePost(QString blogID,QString postID);
-    void createComment(QString blogID,QString postID,AtomEntry entry);
-    void retrieveListOfComments(QString blogID,QString postID = QString());
-    void deleteComment(QString blogID,QString postID,QString commentID);    
+    /**
+      * Get a feed listing all of the albums belonging to user userID
+      * @param userID ID of the owner of the albums to retrieve.
+      * The string 'default' can be used in place of a real user ID, in which
+      * case the server uses the ID of the user whose credentials authenticated the request.      
+      * @param queryParams <a href=http://code.google.com/apis/picasaweb/docs/2.0/reference.html#Parameters>
+      * List of supported query parameters</a>
+      * @return picasaClientReturnCode
+      */
+    PicasaClientReturnCode retrieveListOfAlbums(QString userID = "default",
+                                                QString queryParams = QString());
 
-signals:    
-    void bloggerFeedRetrieved(AtomFeed*);
+signals:
+    void picasaFeedRetrieved(AtomFeed*);
+
+public slots:
+
 };
 
-#endif // QTGDATABLOGGERCLIENT_H
+#endif // QTGDATAPICASACLIENT_H
