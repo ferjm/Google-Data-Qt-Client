@@ -39,6 +39,7 @@ public:
     virtual const int appendEntry(AtomEntry *entry);
     virtual void emitAtomFeedRetrieved();
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
+    virtual void parseFeed(IEntity *entity);
 
     void retrieveListOfBlogs(QString profileID = "default");
     void retrieveListOfPosts(QString blogID,                             

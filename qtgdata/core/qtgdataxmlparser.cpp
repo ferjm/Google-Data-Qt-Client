@@ -139,7 +139,8 @@ IEntity* XMLParser::parse(QByteArray buff,int size)
         parseNode(ent,&node);
     }
 #ifdef QTGDATA_DEBUG
-    qDebug() << ent->toString();
+    if(ent!=NULL)
+        qDebug() << ent->toString();
 #endif
     return ent;
 }

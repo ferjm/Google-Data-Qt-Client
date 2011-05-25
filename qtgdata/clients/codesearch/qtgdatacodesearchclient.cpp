@@ -85,6 +85,11 @@ void QtgdataCodeSearchClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *en
     }
 }
 
+void QtgdataCodeSearchClient::parseFeed(IEntity *entity)
+{
+
+}
+
 void QtgdataCodeSearchClient::query(QStringList keywords)
 {
     QList<QPair<QByteArray,QByteArray> > headers;

@@ -112,7 +112,7 @@ namespace AttributeId
         primary,
         name,
         description,
-
+        url,
 
         //openSearch
         totalResults,
@@ -120,7 +120,11 @@ namespace AttributeId
         itemsPerPage,
 
         //gcs
-        lineNumber
+        lineNumber,
+
+        //media
+        height,
+        width
     )
 }
 
@@ -136,7 +140,9 @@ namespace NamespaceId {
         gd,
         thr,
         xmlns,
-        gcs
+        gcs,
+        gphoto,
+        media
     )
 }
 

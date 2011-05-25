@@ -74,6 +74,11 @@ void QtgdataBloggerClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry
 
 }
 
+void QtgdataBloggerClient::parseFeed(IEntity *entity)
+{
+
+}
+
 void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
 {
     QList<QPair<QByteArray,QByteArray> > headers;

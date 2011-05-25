@@ -61,7 +61,7 @@ public:
     int quotaCurrent; /** The number of bytes of storage currently in use by the user. */
     int quotaLimit; /** The total amount of space allotted to the user. */
     long int bytesUsed; /** The number of bytes of storage that this album uses. */
-    QUrl quotaThumbnail; /** The URL of a thumbnail-sized portrait of the user.*/
+    QUrl thumbnail; /** The URL of a thumbnail-sized portrait of the user.*/
 };
 
 /**
@@ -93,7 +93,7 @@ public:
 };
 
 /**
-  \clas MediaGroup
+  \class MediaGroup
   Picasa Web Albums uses the media (http://search.yahoo.com/mrss/) namespace for elements defined
   in the Media RSS specification. For information about the media namespace,
   <a href="http://search.yahoo.com/mrss">see the Media RSS specification.</a>
@@ -111,9 +111,13 @@ public:
 class PicasaEntry : public AtomEntry
 {
 public:
-    virtual ~PicasaEntry(){};
+    virtual ~PicasaEntry()
+    {
+
+    }
 
     QDateTime edited;
+    QString rights;
     MediaGroup mediaGroup;
     GPhoto gphoto;
 };
@@ -122,21 +126,16 @@ class PicasaFeed : public AtomFeedBase
 {
 public:
     QList<PicasaEntry*> entries;
-    Gphoto gphoto;
+    GPhoto gphoto;
     virtual void clear() {
         this->id.clear();
         this->title.clear();
         this->authors.clear();
         this->categories.clear();
         this->links.clear();
-        this->user.clear();
-        this->nickname.clear();
-        this->thumbnail.clear();
-        this->quotaLimit = 0;
-        this->quotaCurrent = 0;
-        this->maxPhotosPerAlbum.clear();
+        //this->gPhoto->clear();
         for(int i=0;i<this->entries.size();i++)
-            if(entries.at(i) != NULL) delete entries.at(i);
+            if(this->entries.at(i) != NULL) delete this->entries.at(i);
         this->published = QDateTime();
     }
 };

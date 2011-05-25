@@ -70,6 +70,7 @@ protected:
     virtual const int appendEntry(AtomEntry *entry) = 0;
     virtual void emitAtomFeedRetrieved() = 0;
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry) = 0;
+    virtual void parseFeed(IEntity *entity) = 0;
 
 protected slots:
     void onAtomFeedRetrieved(QByteArray reply);       

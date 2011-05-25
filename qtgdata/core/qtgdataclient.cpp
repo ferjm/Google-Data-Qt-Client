@@ -216,6 +216,9 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                             }
                             appendEntry(atomEntry);
                         }
+                        default:
+                            parseFeed(sit);
+                            break;
                         }
                      }
                 }                

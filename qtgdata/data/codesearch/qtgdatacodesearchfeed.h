@@ -44,7 +44,7 @@ public:
     Match match;
     Package package;
 
-    virtual ~CodeSearchEntry(){};
+    virtual ~CodeSearchEntry(){}
 };
 
 class CodeSearchFeed : public AtomFeedBase
@@ -59,7 +59,7 @@ public:
         this->categories.clear();
         this->links.clear();
         for(int i=0;i<this->entries.size();i++)
-            if(entries.at(i) != NULL) delete entries.at(i);
+            if(this->entries.at(i) != NULL) delete this->entries.at(i);
         this->published = QDateTime();
     }
 };

@@ -48,7 +48,7 @@ HEADERS += core/qtgdata.h\
     clients/picasa/qtgdatapicasaclient.h \
     data/picasa/qtgdatapicasadata.h
 
-INCLUDEPATH += core clients data data/common data/codesearch
+INCLUDEPATH += core clients data data/common data/codesearch data/picasa
 
 header_files.files = $$HEADERS
 header_files.path = /usr/local/include/qtgdata

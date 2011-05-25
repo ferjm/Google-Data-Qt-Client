@@ -22,6 +22,7 @@
 #define QTGDATAPICASACLIENT_H
 
 #include "qtgdataclient.h"
+#include "qtgdatapicasadata.h"
 
 /**
   \class QtgdataPicasaClient
@@ -31,7 +32,6 @@
   comments, edit or delete existing albums, photos, and comments, and query for
   items that match particular criteria.
  */
-
 class QtgdataPicasaClient : public QtgdataClient
 {
     Q_OBJECT
@@ -49,6 +49,7 @@ public:
     virtual const int appendEntry(AtomEntry *entry);
     virtual void emitAtomFeedRetrieved();
     virtual void parseEntry(int id,AtomEntry *atomEntry,IEntity *entry);
+    virtual void parseFeed(IEntity *entity);
 
     /**
       * Get a feed listing all of the albums belonging to user userID
@@ -63,7 +64,7 @@ public:
                                                 QString queryParams = QString());
 
 signals:
-    void picasaFeedRetrieved(AtomFeed*);
+    void picasaFeedRetrieved(PicasaFeed*);
 
 public slots:
 

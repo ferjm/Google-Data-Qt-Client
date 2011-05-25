@@ -104,7 +104,7 @@ public:
     Content content;
     QString rights;
 
-    virtual ~AtomEntry(){};
+    virtual ~AtomEntry(){}
 
     friend std::ostream& operator<< (std::ostream &out,AtomEntry &atomEntry) {
         out << "Entry: \n" << "\t id: " << atomEntry.id.toAscii().data() <<
@@ -164,10 +164,10 @@ public:
         this->id.clear();
         this->title.clear();
         this->authors.clear();
-        this->categories.clear();
+        this->categories.clear();        
         this->links.clear();
         for(int i=0;i<this->entries.size();i++)
-            if(entries.at(i) != NULL) delete entries.at(i);
+            if(this->entries.at(i) != NULL) delete this->entries.at(i);
         this->published = QDateTime();
     }
 };
