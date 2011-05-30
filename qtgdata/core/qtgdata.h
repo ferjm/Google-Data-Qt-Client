@@ -26,20 +26,53 @@
 #include "qtgdatadefs.h"
 #include "qtgdata_global.h"
 
+/**
+  * \class Qtgdata
+  * Singleton class containing the core data of the elements
+  * to be shared between clients and server.
+  */
 class QTGDATASHARED_EXPORT Qtgdata {
+    /**
+     * String list containing the id of the entity tags
+     */
     QStringList properties;
+    /**
+     * String list containing the id of the entity attributes
+     */
     QStringList attributes;
+    /**
+     * String list containing the entity namespaces ids.
+     */
     QStringList namespaces;
-
+    /**
+     * Single instance
+     */
     static Qtgdata qtgdata;
-
+    /**
+     * Constructor
+     */
     Qtgdata();
 
 public:
+    /**
+     * Destructor
+     */
     ~Qtgdata();
+    /**
+     * Gets a reference of the single instance
+     */
     static Qtgdata* getInstance();
+    /**
+     * Gets the list of entity tags ids
+     */
     QStringList& getProperties();
+    /**
+     * Gets the list of attributes ids
+     */
     QStringList& getAttributes();
+    /**
+     * Gets the list of namespaces
+     */
     QStringList& getNamespaces();
 };
 

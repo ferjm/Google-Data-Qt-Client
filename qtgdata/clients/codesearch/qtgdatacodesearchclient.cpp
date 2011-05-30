@@ -45,8 +45,8 @@ const int QtgdataCodeSearchClient::appendEntry(AtomEntry *entry)
     CodeSearchFeed* csfeed = dynamic_cast<CodeSearchFeed*>(atomFeed);
     CodeSearchEntry* csentry = dynamic_cast<CodeSearchEntry*>(entry);
     if(csfeed) csfeed->entries.append(csentry);
-    else return -1;
-    return 0;
+    else return QTGDATA_ERROR_FAILED;
+    return QTGDATA_SUCCESS;
 }
 
 AtomEntry* QtgdataCodeSearchClient::createAtomEntry()

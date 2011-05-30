@@ -53,7 +53,8 @@ AtomEntry* QtgdataBloggerClient::createAtomEntry()
     return new AtomEntry();
 }
 
-void QtgdataBloggerClient::emitAtomFeedRetrieved() {
+void QtgdataBloggerClient::emitAtomFeedRetrieved()
+{
     if(atomFeed)
     {
         AtomFeed *feed = dynamic_cast<AtomFeed*>(atomFeed);
@@ -65,8 +66,8 @@ const int QtgdataBloggerClient::appendEntry(AtomEntry *entry)
 {
     AtomFeed* feed = dynamic_cast<AtomFeed*>(atomFeed);
     if(feed) feed->entries.append(entry);
-    else return -1;
-    return 0;
+    else return QTGDATA_ERROR_FAILED;
+    return QTGDATA_SUCCESS;
 }
 
 void QtgdataBloggerClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)

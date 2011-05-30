@@ -60,8 +60,8 @@ const int QtgdataPicasaClient::appendEntry(AtomEntry *entry)
     PicasaFeed* pfeed = dynamic_cast<PicasaFeed*>(atomFeed);
     PicasaEntry* pentry = dynamic_cast<PicasaEntry*>(entry);
     if(pfeed) pfeed->entries.append(pentry);
-    else return -1;
-    return 0;
+    else return QTGDATA_ERROR_FAILED;
+    return QTGDATA_SUCCESS;
 }
 
 void QtgdataPicasaClient::parseEntry(int id,AtomEntry *atomEntry,IEntity *entry)
@@ -194,8 +194,7 @@ void QtgdataPicasaClient::parseFeed(IEntity *entity)
     }
 }
 
-QtgdataPicasaClient::PicasaClientReturnCode
-QtgdataPicasaClient::retrieveListOfAlbums(QString userID,
+QTGDATAReturnCode QtgdataPicasaClient::retrieveListOfAlbums(QString userID,
                                           QString queryParams)
 {
     QList<QPair<QByteArray,QByteArray> > headers;
@@ -205,5 +204,23 @@ QtgdataPicasaClient::retrieveListOfAlbums(QString userID,
                       QUrl(endpoint),
                       headers,
                       NULL);
-    return OK;
+    return QTGDATA_SUCCESS;
 }
+
+QTGDATAReturnCode QtgdataPicasaClient::createAlbum(PicasaEntry &album)
+{
+    return QTGDATA_SUCCESS;
+}
+
+QTGDATAReturnCode QtgdataPicasaClient::updatedAlbum(PicasaEntry &album,
+                                                    QString eTag)
+{
+    return QTGDATA_SUCCESS;
+}
+
+QTGDATAReturnCode QtgdataPicasaClient::deleteAlbum(QString albumID,
+                                                    QString eTag)
+{
+    return QTGDATA_SUCCESS;
+}
+
