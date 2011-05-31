@@ -56,6 +56,7 @@ void splitNode(QString node, QString &namesp, QString &name)
     {
         QStringList strings = node.split(":");
         if(!strings.isEmpty())
+        {
             if(strings.length() == 2)
             {
                 namesp = strings[0];
@@ -64,6 +65,7 @@ void splitNode(QString node, QString &namesp, QString &name)
             {
                 name = strings[0];
             }
+        }
     }
 }
 

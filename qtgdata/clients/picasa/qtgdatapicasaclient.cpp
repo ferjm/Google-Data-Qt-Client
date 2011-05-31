@@ -195,11 +195,11 @@ void QtgdataPicasaClient::parseFeed(IEntity *entity)
 }
 
 QTGDATAReturnCode QtgdataPicasaClient::retrieveListOfAlbums(QString userID,
-                                          QString queryParams)
+                                                            QString queryParams)
 {
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
-    QString endpoint = QString(PICASA_BASE) + "/feed/api/user/" + userID;
+    QString endpoint = QString(PICASA_BASE) + "/feed/api/user/" + userID + "?" + queryParams;
     sendClientRequest(HttpRequest::GET,
                       QUrl(endpoint),
                       headers,

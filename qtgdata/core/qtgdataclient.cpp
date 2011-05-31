@@ -135,10 +135,10 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                             if((aux=sit->getEntity(Id::name)))
                                 author.name = aux->getValue();
                             aux = NULL;
-                            if(aux=sit->getEntity(Id::uri))
+                            if((aux=sit->getEntity(Id::uri)))
                                 author.uri = QUrl(aux->getValue());
                             aux = NULL;
-                            if(aux=sit->getEntity(Id::email))
+                            if((aux=sit->getEntity(Id::email)))
                                 author.email = aux->getValue();
                             atomFeed->authors.append(author);
                             break;

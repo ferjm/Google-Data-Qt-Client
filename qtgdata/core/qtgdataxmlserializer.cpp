@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qtgdataxmlserializer.h"
+#include "qtgdata.h"
 
 XMLSerializerException::XMLSerializerException(const QString &what) : _what(what)
 {
@@ -30,9 +31,9 @@ const char* XMLSerializerException::what() const throw()
     return retval.toAscii();
 }
 
-XMLSerializer::XMLSerializer(QStringList lNameSpaces)
+XMLSerializer::XMLSerializer(QMultiMap<int,QString> namespaces)
 {
-    m_lNameSpaces = lNameSpaces;
+    _namespaces = namespaces;
 }
 
 void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
@@ -44,7 +45,8 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
         IEntity *it_ent = (*it);
         if(it_ent->getType() == PropertyBasic::ComplexProperty)
         {
-            stream->writeStartElement(it_ent->getName());
+            QString namespaceStr = _namespaces.value(it_ent->getNamespaceId());
+            stream->writeStartElement(namespaceStr,it_ent->getName());
             Attributes *attributes = it_ent->getAttributes();
             if((attributes) && (!attributes->empty()))
             {
@@ -67,7 +69,9 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
                 it_ent->getValues(its,itse);
                 for(;its != itse; its++)
                 {
-                    stream->writeTextElement(it_ent->getName(),
+                    QString namespaceStr = _namespaces.value(it_ent->getNamespaceId());
+                    stream->writeTextElement(namespaceStr,
+                                             it_ent->getName(),
                                              (QString)(*its));
                     Attributes *attributes = it_ent->getAttributes();
                     if((attributes) && (!attributes->empty()))
@@ -107,11 +111,19 @@ QString XMLSerializer::serialize(const IEntity *obj)
     QString output;
     QXmlStreamWriter stream(&output);    
     stream.writeStartDocument();        
-    QStringList::iterator it;
+    /*QStringList::iterator it;
     for (QStringList::iterator it = m_lNameSpaces.begin();it
             != m_lNameSpaces.end();it++)
-        stream.writeDefaultNamespace((QString)(*it));
-    stream.writeStartElement(obj->getName());
+        stream.writeDefaultNamespace((QString)(*it));*/
+    for(QMultiMap<int,QString>::iterator it = _namespaces.begin();
+        it != _namespaces.end(); it++) {
+        int namespaceid = it.key();
+        if((namespaceid >= 0) && (namespaceid < Qtgdata::getInstance()->getNamespaces().size()))
+            stream.writeNamespace(it.value());
+        //TODO: else throw exception?
+    }
+    QString namespaceStr = _namespaces.value(obj->getNamespaceId());
+    stream.writeStartElement(namespaceStr,obj->getName());
     serialize(obj,&stream);
     stream.writeEndElement();
     stream.writeEndDocument();

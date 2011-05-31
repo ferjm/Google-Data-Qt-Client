@@ -123,11 +123,13 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
         endpoint += "&published-min=" + publishedmin.toString(Qt::ISODate) +
                     "&published-max=" + publishedmax.toString(Qt::ISODate);
     if((!updatedmin.isNull()) && (!updatedmax.QDateTime::isNull()))
+    {
         if(orderby == UPDATED)
             endpoint += "&updated-min=" + updatedmin.toString(Qt::ISODate) +
                         "&updated-max=" + updatedmax.toString(Qt::ISODate);
         else
             qWarning("Updatedmin and updatedmax are ignored cause orderby parameter is not set to UPDATED");
+    }
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
     if(!etag.isEmpty())
@@ -146,22 +148,22 @@ void QtgdataBloggerClient::createPost(QString blogID,
 //FIXME: onAtomFeedRetrieved
 //TODO: draft support
 {
-    IEntity *entry = new IEntity(Id::entry);
-    IEntity *titleEntity = new IEntity(NamespaceId::NULLID,Id::title,title);
+    IEntity *entry = new IEntity(NamespaceId::atom,Id::entry);
+    IEntity *titleEntity = new IEntity(NamespaceId::atom,Id::title,title);
     entry->addEntity(titleEntity);
-    IEntity *content = new IEntity(NamespaceId::NULLID,Id::content);
-    content->addAttribute(NamespaceId::NULLID,AttributeId::type,QString("xhtml"));
+    IEntity *content = new IEntity(NamespaceId::atom,Id::content);
+    content->addAttribute(NamespaceId::atom,AttributeId::type,QString("xhtml"));
     content->addValue(QString(xhtmlContent));
     entry->addEntity(content);
     for(int i= 0; i < categories.size(); i++)
     {
         IEntity *category = new IEntity(Id::category);
-        category->addAttribute(NamespaceId::NULLID,AttributeId::scheme,categories.at(i).scheme.toString());
-        category->addAttribute(NamespaceId::NULLID,AttributeId::term,categories.at(i).term);
+        category->addAttribute(NamespaceId::atom,AttributeId::scheme,categories.at(i).scheme.toString());
+        category->addAttribute(NamespaceId::atom,AttributeId::term,categories.at(i).term);
         entry->addEntity(category);
     }
-    QStringList namespaces;
-    namespaces.append("http://www.w3.org/2005/Atom");
+    QMultiMap<int,QString> namespaces;
+    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
     XMLSerializer serializer(namespaces);
     QString serializedBody = serializer.serialize(entry);
     delete entry;
@@ -175,15 +177,15 @@ void QtgdataBloggerClient::createPost(QString blogID,
 
 void QtgdataBloggerClient::updatePost(AtomEntry entry)
 {
-    IEntity *entryEntity = new IEntity(Id::entry);
+    IEntity *entryEntity = new IEntity(NamespaceId::atom,Id::entry);
     bool relUrl = false;
     QUrl endpoint;
     for(int i=0; i < entry.links.size(); i++)
     {
         IEntity *link = new IEntity(Id::link);
-        link->addAttribute(NamespaceId::NULLID,AttributeId::rel,entry.links.at(i).rel);
-        link->addAttribute(NamespaceId::NULLID,AttributeId::type,entry.links.at(i).type);
-        link->addAttribute(NamespaceId::NULLID,AttributeId::href,entry.links.at(i).href.toString());
+        link->addAttribute(NamespaceId::atom,AttributeId::rel,entry.links.at(i).rel);
+        link->addAttribute(NamespaceId::atom,AttributeId::type,entry.links.at(i).type);
+        link->addAttribute(NamespaceId::atom,AttributeId::href,entry.links.at(i).href.toString());
         if(entry.links.at(i).rel == "edit")
         {
             endpoint = entry.links.at(i).href;
@@ -192,35 +194,35 @@ void QtgdataBloggerClient::updatePost(AtomEntry entry)
         entryEntity->addEntity(link);
     }
     if(!relUrl) return;
-    IEntity *id = new IEntity(NamespaceId::NULLID,Id::id,entry.id);
+    IEntity *id = new IEntity(NamespaceId::atom,Id::id,entry.id);
     entryEntity->addEntity(id);
-    IEntity *published = new IEntity(NamespaceId::NULLID,Id::published,entry.published.toString(Qt::ISODate));
+    IEntity *published = new IEntity(NamespaceId::atom,Id::published,entry.published.toString(Qt::ISODate));
     entryEntity->addEntity(published);
-    IEntity *updated = new IEntity(NamespaceId::NULLID,Id::updated,entry.updated.toString(Qt::ISODate));
+    IEntity *updated = new IEntity(NamespaceId::atom,Id::updated,entry.updated.toString(Qt::ISODate));
     entryEntity->addEntity(updated);
     for(int i=0; i<entry.categories.size(); i++)
     {
-        IEntity *category = new IEntity(Id::category);
-        category->addAttribute(NamespaceId::NULLID,AttributeId::scheme,entry.categories.at(i).scheme.toString());
-        category->addAttribute(NamespaceId::NULLID,AttributeId::term,entry.categories.at(i).term);
+        IEntity *category = new IEntity(NamespaceId::atom,Id::category);
+        category->addAttribute(NamespaceId::atom,AttributeId::scheme,entry.categories.at(i).scheme.toString());
+        category->addAttribute(NamespaceId::atom,AttributeId::term,entry.categories.at(i).term);
         entryEntity->addEntity(category);
     }
-    IEntity *content = new IEntity(NamespaceId::NULLID,Id::content,QString(entry.content.content));
-    content->addAttribute(NamespaceId::NULLID,AttributeId::type,entry.content.type);
+    IEntity *content = new IEntity(NamespaceId::atom,Id::content,QString(entry.content.content));
+    content->addAttribute(NamespaceId::atom,AttributeId::type,entry.content.type);
     entryEntity->addEntity(content);
     for(int i=0; i<entry.authors.size(); i++)
     {
-        IEntity *author = new IEntity(Id::author);
-        IEntity *name = new IEntity(NamespaceId::NULLID,Id::name,entry.authors.at(i).name);
+        IEntity *author = new IEntity(NamespaceId::atom,Id::author);
+        IEntity *name = new IEntity(NamespaceId::atom,Id::name,entry.authors.at(i).name);
         author->addEntity(name);
-        IEntity *uri = new IEntity(NamespaceId::NULLID,Id::uri,entry.authors.at(i).uri.toString());
+        IEntity *uri = new IEntity(NamespaceId::atom,Id::uri,entry.authors.at(i).uri.toString());
         author->addEntity(uri);
-        IEntity *email = new IEntity(NamespaceId::NULLID,Id::email,entry.authors.at(i).email);
+        IEntity *email = new IEntity(NamespaceId::atom,Id::email,entry.authors.at(i).email);
         author->addEntity(email);
         entryEntity->addEntity(author);
     }
-    QStringList namespaces;
-    namespaces.append("http://www.w3.org/2005/Atom");
+    QMultiMap<int,QString> namespaces;
+    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
     XMLSerializer serializer(namespaces);
     QString serializedBody = serializer.serialize(entryEntity);
     delete entryEntity;
@@ -247,13 +249,16 @@ void QtgdataBloggerClient::deletePost(QString blogID,QString postID)
 
 void QtgdataBloggerClient::createComment(QString blogID,QString postID,AtomEntry entry)
 {
-    IEntity *entryEntity = new IEntity(Id::entry);
-    IEntity *title = new IEntity(0,Id::title,entry.title);
+    IEntity *entryEntity = new IEntity(NamespaceId::atom,Id::entry);
+    IEntity *title = new IEntity(NamespaceId::atom,Id::title,entry.title);
     entryEntity->addEntity(title);
-    IEntity *content = new IEntity(0,Id::content,QString(entry.content.content));
+    IEntity *content = new IEntity(NamespaceId::atom,Id::content,QString(entry.content.content));
     entryEntity->addEntity(content);
-    QStringList namespaces;
-    namespaces.append("http://www.w3.org/2005/Atom");
+
+    /*QStringList namespaces;
+    namespaces.append("http://www.w3.org/2005/Atom");*/
+    QMultiMap<int,QString> namespaces;
+    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
     XMLSerializer serializer(namespaces);
     QString serializedBody = serializer.serialize(entryEntity);
     delete entryEntity;

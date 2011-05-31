@@ -24,6 +24,7 @@
 #include <exception>
 #include <QStringList>
 #include <QtXml/QXmlStreamWriter>
+#include <QMultiMap>
 
 #include "qtgdataiserializer.h"
 
@@ -58,10 +59,11 @@ protected:
 };
 
 
-class XMLSerializer : public ISerializer
+class XMLSerializer : public ISerializer        
 {
 private:
-    QStringList m_lNameSpaces; 
+    QStringList m_lNameSpaces;
+    QMultiMap<int,QString> _namespaces;
 
     void serialize(const IEntity *obj, QXmlStreamWriter *stream);
 
@@ -72,7 +74,7 @@ public:
      *
      * XMLSerializer constructor
      */
-    XMLSerializer(QStringList lNameSpaces = QStringList());
+    XMLSerializer(QMultiMap<int,QString> namespaces = QMultiMap<int,QString>());
 
     /**
      * serialize:
