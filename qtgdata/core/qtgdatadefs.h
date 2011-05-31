@@ -81,9 +81,13 @@ namespace Id
         bytesUsed,
         user,
         nickname,
-        albumType,
-        group,
+        albumType,        
         credit,
+        location,
+
+        //media
+        keywords,
+        group,
 
         //app
         edited

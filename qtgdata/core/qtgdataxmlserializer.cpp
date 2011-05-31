@@ -31,9 +31,11 @@ const char* XMLSerializerException::what() const throw()
     return retval.toAscii();
 }
 
-XMLSerializer::XMLSerializer(QMultiMap<int,QString> namespaces)
+XMLSerializer::XMLSerializer(QString defaultNamespace,
+                             QMultiMap<int,QString> additionalNamespaces)
 {
-    _namespaces = namespaces;
+    _namespace = defaultNamespace;
+    _additionalNamespaces = additionalNamespaces;
 }
 
 void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
@@ -45,8 +47,11 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
         IEntity *it_ent = (*it);
         if(it_ent->getType() == PropertyBasic::ComplexProperty)
         {
-            QString namespaceStr = _namespaces.value(it_ent->getNamespaceId());
-            stream->writeStartElement(namespaceStr,it_ent->getName());
+            QString namespaceStr = _additionalNamespaces.value(it_ent->getNamespaceId());
+            if(namespaceStr != _namespace)
+                stream->writeStartElement(namespaceStr,it_ent->getName());
+            else
+                stream->writeStartElement(it_ent->getName());
             Attributes *attributes = it_ent->getAttributes();
             if((attributes) && (!attributes->empty()))
             {
@@ -69,10 +74,12 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
                 it_ent->getValues(its,itse);
                 for(;its != itse; its++)
                 {
-                    QString namespaceStr = _namespaces.value(it_ent->getNamespaceId());
-                    stream->writeTextElement(namespaceStr,
-                                             it_ent->getName(),
-                                             (QString)(*its));
+                    QString namespaceStr = _additionalNamespaces.value(it_ent->getNamespaceId());
+                    if(namespaceStr != _namespace)
+                        stream->writeStartElement(namespaceStr,
+                                                  it_ent->getName());
+                    else
+                        stream->writeStartElement(it_ent->getName());
                     Attributes *attributes = it_ent->getAttributes();
                     if((attributes) && (!attributes->empty()))
                     {
@@ -84,6 +91,8 @@ void XMLSerializer::serialize(const IEntity *obj, QXmlStreamWriter *stream)
                             it++;
                         }
                     }
+                    stream->writeCharacters((QString)(*its));
+                    stream->writeEndElement();
                 }
             }
             else if (it_ent->getType()== PropertyBasic::BlankProperty)
@@ -110,20 +119,21 @@ QString XMLSerializer::serialize(const IEntity *obj)
     if((obj == NULL) || (!obj->isValid())) throw XMLSerializerException("Invalid entity\n");
     QString output;
     QXmlStreamWriter stream(&output);    
-    stream.writeStartDocument();        
-    /*QStringList::iterator it;
-    for (QStringList::iterator it = m_lNameSpaces.begin();it
-            != m_lNameSpaces.end();it++)
-        stream.writeDefaultNamespace((QString)(*it));*/
-    for(QMultiMap<int,QString>::iterator it = _namespaces.begin();
-        it != _namespaces.end(); it++) {
+    stream.writeStartDocument();
+    if(!_namespace.isEmpty())
+        stream.writeDefaultNamespace(_namespace);
+    for(QMultiMap<int,QString>::iterator it = _additionalNamespaces.begin();
+        it != _additionalNamespaces.end(); it++) {
         int namespaceid = it.key();
         if((namespaceid >= 0) && (namespaceid < Qtgdata::getInstance()->getNamespaces().size()))
             stream.writeNamespace(it.value());
         //TODO: else throw exception?
     }
-    QString namespaceStr = _namespaces.value(obj->getNamespaceId());
-    stream.writeStartElement(namespaceStr,obj->getName());
+    QString namespaceStr = _additionalNamespaces.value(obj->getNamespaceId());
+    if((!namespaceStr.isEmpty()) && (namespaceStr != _namespace))
+        stream.writeStartElement(namespaceStr,obj->getName());
+    else
+        stream.writeStartElement(obj->getName());
     serialize(obj,&stream);
     stream.writeEndElement();
     stream.writeEndDocument();

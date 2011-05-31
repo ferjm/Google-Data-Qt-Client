@@ -161,10 +161,8 @@ void QtgdataBloggerClient::createPost(QString blogID,
         category->addAttribute(NamespaceId::atom,AttributeId::scheme,categories.at(i).scheme.toString());
         category->addAttribute(NamespaceId::atom,AttributeId::term,categories.at(i).term);
         entry->addEntity(category);
-    }
-    QMultiMap<int,QString> namespaces;
-    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
-    XMLSerializer serializer(namespaces);
+    }    
+    XMLSerializer serializer("http://www.w3.org/2005/Atom");
     QString serializedBody = serializer.serialize(entry);
     delete entry;
     QList<QPair<QByteArray,QByteArray> > headers;
@@ -220,10 +218,8 @@ void QtgdataBloggerClient::updatePost(AtomEntry entry)
         IEntity *email = new IEntity(NamespaceId::atom,Id::email,entry.authors.at(i).email);
         author->addEntity(email);
         entryEntity->addEntity(author);
-    }
-    QMultiMap<int,QString> namespaces;
-    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
-    XMLSerializer serializer(namespaces);
+    }    
+    XMLSerializer serializer("http://www.w3.org/2005/Atom");
     QString serializedBody = serializer.serialize(entryEntity);
     delete entryEntity;
     QList<QPair<QByteArray,QByteArray> > headers;
@@ -254,12 +250,7 @@ void QtgdataBloggerClient::createComment(QString blogID,QString postID,AtomEntry
     entryEntity->addEntity(title);
     IEntity *content = new IEntity(NamespaceId::atom,Id::content,QString(entry.content.content));
     entryEntity->addEntity(content);
-
-    /*QStringList namespaces;
-    namespaces.append("http://www.w3.org/2005/Atom");*/
-    QMultiMap<int,QString> namespaces;
-    namespaces.insert(NamespaceId::atom,"http://www.w3.org/2005/Atom");
-    XMLSerializer serializer(namespaces);
+    XMLSerializer serializer("http://www.w3.org/2005/Atom");
     QString serializedBody = serializer.serialize(entryEntity);
     delete entryEntity;
     QList<QPair<QByteArray,QByteArray> > headers;

@@ -61,20 +61,22 @@ protected:
 
 class XMLSerializer : public ISerializer        
 {
-private:
-    QStringList m_lNameSpaces;
-    QMultiMap<int,QString> _namespaces;
+private:    
+    QMultiMap<int,QString> _additionalNamespaces;
+    QString _namespace;
 
     void serialize(const IEntity *obj, QXmlStreamWriter *stream);
 
 public:
-    /** XMLSerializer
+    /*!
      *
-     * @lNameSpaces: list of namespaces
+     * \param defaultNamespace Default XML namespace
+     * \param additionalNamespace Additional namespaces
      *
      * XMLSerializer constructor
      */
-    XMLSerializer(QMultiMap<int,QString> namespaces = QMultiMap<int,QString>());
+    XMLSerializer(QString defaultNamespace = QString(),
+                  QMultiMap<int,QString> additionalNamespaces = QMultiMap<int,QString>());
 
     /**
      * serialize:

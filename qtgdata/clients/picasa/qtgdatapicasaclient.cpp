@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qtgdatapicasaclient.h"
+#include "qtgdataxmlserializer.h"
 
 #define PICASA_BASE "https://picasaweb.google.com/data"
 
@@ -208,7 +209,68 @@ QTGDATAReturnCode QtgdataPicasaClient::retrieveListOfAlbums(QString userID,
 }
 
 QTGDATAReturnCode QtgdataPicasaClient::createAlbum(PicasaEntry &album)
-{
+{    
+    IEntity *entry = new IEntity(Id::entry);
+    if(!album.title.isEmpty())
+    {
+        IEntity *titleEntity = new IEntity(NamespaceId::atom,Id::title,album.title);
+        titleEntity->addAttribute(NamespaceId::atom,AttributeId::type,"text");
+        entry->addEntity(titleEntity);
+    }
+    if(!album.summary.isEmpty())
+    {
+        IEntity *summary = new IEntity(NamespaceId::atom,Id::summary,album.summary);
+        summary->addAttribute(NamespaceId::atom,AttributeId::type,"text");
+        entry->addEntity(summary);
+    }
+    if(!album.gphoto.location.isEmpty())
+    {
+        IEntity *location = new IEntity(NamespaceId::gphoto,Id::location,album.gphoto.location);
+        entry->addEntity(location);
+    }
+    if(!album.gphoto.access.isEmpty())
+    {
+        IEntity *access = new IEntity(NamespaceId::gphoto,Id::access,album.gphoto.access);
+        entry->addEntity(access);
+    }
+
+    IEntity *group = new IEntity(NamespaceId::media,Id::group);
+    QString keywords;
+    for(int i=0; i<album.mediaGroup.keywords.size();i++)
+        keywords += album.mediaGroup.keywords.at(i) + ",";
+    if(!keywords.isEmpty())
+    {
+        IEntity *keywordsEntity = new IEntity(NamespaceId::media,Id::keywords,keywords);
+        group->addEntity(keywordsEntity);
+    }
+    entry->addEntity(group);
+    IEntity *category = new IEntity(NamespaceId::atom,Id::category,QString(""));
+    category->addAttribute(NamespaceId::atom,AttributeId::scheme,"http://schemas.google.com/g/2005#kind");
+    category->addAttribute(NamespaceId::atom,AttributeId::term,"http://schemas.google.com/photos/2007#album");
+    entry->addEntity(category);
+
+    QMultiMap<int,QString> namespaces;
+    namespaces.insert(NamespaceId::gphoto,"http://schemas.google.com/photos/2007");
+    namespaces.insert(NamespaceId::media,"http://search.yahoo.com/mrss/");
+    XMLSerializer serializer("http://www.w3.org/2005/Atom",namespaces);
+    QString serializedBody = serializer.serialize(entry);
+   /*serializedBody ="<n1:entry xmlns:n1='http://www.w3.org/2005/Atom' xmlns:n2='http://search.yahoo.com/mrss/' xmlns:n3='http://schemas.google.com/photos/2007'><title type='text'>Trip To Italy</title>"//<summary type='text'>This was the recent trip I took to Italy.</summary>"
+           "<n3:location>Italy</n3:location>"
+           "<n3:access>public</n3:access>"
+            "<n3:timestamp>1152255600000</n3:timestamp>"
+            "<n2:group>"
+              "<n2:keywords>italy, vacation</n2:keywords>"
+            "</n2:group>"
+           "<category scheme='http://schemas.google.com/g/2005#kind\'"
+                " term='http://schemas.google.com/photos/2007#album'></category>"
+        "</n1:entry>";*/
+    delete entry;
+    QList<QPair<QByteArray,QByteArray> > headers;
+    headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
+    sendClientRequest(HttpRequest::POST,
+                      QUrl(QString(PICASA_BASE) + "/feed/api/user/default"),
+                      headers,
+                      &QByteArray(serializedBody.toAscii()));
     return QTGDATA_SUCCESS;
 }
 

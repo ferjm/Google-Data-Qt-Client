@@ -62,7 +62,8 @@ public:
      * along with a copy of the new album in the form of an <entry> element that can be retrieved
      * via the picasaFeedRetrieved signal or by calling the getLastFeedRetrieved() function.
      * The returned entry is similar to the one you sent, but it contains various elements
-     * added by the server, such as an <id> element
+     * added by the server, such as an <id> element     
+     * \param album The album entry
      * \returns QTGDATASuccess if the creation procedure have been successfully completed
      */
     QTGDATAReturnCode createAlbum(PicasaEntry &album);
