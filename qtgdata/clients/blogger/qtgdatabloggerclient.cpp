@@ -1,10 +1,10 @@
 /***************************************************************************
- *   Copyright (C) 2010 Fernando Jiménez Moreno <ferjmoreno@gmail.com>     *
+ *   Copyright (C) 2010-2011 Fernando Jiménez Moreno <ferjmoreno@gmail.com>*
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+
 #include "qtgdatabloggerclient.h"
 #include "qtgdataoauthrequest.h"
 #include "qtgdataxmlparser.h"
 #include "qtgdataxmlserializer.h"
-#include "data/codesearch/qtgdatacodesearchfeed.h"
 
 #include <QDebug>
 
@@ -58,8 +58,34 @@ void QtgdataBloggerClient::emitAtomFeedRetrieved()
     if(atomFeed)
     {
         AtomFeed *feed = dynamic_cast<AtomFeed*>(atomFeed);
-        if(feed) emit bloggerFeedRetrieved(feed);
+        if(feed)
+        {
+            switch(currentAction)
+            {
+            case RETRIEVE_BLOGS:
+                emit listOfBlogsRetrieved(feed);
+                break;
+            case RETRIEVE_POSTS:
+                emit listOfPostsRetrieved(feed);
+                break;
+            case RETRIEVE_COMMENTS:
+                emit listOfCommentsRetrieved(feed);
+                break;
+            case CREATE_POST:
+                emit postCreated(feed);
+                break;
+            case UPDATE_POST:
+                emit postUpdated(feed);
+                break;
+            case CREATE_COMMENT:
+                emit commentCreated(feed);
+                break;
+            default:
+                break;
+            }
+        }
     }
+    currentAction = NONE;
 }
 
 const int QtgdataBloggerClient::appendEntry(AtomEntry *entry)
@@ -82,6 +108,7 @@ void QtgdataBloggerClient::parseFeed(IEntity *entity)
 
 void QtgdataBloggerClient::retrieveListOfBlogs(QString profileID)
 {
+    currentAction = RETRIEVE_BLOGS;
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
     sendClientRequest(HttpRequest::GET,
@@ -100,7 +127,8 @@ void QtgdataBloggerClient::retrieveListOfPosts(QString blogID,
                                                int maxresults,
                                                int startindex,
                                                QString etag)
-{    
+{
+    currentAction = RETRIEVE_POSTS;
     QString endpoint = QString(BLOGGER_FEEDS) + blogID + "/posts/default";
     if(!categories.isEmpty())
     {
@@ -148,6 +176,7 @@ void QtgdataBloggerClient::createPost(QString blogID,
 //FIXME: onAtomFeedRetrieved
 //TODO: draft support
 {
+    currentAction = CREATE_POST;
     IEntity *entry = new IEntity(NamespaceId::atom,Id::entry);
     IEntity *titleEntity = new IEntity(NamespaceId::atom,Id::title,title);
     entry->addEntity(titleEntity);
@@ -233,6 +262,12 @@ void QtgdataBloggerClient::updatePost(AtomEntry entry)
 
 void QtgdataBloggerClient::deletePost(QString blogID,QString postID)
 {
+    currentAction = DELETE_POST;
+    int i = postID.indexOf(QString("post-"));
+    if(i!=-1)
+    {
+        postID = postID.mid(i+5);
+    }
     QUrl endpoint(QString(BLOGGER_FEEDS) + blogID + "/posts/default/" + postID);
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
@@ -245,6 +280,7 @@ void QtgdataBloggerClient::deletePost(QString blogID,QString postID)
 
 void QtgdataBloggerClient::createComment(QString blogID,QString postID,AtomEntry entry)
 {
+    currentAction = CREATE_COMMENT;
     IEntity *entryEntity = new IEntity(NamespaceId::atom,Id::entry);
     IEntity *title = new IEntity(NamespaceId::atom,Id::title,entry.title);
     entryEntity->addEntity(title);
@@ -263,6 +299,7 @@ void QtgdataBloggerClient::createComment(QString blogID,QString postID,AtomEntry
 
 void QtgdataBloggerClient::deleteComment(QString blogID, QString postID, QString commentID)
 {
+    currentAction = DELETE_COMMENT;
     //http://www.blogger.com/feeds/blogID/postID/comments/default/commentID
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
@@ -274,6 +311,7 @@ void QtgdataBloggerClient::deleteComment(QString blogID, QString postID, QString
 
 void QtgdataBloggerClient::retrieveListOfComments(QString blogID, QString postID)
 {
+    currentAction = RETRIEVE_COMMENTS;
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
     QString endpoint = QString(BLOGGER_FEEDS) + blogID;

@@ -4,7 +4,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+
 #ifndef QTGDATABLOGGERCLIENT_H
 #define QTGDATABLOGGERCLIENT_H
 
@@ -29,7 +30,7 @@ class QtgdataBloggerClient : public QtgdataClient
     Q_OBJECT
 public:
     enum OrderBy { STARTTIME, UPDATED };
-    enum Alt { ATOM, RSS };
+    enum Alt { ATOM, RSS };    
 
     QtgdataBloggerClient(IAuthentication *auth, int version = 2, QObject *parent = 0);
     virtual ~QtgdataBloggerClient();
@@ -62,8 +63,27 @@ public:
     void retrieveListOfComments(QString blogID,QString postID = QString());
     void deleteComment(QString blogID,QString postID,QString commentID);    
 
+private:
+    enum CurrentAction { NONE = -1,
+                         RETRIEVE_BLOGS,
+                         RETRIEVE_POSTS,
+                         CREATE_POST,
+                         UPDATE_POST,
+                         DELETE_POST,
+                         CREATE_COMMENT,
+                         RETRIEVE_COMMENTS,
+                         DELETE_COMMENT } currentAction;
+
 signals:    
     void bloggerFeedRetrieved(AtomFeed*);
+    void listOfBlogsRetrieved(AtomFeed*);
+    void listOfPostsRetrieved(AtomFeed*);
+    void postCreated(AtomFeed*);
+    void postUpdated(AtomFeed*);
+    void listOfCommentsRetrieved(AtomFeed*);
+    void commentCreated(AtomFeed*);
+
+
 };
 
 #endif // QTGDATABLOGGERCLIENT_H

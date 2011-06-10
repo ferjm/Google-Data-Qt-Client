@@ -4,7 +4,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
@@ -254,16 +254,6 @@ QTGDATAReturnCode QtgdataPicasaClient::createAlbum(PicasaEntry &album)
     namespaces.insert(NamespaceId::media,"http://search.yahoo.com/mrss/");
     XMLSerializer serializer("http://www.w3.org/2005/Atom",namespaces);
     QString serializedBody = serializer.serialize(entry);
-   /*serializedBody ="<n1:entry xmlns:n1='http://www.w3.org/2005/Atom' xmlns:n2='http://search.yahoo.com/mrss/' xmlns:n3='http://schemas.google.com/photos/2007'><title type='text'>Trip To Italy</title>"//<summary type='text'>This was the recent trip I took to Italy.</summary>"
-           "<n3:location>Italy</n3:location>"
-           "<n3:access>public</n3:access>"
-            "<n3:timestamp>1152255600000</n3:timestamp>"
-            "<n2:group>"
-              "<n2:keywords>italy, vacation</n2:keywords>"
-            "</n2:group>"
-           "<category scheme='http://schemas.google.com/g/2005#kind\'"
-                " term='http://schemas.google.com/photos/2007#album'></category>"
-        "</n1:entry>";*/
     delete entry;
     QList<QPair<QByteArray,QByteArray> > headers;
     headers.append(qMakePair(QByteArray("GData-Version"),QByteArray::number(this->version)));
