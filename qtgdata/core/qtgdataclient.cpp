@@ -170,12 +170,17 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                                     if((author)&&(author->getId()))
                                     {
                                         IEntity *aux = NULL;
-                                        if((aux=author->getEntity(Id::name)))
-                                        {
-                                            Author author;
-                                            author.name = aux->getValue();
-                                            atomEntry->authors.append(author);
-                                        }
+                                        Author authoraux;
+                                        if((aux=author->getEntity(Id::name)))                                          
+                                            authoraux.name = aux->getValue();
+                                        aux = NULL;
+                                        if((aux=author->getEntity(Id::uri)))
+                                            authoraux.uri = QUrl(aux->getValue());
+                                        aux = NULL;
+                                        if((aux=author->getEntity(Id::email)))
+                                            authoraux.email = aux->getValue();
+                                        aux = NULL;
+                                        atomEntry->authors.append(authoraux);
                                     }
                                     break;
                                 }
@@ -183,10 +188,10 @@ void QtgdataClient::onAtomFeedRetrieved(QByteArray reply)
                                     atomEntry->id = entry->getValue();
                                     break;
                                 case Id::published:
-                                    atomEntry->published.fromString(entry->getValue(),Qt::ISODate);
+                                    atomEntry->published = QDateTime::fromString(entry->getValue(),Qt::ISODate);
                                     break;
                                 case Id::updated:
-                                    atomEntry->updated.fromString(entry->getValue(),Qt::ISODate);
+                                    atomEntry->updated = QDateTime::fromString(entry->getValue(),Qt::ISODate);
                                     break;
                                 case Id::summary:
                                     atomEntry->summary = entry->getValue();
